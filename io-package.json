@@ -16,10 +16,10 @@
         "zh-cn": "首次出版"
       }
     },
-    "title": "bluelink",
+    "title": "Adapter für Hyundai (Bluelink) / Kia (UOV)",
     "titleLang": {
       "en": "bluelink",
-      "de": "bluelink",
+      "de": "Adapter für Hyundai (Bluelink) / Kia (UOV)",
       "ru": "синяя ссылка",
       "pt": "bluelink",
       "nl": "bluelink",
@@ -31,7 +31,7 @@
     },
     "desc": {
       "en": "Adapter to control Hyundai or Kia verhiles",
-      "de": "Adapter zur Steuerung von Hyundai oder Kia verhiles",
+      "de": "Adapter zur Steuerung von Hyundai oder Kia Fahrzeugen",
       "ru": "Адаптер для управления Hyundai или Kia verhiles",
       "pt": "Adaptador para controlar verhiles Hyundai ou Kia",
       "nl": "Adapter om Hyundai of Kia verhiles te besturen",
