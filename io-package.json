@@ -1,0 +1,80 @@
+{
+  "common": {
+    "name": "bluelink",
+    "version": "0.0.1",
+    "news": {
+      "0.0.1": {
+        "en": "initial release",
+        "de": "Erstveröffentlichung",
+        "ru": "Начальная версия",
+        "pt": "lançamento inicial",
+        "nl": "Eerste uitgave",
+        "fr": "Première version",
+        "it": "Versione iniziale",
+        "es": "Versión inicial",
+        "pl": "Pierwsze wydanie",
+        "zh-cn": "首次出版"
+      }
+    },
+    "title": "bluelink",
+    "titleLang": {
+      "en": "bluelink",
+      "de": "bluelink",
+      "ru": "синяя ссылка",
+      "pt": "bluelink",
+      "nl": "bluelink",
+      "fr": "bluelink",
+      "it": "bluelink",
+      "es": "bluelink",
+      "pl": "bluelink",
+      "zh-cn": "蓝线"
+    },
+    "desc": {
+      "en": "Adapter to control Hyundai or Kia verhiles",
+      "de": "Adapter zur Steuerung von Hyundai oder Kia verhiles",
+      "ru": "Адаптер для управления Hyundai или Kia verhiles",
+      "pt": "Adaptador para controlar verhiles Hyundai ou Kia",
+      "nl": "Adapter om Hyundai of Kia verhiles te besturen",
+      "fr": "Adaptateur pour contrôler les verhiles Hyundai ou Kia",
+      "it": "Adattatore per controllare Hyundai o Kia verhiles",
+      "es": "Adaptador para controlar Hyundai o Kia verhiles",
+      "pl": "Adapter do sterowania wersjami Hyundai lub Kia",
+      "zh-cn": "控制现代或起亚verhiles的适配器"
+    },
+    "authors": [
+      "Newan <info@newan.de>"
+    ],
+    "keywords": [
+      "ioBroker",
+      "template",
+      "Smart Home",
+      "home automation"
+    ],
+    "license": "MIT",
+    "platform": "Javascript/Node.js",
+    "main": "main.js",
+    "icon": "bluelink.png",
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/Newan/ioBroker.bluelink/master/admin/bluelink.png",
+    "readme": "https://github.com/Newan/ioBroker.bluelink/blob/master/README.md",
+    "loglevel": "info",
+    "mode": "daemon",
+    "type": "vehicle",
+    "compact": true,
+    "connectionType": "cloud",
+    "dataSource": "poll",
+    "materialize": true,
+    "dependencies": [
+      {
+        "js-controller": ">=2.0.0"
+      }
+    ],
+    "installedFrom": "https://github.com/Newan/ioBroker.bluelink/tarball/71eb17eddb18b5bf195cf0ce435d7fa0ea097e9c"
+  },
+  "native": {
+    "option1": true,
+    "option2": "42"
+  },
+  "objects": [],
+  "instanceObjects": []
+}
