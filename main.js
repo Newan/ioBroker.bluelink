@@ -21,7 +21,7 @@ class Bluelink extends utils.Adapter {
 			name: 'bluelink',
 		});
 		this.on('ready', this.onReady.bind(this));
-		//this.on('stateChange', this.onStateChange.bind(this));
+		this.on('stateChange', this.onStateChange.bind(this));
 		// this.on('objectChange', this.onObjectChange.bind(this));
 		// this.on('message', this.onMessage.bind(this));
 		this.on('unload', this.onUnload.bind(this));
@@ -75,8 +75,27 @@ class Bluelink extends utils.Adapter {
 		}
 	}
 
-	onStateChange(id, state) {
-
+	async onStateChange(id, state) {
+		this.log.debug(state);
+		this.log.debug(id);
+		if (state) {
+			
+			let tmpControl = id.split('.');
+			switch (tmpControl[3]) {
+				case 'lock':
+					this.log.info("Starting lock for vehicle");
+					var response = await vehicle.lock();
+					this.log.info(response)
+					break;
+				case 'unlock':
+					this.log.info("Starting unlock for vehicle");
+					var response = await vehicle.unlock();
+					this.log.info(response)
+					break;                
+				default:
+					this.log.error("No command for Control found for: " + id)			
+			}			
+		}
 	}
 
 	/**
@@ -174,7 +193,7 @@ class Bluelink extends utils.Adapter {
 			},
 			native: {},
 		});
-		this.subscribeStates('.control.lock');
+		this.subscribeStates('control.lock');
 	
 		await this.setObjectNotExistsAsync('control.unlock', {
 			type: 'state',
@@ -187,7 +206,7 @@ class Bluelink extends utils.Adapter {
 			},
 			native: {},
 		});
-		this.subscribeStates('.control.unlock');
+		this.subscribeStates('control.unlock');
 	}
 	
 
