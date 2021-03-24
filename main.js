@@ -1,15 +1,14 @@
 'use strict';
 
-/*
- * Created with @iobroker/create-adapter v1.32.0
- */
-
-// The adapter-core module gives you access to the core ioBroker functions
-// you need to create an adapter
 const utils = require('@iobroker/adapter-core');
+const kuvork = require('kuvork'); 
 
-// Load your modules here, e.g.:
-// const fs = require("fs");
+const adapterIntervals = {}; //halten von allen Intervallen
+var request_count = 100; //max api request per Day 
+var password = ''; 
+var pin = ''; 
+var client; 
+var vehicle;
 
 class Bluelink extends utils.Adapter {
 
@@ -22,67 +21,44 @@ class Bluelink extends utils.Adapter {
 			name: 'bluelink',
 		});
 		this.on('ready', this.onReady.bind(this));
-		this.on('stateChange', this.onStateChange.bind(this));
+		//this.on('stateChange', this.onStateChange.bind(this));
 		// this.on('objectChange', this.onObjectChange.bind(this));
 		// this.on('message', this.onMessage.bind(this));
 		this.on('unload', this.onUnload.bind(this));
 	}
 
-	/**
-	 * Is called when databases are connected and adapter received configuration.
-	 */
+	//Start Adapter
 	async onReady() {
-		// Initialize your adapter here
+		//first check account settings
+		if (this.config.request < 1) {
+			this.log.warn("Request is under 1 -> got to default 100")
+		} else {
+			request_count = this.config.request;
+		}
+	   
+		if (this.config.vin == '' ) {
+			this.log.error("No Vin found");
+		} else if (this.config.username == '' ) {
+			this.log.error("No Username set");
+		} else {
+			//Not crypted are set, st crypted settings
+			this.getForeignObject('system.config', (err, obj) => {
 
-		// The adapters config (in the instance object everything under the attribute "native") is accessible via
-		// this.config:
-		this.log.info('config option1: ' + this.config.option1);
-		this.log.info('config option2: ' + this.config.option2);
+            	if ((obj && obj.native && obj.native.secret) || this.config.client_secret == '') {
 
-		/*
-		For every state in the system there has to be also an object of type state
-		Here a simple template for a boolean variable named "testVariable"
-		Because every adapter instance uses its own unique namespace variable names can't collide with other adapters variables
-		*/
-		await this.setObjectNotExistsAsync('testVariable', {
-			type: 'state',
-			common: {
-				name: 'testVariable',
-				type: 'boolean',
-				role: 'indicator',
-				read: true,
-				write: true,
-			},
-			native: {},
-		});
+					password = decrypt(obj.native.secret, this.config.client_secret);
+					this.log.info("Password decrypted");
+					this.log.debug("Password is:" + password);
 
-		// In order to get state updates, you need to subscribe to them. The following line adds a subscription for our variable we have created above.
-		this.subscribeStates('testVariable');
-		// You can also add a subscription for multiple states. The following line watches all states starting with "lights."
-		// this.subscribeStates('lights.*');
-		// Or, if you really must, you can also watch all states. Don't do this if you don't need to. Otherwise this will cause a lot of unnecessary load on the system:
-		// this.subscribeStates('*');
+					pin = decrypt(obj.native.secret, this.config.client_secret_pin);
+					this.log.info("Pin decrypted");
+					this.log.debug("Pin is:" + pin);
 
-		/*
-			setState examples
-			you will notice that each setState will cause the stateChange event to fire (because of above subscribeStates cmd)
-		*/
-		// the variable testVariable is set to true as command (ack=false)
-		await this.setStateAsync('testVariable', true);
-
-		// same thing, but the value is flagged "ack"
-		// ack should be always set to true if the value is received from or acknowledged from the target system
-		await this.setStateAsync('testVariable', { val: true, ack: true });
-
-		// same thing, but the state is deleted after 30s (getState will return null afterwards)
-		await this.setStateAsync('testVariable', { val: true, ack: true, expire: 30 });
-
-		// examples for the checkPassword/checkGroup functions
-		let result = await this.checkPasswordAsync('admin', 'iobroker');
-		this.log.info('check user admin pw iobroker: ' + result);
-
-		result = await this.checkGroupAsync('admin', 'admin');
-		this.log.info('check group user admin group admin: ' + result);
+					//Start logic with login
+					this.login()
+				}
+			});
+		}
 	}
 
 	/**
@@ -91,68 +67,175 @@ class Bluelink extends utils.Adapter {
 	 */
 	onUnload(callback) {
 		try {
-			// Here you must clear all timeouts or intervals that may still be active
-			// clearTimeout(timeout1);
-			// clearTimeout(timeout2);
-			// ...
-			// clearInterval(interval1);
-
+			clearTimeout(adapterIntervals.readAllStates);
+			this.log.info('Adapter bluelink cleaned up everything...');
 			callback();
 		} catch (e) {
 			callback();
 		}
 	}
 
-	// If you need to react to object changes, uncomment the following block and the corresponding line in the constructor.
-	// You also need to subscribe to the objects with `this.subscribeObjects`, similar to `this.subscribeStates`.
-	// /**
-	//  * Is called if a subscribed object changes
-	//  * @param {string} id
-	//  * @param {ioBroker.Object | null | undefined} obj
-	//  */
-	// onObjectChange(id, obj) {
-	// 	if (obj) {
-	// 		// The object was changed
-	// 		this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
-	// 	} else {
-	// 		// The object was deleted
-	// 		this.log.info(`object ${id} deleted`);
-	// 	}
-	// }
-
-	/**
-	 * Is called if a subscribed state changes
-	 * @param {string} id
-	 * @param {ioBroker.State | null | undefined} state
-	 */
 	onStateChange(id, state) {
-		if (state) {
-			// The state was changed
-			this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
-		} else {
-			// The state was deleted
-			this.log.info(`state ${id} deleted`);
-		}
+
 	}
 
-	// If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
-	// /**
-	//  * Some message was sent to this instance over message box. Used by email, pushover, text2speech, ...
-	//  * Using this method requires "common.messagebox" property to be set to true in io-package.json
-	//  * @param {ioBroker.Message} obj
-	//  */
-	// onMessage(obj) {
-	// 	if (typeof obj === 'object' && obj.message) {
-	// 		if (obj.command === 'send') {
-	// 			// e.g. send email or pushover or whatever
-	// 			this.log.info('send command');
+	/**
+	 * Funktion to login in bluelink / UOV
+	 */
+	login() {
+		this.log.info("Login to api")
 
-	// 			// Send response in callback if required
-	// 			if (obj.callback) this.sendTo(obj.from, obj.command, 'Message received', obj.callback);
-	// 		}
-	// 	}
-	// }
+		this.log.debug(JSON.stringify(
+			{
+				username: this.config.username,
+				password: password,
+				pin: pin,
+				brand: "K",
+				vin: this.config.vin,
+				region: "EU" //set over GUI next time
+			}
+		));
+		client = new kuvork({
+			username: this.config.username,
+			password: password,
+			pin: pin,
+			brand: "K", //bug on set over GUI next time
+			vin: this.config.vin,
+			region: "EU" //set over GUI next time
+		});
 
+		client.on('ready', async (vehicles) => {
+			// wir haben eine Verbindung und haben Autos
+			this.log.info("Vehicles found");
+
+			/*vehicles.forEach(car => {
+				this.log.debug(JSON.stringify(car));
+			});*/
+
+			vehicle = vehicles[0]; //is only one, because vin is in connection set
+
+			//set Objects for the vehicle
+			await this.setControlObjects()
+			await this.setStatusObjects()
+
+			//start time cycle
+			await this.readStatus();
+		});
+
+		client.on('error', async (err) => {
+			// something went wrong with login
+			this.log.debug("Error on Api login");
+			this.log.error(err);
+		});
+	}
+
+	//read new sates from vehicle
+	async readStatus(){
+		this.log.info("Read new status from api");
+		//read new verhicle status
+		let newStatus = await vehicle.status({
+			refresh: true,
+			parsed: true
+		  });
+
+		//read odometer
+		let odometer = await vehicle.odometer();
+
+		//set all values
+		this.log.info("Set new status");
+		await this.setNewStatus(newStatus, odometer)
+
+		//set ne cycle
+		adapterIntervals.readAllStates = setTimeout(this.readStatus.bind(this), ((24*60) / request_count) * 60000);
+	}
+
+	//Set new values to ioBroker
+	async setNewStatus(newStatus, odometer) {
+		await this.setStateAsync('chassis.locked',newStatus.chassis.locked);
+   
+		await this.setStateAsync('odometer.value', odometer.value);
+		await this.setStateAsync('odometer.unit', odometer.unit);   
+	}
+	
+	/**
+	 * Functions to create the ioBroker objects
+	 */
+
+	async setControlObjects() {
+
+		await this.setObjectNotExistsAsync('control.lock', {
+			type: 'state',
+			common: {
+				name: "Lock the car",
+				type: "boolean",
+				role: "button",
+				read: true,
+				write: true,
+			},
+			native: {},
+		});
+		this.subscribeStates('.control.lock');
+	
+		await this.setObjectNotExistsAsync('control.unlock', {
+			type: 'state',
+			common: {
+				name: "Lock the car",
+				type: "boolean",
+				role: "button",
+				read: true,
+				write: true,
+			},
+			native: {},
+		});
+		this.subscribeStates('.control.unlock');
+	}
+	
+
+	async setStatusObjects() {	
+		await this.setObjectNotExistsAsync('chassis.locked', {
+			type: 'state',
+			common: {
+				name: 'Car locked',
+				type: 'boolean',
+				role: 'indicator',
+				read: true,
+				write: false,
+			},
+			native: {},
+		});
+	
+		await this.setObjectNotExistsAsync('odometer.value', {
+			type: 'state',
+			common: {
+				name: 'Odometer value',
+				type: 'number',
+				role: 'indicator',
+				read: true,
+				write: false,
+			},
+			native: {},
+		});
+	
+		await this.setObjectNotExistsAsync('odometer.unit', {
+			type: 'state',
+			common: {
+				name: 'Odometer unit',
+				type: 'number',
+				role: 'indicator',
+				read: true,
+				write: false,
+			},
+			native: {},
+		});	
+	}	
+}
+
+function decrypt(key, value) {
+    let result = '';
+    for (let i = 0; i < value.length; ++i) {
+        result += String.fromCharCode(key[i % key.length].charCodeAt(0) ^ value.charCodeAt(i));
+    }
+    return result;
 }
 
 if (require.main !== module) {

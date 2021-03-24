@@ -19,7 +19,8 @@
     "url": "https://github.com/Newan/ioBroker.bluelink"
   },
   "dependencies": {
-    "@iobroker/adapter-core": "^2.4.0"
+    "@iobroker/adapter-core": "^2.4.0",
+    "kuvork": "^6.3.0"
   },
   "devDependencies": {
     "@iobroker/testing": "^2.4.4",

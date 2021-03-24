@@ -1,0 +1,22 @@
+{
+    "name": "@types/undertaker-registry",
+    "version": "1.0.1",
+    "description": "TypeScript definitions for undertaker-registry",
+    "license": "MIT",
+    "contributors": [
+        {
+            "name": "Giedrius Grabauskas",
+            "url": "https://github.com/GiedriusGrabauskas",
+            "githubUsername": "GiedriusGrabauskas"
+        }
+    ],
+    "main": "",
+    "repository": {
+        "type": "git",
+        "url": "https://www.github.com/DefinitelyTyped/DefinitelyTyped.git"
+    },
+    "scripts": {},
+    "dependencies": {},
+    "typesPublisherContentHash": "1a57ac0121c2a12ddc906e6f4e193ee38f0a356a1acafc8c720c6d0d46b60c01",
+    "typeScriptVersion": "2.0"
+}
