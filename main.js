@@ -109,7 +109,7 @@ class Bluelink extends utils.Adapter {
 				username: this.config.username,
 				password: password,
 				pin: pin,
-				brand: "K",
+				brand: this.config.brand,
 				vin: this.config.vin,
 				region: "EU" //set over GUI next time
 			}
@@ -118,7 +118,7 @@ class Bluelink extends utils.Adapter {
 			username: this.config.username,
 			password: password,
 			pin: pin,
-			brand: "K", //bug on set over GUI next time
+			brand: this.config.brand, //bug on set over GUI next time
 			vin: this.config.vin,
 			region: "EU" //set over GUI next time
 		});
