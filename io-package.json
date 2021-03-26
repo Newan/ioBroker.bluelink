@@ -46,8 +46,8 @@
     ],
     "keywords": [
       "ioBroker",
-      "template",
-      "Smart Home",
+      "Kia",
+      "Hyundai",
       "home automation"
     ],
     "license": "MIT",
@@ -68,12 +68,15 @@
       {
         "js-controller": ">=2.0.0"
       }
-    ],
-    "installedFrom": "https://github.com/Newan/ioBroker.bluelink/tarball/71eb17eddb18b5bf195cf0ce435d7fa0ea097e9c"
+    ]
   },
   "native": {
-    "option1": true,
-    "option2": "42"
+    "username": "",
+    "client_secret": "",
+    "client_secret_pin": "",
+    "brand": "K",
+    "vin": "",
+    "request": 100
   },
   "objects": [],
   "instanceObjects": []
