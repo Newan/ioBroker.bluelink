@@ -92,8 +92,29 @@ class Bluelink extends utils.Adapter {
 					var response = await vehicle.unlock();
 					this.log.info(response)
 					break;                
+				case 'start':
+					this.log.info("Starting clima for vehicle");
+					var response = await vehicle.start({
+						airCtrl: false,
+						igniOnDuration: 10,
+						airTempvalue: 70,
+						defrost: false,
+						heating1: false,
+					});
+					this.log.debug(JSON.stringify(response))
+					break;                
+				case 'stop':
+					this.log.info("Stop clima for vehicle");
+					var response = await vehicle.stop();
+					this.log.debug(JSON.stringify(response));
+					break;    
+				case 'force_refresh':
+					this.log.info("Forcing refresh");
+					//Force refresh for new states
+					this.readStatus(true)
+					break;	
 				default:
-					this.log.error("No command for Control found for: " + id)			
+					this.log.error("No command for Control found for: " + id)				
 			}			
 		}
 	}
@@ -104,24 +125,17 @@ class Bluelink extends utils.Adapter {
 	login() {
 		this.log.info("Login to api")
 
-		this.log.debug(JSON.stringify(
-			{
-				username: this.config.username,
-				password: password,
-				pin: pin,
-				brand: this.config.brand,
-				vin: this.config.vin,
-				region: "EU" //set over GUI next time
-			}
-		));
-		client = new kuvork({
+		let tmpConfig = {
 			username: this.config.username,
 			password: password,
 			pin: pin,
-			brand: this.config.brand, //bug on set over GUI next time
+			brand: this.config.brand,
 			vin: this.config.vin,
 			region: "EU" //set over GUI next time
-		});
+		}
+
+		this.log.debug(JSON.stringify(tmpConfig));
+		client = new kuvork(tmpConfig);
 
 		client.on('ready', async (vehicles) => {
 			// wir haben eine Verbindung und haben Autos
@@ -149,31 +163,45 @@ class Bluelink extends utils.Adapter {
 	}
 
 	//read new sates from vehicle
-	async readStatus(){
+	async readStatus(force=false) {
 		this.log.info("Read new status from api");
 		//read new verhicle status
-		let newStatus = await vehicle.status({
+		let newStatus = await vehicle.fullStatus({
 			refresh: true,
 			parsed: true
 		  });
 
-		//read odometer
-		let odometer = await vehicle.odometer();
-
 		//set all values
 		this.log.info("Set new status");
-		await this.setNewStatus(newStatus, odometer)
+		await this.setNewStatus(newStatus)
 
 		//set ne cycle
+		if (force) {
+			clearTimeout(adapterIntervals.readAllStates);
+		}
 		adapterIntervals.readAllStates = setTimeout(this.readStatus.bind(this), ((24*60) / request_count) * 60000);
 	}
 
 	//Set new values to ioBroker
-	async setNewStatus(newStatus, odometer) {
-		await this.setStateAsync('chassis.locked',newStatus.chassis.locked);
-   
-		await this.setStateAsync('odometer.value', odometer.value);
-		await this.setStateAsync('odometer.unit', odometer.unit);   
+	async setNewStatus(newStatus) {
+		await this.setStateAsync('vehicleStatus.doorLock',newStatus.vehicleStatus.doorLock);
+		await this.setStateAsync('vehicleStatus.trunkOpen',newStatus.vehicleStatus.trunkOpen);
+		await this.setStateAsync('vehicleStatus.hoodOpen',newStatus.vehicleStatus.hoodOpen);
+		await this.setStateAsync('vehicleStatus.airCtrlOn',newStatus.vehicleStatus.airCtrlOn);
+		
+		// Battery
+		await this.setStateAsync('vehicleStatus.battery.batSoc',newStatus.vehicleStatus.battery.batSoc);
+		await this.setStateAsync('vehicleStatus.battery.batState',newStatus.vehicleStatus.battery.batState);
+		
+
+		//Location
+		await this.setStateAsync('vehicleLocation.lat',newStatus.vehicleLocation.coord.lat);
+		await this.setStateAsync('vehicleLocation.lon',newStatus.vehicleLocation.coord.lon);
+		await this.setStateAsync('vehicleLocation.speed',newStatus.vehicleLocation.speed.value);
+
+		//Odometer
+		await this.setStateAsync('odometer.value', newStatus.odometer.value);
+		await this.setStateAsync('odometer.unit', newStatus.odometer.unit);   
 	}
 	
 	/**
@@ -185,7 +213,7 @@ class Bluelink extends utils.Adapter {
 		await this.setObjectNotExistsAsync('control.lock', {
 			type: 'state',
 			common: {
-				name: "Lock the car",
+				name: "Lock the vehicle",
 				type: "boolean",
 				role: "button",
 				read: true,
@@ -194,11 +222,11 @@ class Bluelink extends utils.Adapter {
 			native: {},
 		});
 		this.subscribeStates('control.lock');
-	
+
 		await this.setObjectNotExistsAsync('control.unlock', {
 			type: 'state',
 			common: {
-				name: "Lock the car",
+				name: "Unlock the vehicle",
 				type: "boolean",
 				role: "button",
 				read: true,
@@ -207,14 +235,68 @@ class Bluelink extends utils.Adapter {
 			native: {},
 		});
 		this.subscribeStates('control.unlock');
+	
+		await this.setObjectNotExistsAsync('control.start', {
+			type: 'state',
+			common: {
+				name: "Start clima fpr the vehicle",
+				type: "boolean",
+				role: "button",
+				read: true,
+				write: true,
+			},
+			native: {},
+		});
+		this.subscribeStates('control.start');
+
+		await this.setObjectNotExistsAsync('control.stop', {
+			type: 'state',
+			common: {
+				name: "Stop clima for the vehicle",
+				type: "boolean",
+				role: "button",
+				read: true,
+				write: true,
+			},
+			native: {},
+		});
+		this.subscribeStates('control.stop');
+
+		await this.setObjectNotExistsAsync('control.force_refresh', {
+			type: 'state',
+			common: {
+				name: "Force refresh vehicle status",
+				type: "boolean",
+				role: "button",
+				read: true,
+				write: true,
+			},
+			native: {},
+		});
+		this.subscribeStates('control.force_refresh');
+
 	}
 	
 
 	async setStatusObjects() {	
-		await this.setObjectNotExistsAsync('chassis.locked', {
+
+		//Bereicht vehicleStatus
+		await this.setObjectNotExistsAsync('vehicleStatus.doorLock', {
 			type: 'state',
 			common: {
-				name: 'Car locked',
+				name: 'Vehicle doors locked',
+				type: 'boolean',
+				role: 'indicator',
+				read: true,
+				write: false,
+			},
+			native: {},
+		});	
+
+		await this.setObjectNotExistsAsync('vehicleStatus.trunkOpen', {
+			type: 'state',
+			common: {
+				name: 'Trunk open',
 				type: 'boolean',
 				role: 'indicator',
 				read: true,
@@ -222,7 +304,94 @@ class Bluelink extends utils.Adapter {
 			},
 			native: {},
 		});
-	
+
+		await this.setObjectNotExistsAsync('vehicleStatus.hoodOpen', {
+			type: 'state',
+			common: {
+				name: 'Hood open',
+				type: 'boolean',
+				role: 'indicator',
+				read: true,
+				write: false,
+			},
+			native: {},
+		});
+
+		await this.setObjectNotExistsAsync('vehicleStatus.airCtrlOn', {
+			type: 'state',
+			common: {
+				name: 'Vehicle air control',
+				type: 'boolean',
+				role: 'indicator',
+				read: true,
+				write: false,
+			},
+			native: {},
+		});
+
+		//Battery
+		await this.setObjectNotExistsAsync('vehicleStatus.battery.batSoc', {
+			type: 'state',
+			common: {
+				name: 'Vehicle battery state of charge',
+				type: 'number',
+				role: 'indicator',
+				read: true,
+				write: false,
+			},
+			native: {},
+		});
+
+		await this.setObjectNotExistsAsync('vehicleStatus.battery.batState', {
+			type: 'state',
+			common: {
+				name: 'Vehicle bettery State',
+				type: 'number',
+				role: 'indicator',
+				read: true,
+				write: false,
+			},
+			native: {},
+		});
+		
+		//Bereich vehicleLocation
+		await this.setObjectNotExistsAsync('vehicleLocation.lat', {
+			type: 'state',
+			common: {
+				name: 'Vehicle position latitude',
+				type: 'number',
+				role: 'indicator',
+				read: true,
+				write: false,
+			},
+			native: {},
+		});
+
+		await this.setObjectNotExistsAsync('vehicleLocation.lon', {
+			type: 'state',
+			common: {
+				name: 'Vehicle position longitude',
+				type: 'number',
+				role: 'indicator',
+				read: true,
+				write: false,
+			},
+			native: {},
+		});
+
+		await this.setObjectNotExistsAsync('vehicleLocation.speed', {
+			type: 'state',
+			common: {
+				name: 'Vehicle speed',
+				type: 'number',
+				role: 'indicator',
+				read: true,
+				write: false,
+			},
+			native: {},
+		});
+
+		//Bereich Odometer
 		await this.setObjectNotExistsAsync('odometer.value', {
 			type: 'state',
 			common: {
