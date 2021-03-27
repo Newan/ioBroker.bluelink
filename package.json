@@ -1,7 +1,7 @@
 {
   "name": "iobroker.bluelink",
   "version": "0.0.1",
-  "description": "Adapter to control Hyundai or Kia verhiles",
+  "description": "Adapter to control Hyundai or Kia vehicle",
   "author": {
     "name": "Newan",
     "email": "info@newan.de"

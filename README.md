@@ -13,7 +13,7 @@
 
 ## bluelink adapter for ioBroker
 
-Adapter to control Hyundai or Kia verhiles
+Adapter to control Hyundai or Kia vehicle
 
 ## Changelog
 

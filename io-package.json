@@ -19,7 +19,7 @@
     "title": "Controll Hyundai (Bluelink) / Kia (UOV) vehicles",
     "titleLang": {
       "en": "bluelink",
-      "de": "Steurn von Hyundai (Bluelink) / Kia (UOV) Fahrzeugen",
+      "de": "Steuern von Hyundai (Bluelink) / Kia (UOV) Fahrzeugen",
       "ru": "синяя ссылка",
       "pt": "bluelink",
       "nl": "bluelink",
@@ -30,16 +30,8 @@
       "zh-cn": "蓝线"
     },
     "desc": {
-      "en": "Adapter to control Hyundai or Kia verhiles",
-      "de": "Adapter zur Steuerung von Hyundai oder Kia Fahrzeugen",
-      "ru": "Адаптер для управления Hyundai или Kia verhiles",
-      "pt": "Adaptador para controlar verhiles Hyundai ou Kia",
-      "nl": "Adapter om Hyundai of Kia verhiles te besturen",
-      "fr": "Adaptateur pour contrôler les verhiles Hyundai ou Kia",
-      "it": "Adattatore per controllare Hyundai o Kia verhiles",
-      "es": "Adaptador para controlar Hyundai o Kia verhiles",
-      "pl": "Adapter do sterowania wersjami Hyundai lub Kia",
-      "zh-cn": "控制现代或起亚verhiles的适配器"
+      "en": "Adapter to control Hyundai or Kia vehicles",
+      "de": "Adapter zur Steuerung von Hyundai oder Kia Fahrzeugen"
     },
     "authors": [
       "Newan <info@newan.de>"

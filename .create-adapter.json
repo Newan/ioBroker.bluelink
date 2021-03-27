@@ -2,7 +2,7 @@
     "cli": true,
     "adapterName": "bluelink",
     "title": "bluelink",
-    "description": "Adapter to control Hyundai or Kia verhiles",
+    "description": "Adapter to control Hyundai or Kia vehicle",
     "expert": "no",
     "features": [
         "adapter"
