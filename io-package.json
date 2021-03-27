@@ -62,6 +62,10 @@
       }
     ]
   },
+  "encryptedNative": [
+    "client_secret",
+    "client_secret_pin"
+  ],
   "native": {
     "username": "",
     "client_secret": "",

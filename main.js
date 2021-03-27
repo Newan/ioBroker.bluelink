@@ -10,6 +10,8 @@ var pin = '';
 var client; 
 var vehicle;
 
+const POSSIBLE_CHARGE_LIMIT_VALUES = [50, 60, 70, 80, 90, 100];
+
 class Bluelink extends utils.Adapter {
 
 	/**
@@ -113,6 +115,11 @@ class Bluelink extends utils.Adapter {
 					//Force refresh for new states
 					this.readStatus(true)
 					break;	
+				case 'todo slow fast charge':
+					if (!POSSIBLE_CHARGE_LIMIT_VALUES.includes(999) || !POSSIBLE_CHARGE_LIMIT_VALUES.includes(888)) {
+						this.log.error(`Charge target values are limited to ${POSSIBLE_CHARGE_LIMIT_VALUES.join(', ')}`);
+					}
+					break;  
 				default:
 					this.log.error("No command for Control found for: " + id)				
 			}			
@@ -189,6 +196,21 @@ class Bluelink extends utils.Adapter {
 		await this.setStateAsync('vehicleStatus.hoodOpen',newStatus.vehicleStatus.hoodOpen);
 		await this.setStateAsync('vehicleStatus.airCtrlOn',newStatus.vehicleStatus.airCtrlOn);
 		
+		//Charge
+		if (newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].plugType == 1) {
+			//Slow  = 1  -> Index 0 ist slow
+			await this.setStateAsync('vehicleStatus.battery.charge_limit_slow',
+			newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel);
+			await this.setStateAsync('vehicleStatus.battery.charge_limit_fast',
+			newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel);			  
+		} else {
+			//fast  = 0  -> Index 0 ist fast
+			await this.setStateAsync('vehicleStatus.battery.charge_limit_slow',
+			newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel);
+			await this.setStateAsync('vehicleStatus.battery.charge_limit_fast',
+			newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel);	
+		}
+
 		// Battery
 		await this.setStateAsync('vehicleStatus.dte',newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.totalAvailableRange.value);
 		await this.setStateAsync('vehicleStatus.battery.soc',newStatus.vehicleStatus.evStatus.batteryStatus);
@@ -345,6 +367,31 @@ class Bluelink extends utils.Adapter {
 			native: {},
 		});
 
+		//Charge
+		await this.setObjectNotExistsAsync('vehicleStatus.battery.charge_limit_slow', {
+			type: 'state',
+			common: {
+				name: 'Vehicle charge limit for slow charging',
+				type: 'number',
+				role: 'indicator',
+				read: true,
+				write: false,
+			},
+			native: {},
+		});
+
+		await this.setObjectNotExistsAsync('vehicleStatus.battery.charge_limit_fast', {
+			type: 'state',
+			common: {
+				name: 'Vehicle charge limit for fast charging',
+				type: 'number',
+				role: 'indicator',
+				read: true,
+				write: false,
+			},
+			native: {},
+		});
+
 		//Battery
 		await this.setObjectNotExistsAsync('vehicleStatus.battery.soc', {
 			type: 'state',
@@ -361,7 +408,7 @@ class Bluelink extends utils.Adapter {
 		await this.setObjectNotExistsAsync('vehicleStatus.battery.charge', {
 			type: 'state',
 			common: {
-				name: 'Vehicle bettery State',
+				name: 'Vehicle charging',
 				type: 'boolean',
 				role: 'indicator',
 				read: true,
@@ -373,7 +420,7 @@ class Bluelink extends utils.Adapter {
 		await this.setObjectNotExistsAsync('vehicleStatus.battery.plugin', {
 			type: 'state',
 			common: {
-				name: 'Vehicle bettery State',
+				name: 'Charger connected',
 				type: 'boolean',
 				role: 'indicator',
 				read: true,
