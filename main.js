@@ -188,9 +188,9 @@ class Bluelink extends utils.Adapter {
 		await this.setStateAsync('vehicleStatus.trunkOpen',newStatus.vehicleStatus.trunkOpen);
 		await this.setStateAsync('vehicleStatus.hoodOpen',newStatus.vehicleStatus.hoodOpen);
 		await this.setStateAsync('vehicleStatus.airCtrlOn',newStatus.vehicleStatus.airCtrlOn);
-		await this.setStateAsync('vehicleStatus.dte',newStatus.vehicleStatus.drvDistance.totalAvailableRange.value);
 		
 		// Battery
+		await this.setStateAsync('vehicleStatus.dte',newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.totalAvailableRange.value);
 		await this.setStateAsync('vehicleStatus.battery.soc',newStatus.vehicleStatus.evStatus.batteryStatus);
 		await this.setStateAsync('vehicleStatus.battery.charge',newStatus.vehicleStatus.evStatus.batteryCharge);
 		await this.setStateAsync('vehicleStatus.battery.plugin',newStatus.vehicleStatus.evStatus.batteryPlugin);
