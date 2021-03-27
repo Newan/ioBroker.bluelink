@@ -5,8 +5,6 @@ const kuvork = require('kuvork');
 
 const adapterIntervals = {}; //halten von allen Intervallen
 var request_count = 100; //max api request per Day 
-var password = ''; 
-var pin = ''; 
 var client; 
 var vehicle;
 
@@ -22,6 +20,7 @@ class Bluelink extends utils.Adapter {
 			...options,
 			name: 'bluelink',
 		});
+		
 		this.on('ready', this.onReady.bind(this));
 		this.on('stateChange', this.onStateChange.bind(this));
 		// this.on('objectChange', this.onObjectChange.bind(this));
@@ -43,23 +42,8 @@ class Bluelink extends utils.Adapter {
 		} else if (this.config.username == '' ) {
 			this.log.error("No Username set");
 		} else {
-			//Not crypted are set, st crypted settings
-			this.getForeignObject('system.config', (err, obj) => {
-
-            	if ((obj && obj.native && obj.native.secret) || this.config.client_secret == '') {
-
-					password = decrypt(obj.native.secret, this.config.client_secret);
-					this.log.info("Password decrypted");
-					this.log.debug("Password is:" + password);
-
-					pin = decrypt(obj.native.secret, this.config.client_secret_pin);
-					this.log.info("Pin decrypted");
-					this.log.debug("Pin is:" + pin);
-
-					//Start logic with login
-					this.login()
-				}
-			});
+			//Start logic with login
+			this.login()
 		}
 	}
 
@@ -134,8 +118,8 @@ class Bluelink extends utils.Adapter {
 
 		let tmpConfig = {
 			username: this.config.username,
-			password: password,
-			pin: pin,
+			password: this.config.client_secret,
+			pin: this.config.client_secret_pin,
 			brand: this.config.brand,
 			vin: this.config.vin,
 			region: "EU" //set over GUI next time
