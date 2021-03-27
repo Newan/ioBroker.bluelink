@@ -1,37 +1,45 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "news": {
-      "0.0.1": {
-        "en": "initial release",
-        "de": "Erstveröffentlichung",
-        "ru": "Начальная версия",
-        "pt": "lançamento inicial",
-        "nl": "Eerste uitgave",
-        "fr": "Première version",
-        "it": "Versione iniziale",
-        "es": "Versión inicial",
-        "pl": "Pierwsze wydanie",
-        "zh-cn": "首次出版"
+      "1.0.0": {
+        "en": "First stable version",
+        "de": "Erste stabile Version",
+        "ru": "Первая стабильная версия",
+        "pt": "Primeira versão estável",
+        "nl": "Eerste stabiele versie",
+        "fr": "Première version stable",
+        "it": "Prima versione stabile",
+        "es": "Primera versión estable",
+        "pl": "Pierwsza stabilna wersja",
+        "zh-cn": "第一个稳定版本"
       }
     },
-    "title": "Controll Hyundai (Bluelink) / Kia (UOV) vehicles",
+    "title": "Hyundai (Bluelink) / Kia (UOV)",
     "titleLang": {
-      "en": "bluelink",
-      "de": "Steuern von Hyundai (Bluelink) / Kia (UOV) Fahrzeugen",
-      "ru": "синяя ссылка",
-      "pt": "bluelink",
-      "nl": "bluelink",
-      "fr": "bluelink",
-      "it": "bluelink",
-      "es": "bluelink",
-      "pl": "bluelink",
-      "zh-cn": "蓝线"
+      "en": "Controll Hyundai (Bluelink) / Kia (UOV) vehicles",
+      "de": "Steuern Sie Fahrzeuge von Hyundai (Bluelink) / Kia (UOV)",
+      "ru": "Контрольные автомобили Hyundai (Bluelink) / Kia (UOV)",
+      "pt": "Controlar veículos Hyundai (Bluelink) / Kia (UOV)",
+      "nl": "Controle van Hyundai (Bluelink) / Kia (UOV) voertuigen",
+      "fr": "Contrôler les véhicules Hyundai (Bluelink) / Kia (UOV)",
+      "it": "Controllare i veicoli Hyundai (Bluelink) / Kia (UOV)",
+      "es": "Control de vehículos Hyundai (Bluelink) / Kia (UOV)",
+      "pl": "Kontroluj pojazdy Hyundai (Bluelink) / Kia (UOV)",
+      "zh-cn": "控制现代（Bluelink）/起亚（UOV）车辆"
     },
     "desc": {
       "en": "Adapter to control Hyundai or Kia vehicles",
-      "de": "Adapter zur Steuerung von Hyundai oder Kia Fahrzeugen"
+      "de": "Adapter zur Steuerung von Hyundai- oder Kia-Fahrzeugen",
+      "ru": "Адаптер для управления автомобилями Hyundai или Kia",
+      "pt": "Adaptador para controlar veículos Hyundai ou Kia",
+      "nl": "Adapter om Hyundai- of Kia-voertuigen te besturen",
+      "fr": "Adaptateur pour contrôler les véhicules Hyundai ou Kia",
+      "it": "Adattatore per controllare veicoli Hyundai o Kia",
+      "es": "Adaptador para controlar vehículos Hyundai o Kia",
+      "pl": "Adapter do sterowania pojazdami Hyundai lub Kia",
+      "zh-cn": "控制现代或起亚汽车的适配器"
     },
     "authors": [
       "Newan <info@newan.de>"
