@@ -20,6 +20,10 @@ Adapter to control Hyundai or Kia vehicle
 ### 0.0.1
 * (Newan) initial release
 
+## Donation
+[![](https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L55UBQJKJEUJL)
+
+
 ## License
 MIT License
 
