@@ -188,10 +188,14 @@ class Bluelink extends utils.Adapter {
 		await this.setStateAsync('vehicleStatus.trunkOpen',newStatus.vehicleStatus.trunkOpen);
 		await this.setStateAsync('vehicleStatus.hoodOpen',newStatus.vehicleStatus.hoodOpen);
 		await this.setStateAsync('vehicleStatus.airCtrlOn',newStatus.vehicleStatus.airCtrlOn);
+		await this.setStateAsync('vehicleStatus.dte',newStatus.vehicleStatus.drvDistance.totalAvailableRange.value);
 		
 		// Battery
-		await this.setStateAsync('vehicleStatus.battery.batSoc',newStatus.vehicleStatus.battery.batSoc);
-		await this.setStateAsync('vehicleStatus.battery.batState',newStatus.vehicleStatus.battery.batState);
+		await this.setStateAsync('vehicleStatus.battery.soc',newStatus.vehicleStatus.evStatus.batteryStatus);
+		await this.setStateAsync('vehicleStatus.battery.charge',newStatus.vehicleStatus.evStatus.batteryCharge);
+		await this.setStateAsync('vehicleStatus.battery.plugin',newStatus.vehicleStatus.evStatus.batteryPlugin);
+		await this.setStateAsync('vehicleStatus.battery.soc-12V',newStatus.vehicleStatus.battery.batSoc);
+		await this.setStateAsync('vehicleStatus.battery.state-12V',newStatus.vehicleStatus.battery.batState);
 		
 
 		//Location
@@ -329,8 +333,20 @@ class Bluelink extends utils.Adapter {
 			native: {},
 		});
 
+		await this.setObjectNotExistsAsync('vehicleStatus.dte', {
+			type: 'state',
+			common: {
+				name: 'Vehicle total available range',
+				type: 'number',
+				role: 'indicator',
+				read: true,
+				write: false,
+			},
+			native: {},
+		});
+
 		//Battery
-		await this.setObjectNotExistsAsync('vehicleStatus.battery.batSoc', {
+		await this.setObjectNotExistsAsync('vehicleStatus.battery.soc', {
 			type: 'state',
 			common: {
 				name: 'Vehicle battery state of charge',
@@ -342,11 +358,23 @@ class Bluelink extends utils.Adapter {
 			native: {},
 		});
 
-		await this.setObjectNotExistsAsync('vehicleStatus.battery.batState', {
+		await this.setObjectNotExistsAsync('vehicleStatus.battery.charge', {
 			type: 'state',
 			common: {
 				name: 'Vehicle bettery State',
-				type: 'number',
+				type: 'boolean',
+				role: 'indicator',
+				read: true,
+				write: false,
+			},
+			native: {},
+		});
+
+		await this.setObjectNotExistsAsync('vehicleStatus.battery.plugin', {
+			type: 'state',
+			common: {
+				name: 'Vehicle bettery State',
+				type: 'boolean',
 				role: 'indicator',
 				read: true,
 				write: false,
@@ -354,6 +382,30 @@ class Bluelink extends utils.Adapter {
 			native: {},
 		});
 		
+		await this.setObjectNotExistsAsync('vehicleStatus.battery.soc-12V', {
+			type: 'state',
+			common: {
+				name: 'Vehicle 12v battery state of charge',
+				type: 'number',
+				role: 'indicator',
+				read: true,
+				write: false,
+			},
+			native: {},
+		});
+
+		await this.setObjectNotExistsAsync('vehicleStatus.battery.state-12V', {
+			type: 'state',
+			common: {
+				name: 'Vehicle 12v battery State',
+				type: 'number',
+				role: 'indicator',
+				read: true,
+				write: false,
+			},
+			native: {},
+		});
+
 		//Bereich vehicleLocation
 		await this.setObjectNotExistsAsync('vehicleLocation.lat', {
 			type: 'state',
