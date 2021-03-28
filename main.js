@@ -229,6 +229,10 @@ class Bluelink extends utils.Adapter {
 		await this.setStateAsync('vehicleStatus.battery.soc-12V',newStatus.vehicleStatus.battery.batSoc);
 		await this.setStateAsync('vehicleStatus.battery.state-12V',newStatus.vehicleStatus.battery.batState);
 		
+		//Ladezeit anziegen, da noch nicht kla welche Werte
+		await this.setStateAsync('vehicleStatus.battery.minutes_to_charged',newStatus.vehicleStatus.evStatus.remainTime2.atc.value);
+		this.log.debug("Folgende Ladezeiten mglickieten wurden gefunden:");
+		this.log.debug(JSON.stringify(newStatus.vehicleStatus.evStatus.remainTime2));
 
 		//Location
 		await this.setStateAsync('vehicleLocation.lat',newStatus.vehicleLocation.coord.lat);
@@ -404,6 +408,18 @@ class Bluelink extends utils.Adapter {
 		});
 		this.subscribeStates('vehicleStatus.battery.charge_limit_fast');
 
+		await this.setObjectNotExistsAsync('vehicleStatus.battery.minutes_to_charged', {
+			type: 'state',
+			common: {
+				name: 'Vehicle minutes to charged',
+				type: 'number',
+				role: 'indicator',
+				read: true,
+				write: true,
+			},
+			native: {},
+		});
+		
 		//Battery
 		await this.setObjectNotExistsAsync('vehicleStatus.battery.soc', {
 			type: 'state',
