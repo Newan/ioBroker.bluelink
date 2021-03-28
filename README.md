@@ -17,8 +17,8 @@ Adapter to control Hyundai or Kia vehicle
 
 ## Changelog
 
-### 0.0.1
-* (Newan) initial release
+### 1.0.0
+* (Newan) First stable version
 
 ## Donation
 [![](https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L55UBQJKJEUJL)
