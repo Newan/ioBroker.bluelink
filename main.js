@@ -231,7 +231,7 @@ class Bluelink extends utils.Adapter {
 		
 		//Ladezeit anziegen, da noch nicht kla welche Werte
 		await this.setStateAsync('vehicleStatus.battery.minutes_to_charged',newStatus.vehicleStatus.evStatus.remainTime2.atc.value);
-		this.log.debug("Folgende Ladezeiten mglickieten wurden gefunden:");
+		this.log.debug("Folgende Ladezeiten Moeglichkeiten wurden gefunden:");
 		this.log.debug(JSON.stringify(newStatus.vehicleStatus.evStatus.remainTime2));
 
 		//Location
