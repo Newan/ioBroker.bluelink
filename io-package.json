@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "news": {
+      "1.0.2": {
+        "en": "Add new lib and bug fix for stable repro",
+        "de": "Neue lib hinzugefügt und Fehlerbehebung für stable repro",
+        "ru": "Добавить новую библиотеку и исправить ошибку для стабильного воспроизведения",
+        "pt": "Adicionar nova lib e correção de bug para reprodução estável",
+        "nl": "Voeg nieuwe lib en bugfix toe voor stabiele repro",
+        "fr": "Ajouter une nouvelle bibliothèque et un correctif de bogue pour une reproduction stable",
+        "it": "Aggiunta di una nuova libreria e correzione di bug per la riproduzione stabile",
+        "es": "Agregue una nueva biblioteca y corrección de errores para una reproducción estable",
+        "pl": "Dodaj nową bibliotekę i poprawkę błędów dla stabilnej reprodukcji",
+        "zh-cn": "添加新的库和错误修复程序以实现稳定的再现"
+      },
       "1.0.0": {
         "en": "First stable version",
         "de": "Erste stabile Version",
