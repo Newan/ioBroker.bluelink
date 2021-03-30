@@ -136,44 +136,50 @@ class Bluelink extends utils.Adapter {
 	 * Funktion to login in bluelink / UOV
 	 */
     login() {
-        this.log.info('Login to api');
+        try {
+            this.log.info('Login to api');
 
-        const tmpConfig = {
-            username: this.config.username,
-            password: this.config.client_secret,
-            pin: this.config.client_secret_pin,
-            brand: this.config.brand,
-            vin: this.config.vin,
-            region: 'EU' //set over GUI next time
-        };
+            const tmpConfig = {
+                username: this.config.username,
+                password: this.config.client_secret,
+                pin: this.config.client_secret_pin,
+                brand: this.config.brand,
+                vin: this.config.vin,
+                region: 'EU' //set over GUI next time
+            };
 
-        this.log.debug(JSON.stringify(tmpConfig));
-        // @ts-ignore
-        client = new bluelinky(tmpConfig);
+            this.log.debug(JSON.stringify(tmpConfig));
+            // @ts-ignore
+            client = new bluelinky(tmpConfig);
 
-        client.on('ready', async (vehicles) => {
-            // wir haben eine Verbindung und haben Autos
-            this.log.info('Vehicles found');
+            client.on('ready', async (vehicles) => {
+                // wir haben eine Verbindung und haben Autos
+                this.log.info('Vehicles found');
 
-            /*vehicles.forEach(car => {
-				this.log.debug(JSON.stringify(car));
-			});*/
+                /*vehicles.forEach(car => {
+                    this.log.debug(JSON.stringify(car));
+                });*/
 
-            vehicle = vehicles[0]; //is only one, because vin is in connection set
+                vehicle = vehicles[0]; //is only one, because vin is in connection set
 
-            //set Objects for the vehicle
-            await this.setControlObjects();
-            await this.setStatusObjects();
+                //set Objects for the vehicle
+                await this.setControlObjects();
+                await this.setStatusObjects();
 
-            //start time cycle
-            await this.readStatus();
-        });
+                //start time cycle
+                await this.readStatus();
+            });
 
-        client.on('error', async (err) => {
-            // something went wrong with login
-            this.log.debug('Error on Api login');
-            this.log.error(err);
-        });
+            client.on('error', async (err) => {
+                // something went wrong with login
+                this.log.debug('Error on Api login');
+                this.log.error(err);
+            });
+
+        } catch (error) {
+            this.log.error('Error in login/on function');
+            this.log.error(error.message);
+        }
     }
 
     //read new sates from vehicle
@@ -205,31 +211,48 @@ class Bluelink extends utils.Adapter {
         await this.setStateAsync('vehicleStatus.airCtrlOn',newStatus.vehicleStatus.airCtrlOn);
 
         //Charge
-        if (newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].plugType == 1) {
-            //Slow  = 1  -> Index 0 ist slow
-            await this.setStateAsync('vehicleStatus.battery.charge_limit_slow', { val:
-			newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel, ack: true });
-            slow_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
-            await this.setStateAsync('vehicleStatus.battery.charge_limit_fast', { val:
-			newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel, ack: true });
-            fast_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel;
-        } else {
-            //fast  = 0  -> Index 0 ist fast
-            await this.setStateAsync('vehicleStatus.battery.charge_limit_slow', { val:
-			newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel, ack: true });
-            slow_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel;
-            await this.setStateAsync('vehicleStatus.battery.charge_limit_fast', { val:
-			newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel, ack: true });
-            fast_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
-        }
 
+        //Bei Kia sind die Werte in einer targetSOClist
+        if (newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist != undefined) {
+
+            if (newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].plugType == 1) {
+                //Slow  = 1  -> Index 0 ist slow
+                await this.setStateAsync('vehicleStatus.battery.charge_limit_slow', { val:
+                newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel, ack: true });
+                slow_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
+                await this.setStateAsync('vehicleStatus.battery.charge_limit_fast', { val:
+                newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel, ack: true });
+                fast_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel;
+            } else {
+                //fast  = 0  -> Index 0 ist fast
+                await this.setStateAsync('vehicleStatus.battery.charge_limit_slow', { val:
+                newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel, ack: true });
+                slow_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel;
+                await this.setStateAsync('vehicleStatus.battery.charge_limit_fast', { val:
+                newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel, ack: true });
+                fast_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
+            }
+        } else {
+            //Bei Hyundai sieht es anders aus:
+
+        }
         // Battery
         await this.setStateAsync('vehicleStatus.dte',newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.totalAvailableRange.value);
+        await this.setStateAsync('vehicleStatus.evModeRange',newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.evModeRange.value);
+        if (newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.gasModeRange != undefined) {
+            //Only for PHEV
+            await this.setStateAsync('vehicleStatus.gasModeRange',newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.gasModeRange.value);
+        }
+
         await this.setStateAsync('vehicleStatus.battery.soc',newStatus.vehicleStatus.evStatus.batteryStatus);
         await this.setStateAsync('vehicleStatus.battery.charge',newStatus.vehicleStatus.evStatus.batteryCharge);
         await this.setStateAsync('vehicleStatus.battery.plugin',newStatus.vehicleStatus.evStatus.batteryPlugin);
-        await this.setStateAsync('vehicleStatus.battery.soc-12V',newStatus.vehicleStatus.battery.batSoc);
-        await this.setStateAsync('vehicleStatus.battery.state-12V',newStatus.vehicleStatus.battery.batState);
+        
+        // nur für Kia
+        if(newStatus.vehicleStatus.battery != undefined) {
+            await this.setStateAsync('vehicleStatus.battery.soc-12V',newStatus.vehicleStatus.battery.batSoc);
+            await this.setStateAsync('vehicleStatus.battery.state-12V',newStatus.vehicleStatus.battery.batState);
+        }
 
         //Ladezeit anziegen, da noch nicht kla welche Werte
         await this.setStateAsync('vehicleStatus.battery.minutes_to_charged',newStatus.vehicleStatus.evStatus.remainTime2.atc.value);
@@ -375,6 +398,30 @@ class Bluelink extends utils.Adapter {
             type: 'state',
             common: {
                 name: 'Vehicle total available range',
+                type: 'number',
+                role: 'indicator',
+                read: true,
+                write: false,
+            },
+            native: {},
+        });
+
+        await this.setObjectNotExistsAsync('vehicleStatus.evModeRange', {
+            type: 'state',
+            common: {
+                name: 'Vehicle total available range for ev',
+                type: 'number',
+                role: 'indicator',
+                read: true,
+                write: false,
+            },
+            native: {},
+        });
+
+        await this.setObjectNotExistsAsync('vehicleStatus.gasModeRange', {
+            type: 'state',
+            common: {
+                name: 'Vehicle total available range for gas',
                 type: 'number',
                 role: 'indicator',
                 read: true,

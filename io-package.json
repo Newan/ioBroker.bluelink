@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "news": {
+      "1.0.3": {
+        "en": "Changes for PHEV",
+        "de": "Änderungen für PHEV",
+        "ru": "Изменения для PHEV",
+        "pt": "Mudanças para PHEV",
+        "nl": "Wijzigingen voor PHEV",
+        "fr": "Modifications pour PHEV",
+        "it": "Modifiche per PHEV",
+        "es": "Cambios para PHEV",
+        "pl": "Zmiany dla PHEV",
+        "zh-cn": "PHEV的变化"
+      },
       "1.0.2": {
         "en": "Add new lib and bug fix for stable repro",
         "de": "Neue lib hinzugefügt und Fehlerbehebung für stable repro",
