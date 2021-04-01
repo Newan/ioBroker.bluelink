@@ -22,7 +22,7 @@
         "pt": "Adicionar nova lib e correção de bug para reprodução estável",
         "nl": "Voeg nieuwe lib en bugfix toe voor stabiele repro",
         "fr": "Ajouter une nouvelle bibliothèque et un correctif de bogue pour une reproduction stable",
-        "it": "Aggiunta di una nuova libreria e correzione di bug per la riproduzione stabile",
+        "it": "Aggiunta di una nUVOa libreria e correzione di bug per la riproduzione stabile",
         "es": "Agregue una nueva biblioteca y corrección de errores para una reproducción estable",
         "pl": "Dodaj nową bibliotekę i poprawkę błędów dla stabilnej reprodukcji",
         "zh-cn": "添加新的库和错误修复程序以实现稳定的再现"
@@ -40,18 +40,18 @@
         "zh-cn": "第一个稳定版本"
       }
     },
-    "title": "Hyundai (Bluelink) / Kia (UOV)",
+    "title": "Hyundai (Bluelink) / Kia (UVO)",
     "titleLang": {
-      "en": "Controll Hyundai (Bluelink) / Kia (UOV) vehicles",
-      "de": "Steuern Sie Fahrzeuge von Hyundai (Bluelink) / Kia (UOV)",
-      "ru": "Контрольные автомобили Hyundai (Bluelink) / Kia (UOV)",
-      "pt": "Controlar veículos Hyundai (Bluelink) / Kia (UOV)",
-      "nl": "Controle van Hyundai (Bluelink) / Kia (UOV) voertuigen",
-      "fr": "Contrôler les véhicules Hyundai (Bluelink) / Kia (UOV)",
-      "it": "Controllare i veicoli Hyundai (Bluelink) / Kia (UOV)",
-      "es": "Control de vehículos Hyundai (Bluelink) / Kia (UOV)",
-      "pl": "Kontroluj pojazdy Hyundai (Bluelink) / Kia (UOV)",
-      "zh-cn": "控制现代（Bluelink）/起亚（UOV）车辆"
+      "en": "Controll Hyundai (Bluelink) / Kia (UVO) vehicles",
+      "de": "Steuern Sie Fahrzeuge von Hyundai (Bluelink) / Kia (UVO)",
+      "ru": "Контрольные автомобили Hyundai (Bluelink) / Kia (UVO)",
+      "pt": "Controlar veículos Hyundai (Bluelink) / Kia (UVO)",
+      "nl": "Controle van Hyundai (Bluelink) / Kia (UVO) voertuigen",
+      "fr": "Contrôler les véhicules Hyundai (Bluelink) / Kia (UVO)",
+      "it": "Controllare i veicoli Hyundai (Bluelink) / Kia (UVO)",
+      "es": "Control de vehículos Hyundai (Bluelink) / Kia (UVO)",
+      "pl": "Kontroluj pojazdy Hyundai (Bluelink) / Kia (UVO)",
+      "zh-cn": "控制现代（Bluelink）/起亚（UVO）车辆"
     },
     "desc": {
       "en": "Adapter to control Hyundai or Kia vehicles",

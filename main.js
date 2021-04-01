@@ -133,7 +133,7 @@ class Bluelink extends utils.Adapter {
     }
 
     /**
-	 * Funktion to login in bluelink / UOV
+	 * Funktion to login in bluelink / UVO
 	 */
     login() {
         try {
