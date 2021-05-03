@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "news": {
+      "1.0.4": {
+        "en": "Typo & Errorhandling",
+        "de": "Tippfehler & Fehlerbehandlung",
+        "ru": "Опечатка и обработка ошибок",
+        "pt": "Digitação e tratamento de erros",
+        "nl": "Typefout en foutafhandeling",
+        "fr": "Typo et gestion des erreurs",
+        "it": "Errore di battitura e gestione degli errori",
+        "es": "Error tipográfico y manejo de errores",
+        "pl": "Literówka i obsługa błędów",
+        "zh-cn": "错字和错误处理"        
+      },
       "1.0.3": {
         "en": "Changes for PHEV",
         "de": "Änderungen für PHEV",

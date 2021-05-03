@@ -186,15 +186,20 @@ class Bluelink extends utils.Adapter {
     async readStatus(force=false) {
         this.log.info('Read new status from api');
         //read new verhicle status
-        const newStatus = await vehicle.fullStatus({
-            refresh: true,
-            parsed: true
-        });
+        try {
+            const newStatus = await vehicle.fullStatus({
+                refresh: true,
+                parsed: true
+            });
 
-        //set all values
-        this.log.info('Set new status');
-        this.log.debug(JSON.stringify(newStatus));
-        await this.setNewStatus(newStatus);
+            //set all values
+            this.log.info('Set new status');
+            this.log.debug(JSON.stringify(newStatus));
+            await this.setNewStatus(newStatus);
+        } catch (error) {
+            this.log.error('Error on API-Request GetFullStatus');
+            this.log.debug(error.message);
+        }
 
         //set ne cycle
         if (force) {
@@ -247,7 +252,7 @@ class Bluelink extends utils.Adapter {
         await this.setStateAsync('vehicleStatus.battery.soc',newStatus.vehicleStatus.evStatus.batteryStatus);
         await this.setStateAsync('vehicleStatus.battery.charge',newStatus.vehicleStatus.evStatus.batteryCharge);
         await this.setStateAsync('vehicleStatus.battery.plugin',newStatus.vehicleStatus.evStatus.batteryPlugin);
-        
+
         // nur für Kia
         if(newStatus.vehicleStatus.battery != undefined) {
             await this.setStateAsync('vehicleStatus.battery.soc-12V',newStatus.vehicleStatus.battery.batSoc);
