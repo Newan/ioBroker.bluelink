@@ -4,6 +4,8 @@
 node_modules
 nbproject
 iob_npm.done
+.dev-server
+.vscode
 
 # npm package files
 iobroker.*.tgz
