@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "news": {
+      "1.0.7": {
+        "en": "Fix for KIA Sorento (Diesel)",
+        "de": "Fix für KIA Sorento (Diesel)",
+        "ru": "Исправление для KIA Sorento (Diesel)",
+        "pt": "Correção para KIA Sorento (Diesel)",
+        "nl": "Oplossing voor KIA Sorento (Diesel)",
+        "fr": "Correction pour KIA Sorento (Diesel)",
+        "it": "Correzione per KIA Sorento (Diesel)",
+        "es": "Arreglo para KIA Sorento (Diesel)",
+        "pl": "Poprawka dla KIA Sorento (Diesel)",
+        "zh-cn": "修复起亚索兰托"  
+      },
       "1.0.6": {
         "en": "Fix for server connection",
         "de": "Fix für Serververbindung",

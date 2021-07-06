@@ -218,29 +218,35 @@ class Bluelink extends utils.Adapter {
         //Charge
 
         //Bei Kia sind die Werte in einer targetSOClist
-        if (newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist != undefined) {
+        if (newStatus.vehicleStatus.evStatus != undefined) {
 
-            if (newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].plugType == 1) {
-                //Slow  = 1  -> Index 0 ist slow
-                await this.setStateAsync('vehicleStatus.battery.charge_limit_slow', { val:
-                newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel, ack: true });
-                slow_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
-                await this.setStateAsync('vehicleStatus.battery.charge_limit_fast', { val:
-                newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel, ack: true });
-                fast_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel;
+            if (newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist != undefined) {
+
+                if (newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].plugType == 1) {
+                    //Slow  = 1  -> Index 0 ist slow
+                    await this.setStateAsync('vehicleStatus.battery.charge_limit_slow', { val:
+                    newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel, ack: true });
+                    slow_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
+                    await this.setStateAsync('vehicleStatus.battery.charge_limit_fast', { val:
+                    newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel, ack: true });
+                    fast_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel;
+                } else {
+                    //fast  = 0  -> Index 0 ist fast
+                    await this.setStateAsync('vehicleStatus.battery.charge_limit_slow', { val:
+                    newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel, ack: true });
+                    slow_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel;
+                    await this.setStateAsync('vehicleStatus.battery.charge_limit_fast', { val:
+                    newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel, ack: true });
+                    fast_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
+                }
             } else {
-                //fast  = 0  -> Index 0 ist fast
-                await this.setStateAsync('vehicleStatus.battery.charge_limit_slow', { val:
-                newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel, ack: true });
-                slow_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel;
-                await this.setStateAsync('vehicleStatus.battery.charge_limit_fast', { val:
-                newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel, ack: true });
-                fast_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
+                //Bei Hyundai sieht es anders aus:
+
             }
         } else {
-            //Bei Hyundai sieht es anders aus:
-
+            //Kein Elektromodell, Diesel etc
         }
+
         // Battery
         await this.setStateAsync('vehicleStatus.dte', { val: newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.totalAvailableRange.value, ack: true });
         await this.setStateAsync('vehicleStatus.evModeRange', { val: newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.evModeRange.value, ack: true });
