@@ -17,6 +17,9 @@ Adapter to control Hyundai or Kia vehicle
 
 ## Changelog
 ### 1.0.3
+* (Newan) Fix for server connection
+
+### 1.0.3
 * (Newan) Changes for PHEV
 
 ### 1.0.2

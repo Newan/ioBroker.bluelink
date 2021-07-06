@@ -1,6 +1,6 @@
 {
   "name": "iobroker.bluelink",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Adapter to control Hyundai or Kia vehicle",
   "author": {
     "name": "Newan",
@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@iobroker/adapter-core": "^2.4.0",
-    "bluelinky": "^7.0.1"
+    "bluelinky": "^7.4.0"
   },
   "devDependencies": {
     "@iobroker/testing": "^2.4.4",

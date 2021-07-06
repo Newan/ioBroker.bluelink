@@ -1,8 +1,32 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "news": {
+      "1.0.6": {
+        "en": "Fix for server connection",
+        "de": "Fix für Serververbindung",
+        "ru": "Исправить подключение к серверу",
+        "pt": "Correção para conexão do servidor",
+        "nl": "Oplossing voor serververbinding",
+        "fr": "Correction de la connexion au serveur",
+        "it": "Correzione per la connessione al server",
+        "es": "Arreglo para la conexión del servidor",
+        "pl": "Naprawiono połączenie z serwerem",
+        "zh-cn": "修复服务器连接"
+      },
+      "1.0.5": {
+        "en": "Bug fix",
+        "de": "Fehlerbehebung",
+        "ru": "Исправлена ошибка",
+        "pt": "Correção de bug",
+        "nl": "Bugfix",
+        "fr": "Correction d'un bug",
+        "it": "Risoluzione del problema",
+        "es": "Arreglo del fallo",
+        "pl": "Naprawa błędów",
+        "zh-cn": "错误修复"      
+      },
       "1.0.4": {
         "en": "Typo & Errorhandling",
         "de": "Tippfehler & Fehlerbehandlung",

@@ -210,10 +210,10 @@ class Bluelink extends utils.Adapter {
 
     //Set new values to ioBroker
     async setNewStatus(newStatus) {
-        await this.setStateAsync('vehicleStatus.doorLock',newStatus.vehicleStatus.doorLock);
-        await this.setStateAsync('vehicleStatus.trunkOpen',newStatus.vehicleStatus.trunkOpen);
-        await this.setStateAsync('vehicleStatus.hoodOpen',newStatus.vehicleStatus.hoodOpen);
-        await this.setStateAsync('vehicleStatus.airCtrlOn',newStatus.vehicleStatus.airCtrlOn);
+        await this.setStateAsync('vehicleStatus.doorLock', { val:newStatus.vehicleStatus.doorLock, ack: true });
+        await this.setStateAsync('vehicleStatus.trunkOpen', { val: newStatus.vehicleStatus.trunkOpen, ack: true });
+        await this.setStateAsync('vehicleStatus.hoodOpen', { val: newStatus.vehicleStatus.hoodOpen, ack: true });
+        await this.setStateAsync('vehicleStatus.airCtrlOn', { val: newStatus.vehicleStatus.airCtrlOn, ack: true });
 
         //Charge
 
@@ -242,36 +242,36 @@ class Bluelink extends utils.Adapter {
 
         }
         // Battery
-        await this.setStateAsync('vehicleStatus.dte',newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.totalAvailableRange.value);
-        await this.setStateAsync('vehicleStatus.evModeRange',newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.evModeRange.value);
+        await this.setStateAsync('vehicleStatus.dte', { val: newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.totalAvailableRange.value, ack: true });
+        await this.setStateAsync('vehicleStatus.evModeRange', { val: newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.evModeRange.value, ack: true });
         if (newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.gasModeRange != undefined) {
             //Only for PHEV
-            await this.setStateAsync('vehicleStatus.gasModeRange',newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.gasModeRange.value);
+            await this.setStateAsync('vehicleStatus.gasModeRange', { val: newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.gasModeRange.value, ack: true });
         }
 
-        await this.setStateAsync('vehicleStatus.battery.soc',newStatus.vehicleStatus.evStatus.batteryStatus);
-        await this.setStateAsync('vehicleStatus.battery.charge',newStatus.vehicleStatus.evStatus.batteryCharge);
-        await this.setStateAsync('vehicleStatus.battery.plugin',newStatus.vehicleStatus.evStatus.batteryPlugin);
+        await this.setStateAsync('vehicleStatus.battery.soc', { val: newStatus.vehicleStatus.evStatus.batteryStatus, ack: true });
+        await this.setStateAsync('vehicleStatus.battery.charge', { val: newStatus.vehicleStatus.evStatus.batteryCharge, ack: true });
+        await this.setStateAsync('vehicleStatus.battery.plugin', { val: newStatus.vehicleStatus.evStatus.batteryPlugin, ack: true });
 
         // nur für Kia
         if(newStatus.vehicleStatus.battery != undefined) {
-            await this.setStateAsync('vehicleStatus.battery.soc-12V',newStatus.vehicleStatus.battery.batSoc);
-            await this.setStateAsync('vehicleStatus.battery.state-12V',newStatus.vehicleStatus.battery.batState);
+            await this.setStateAsync('vehicleStatus.battery.soc-12V', { val: newStatus.vehicleStatus.battery.batSoc, ack: true });
+            await this.setStateAsync('vehicleStatus.battery.state-12V', { val: newStatus.vehicleStatus.battery.batState, ack: true });
         }
 
         //Ladezeit anziegen, da noch nicht kla welche Werte
-        await this.setStateAsync('vehicleStatus.battery.minutes_to_charged',newStatus.vehicleStatus.evStatus.remainTime2.atc.value);
+        await this.setStateAsync('vehicleStatus.battery.minutes_to_charged', { val: newStatus.vehicleStatus.evStatus.remainTime2.atc.value, ack: true });
         this.log.debug('Folgende Ladezeiten Moeglichkeiten wurden gefunden:');
         this.log.debug(JSON.stringify(newStatus.vehicleStatus.evStatus.remainTime2));
 
         //Location
-        await this.setStateAsync('vehicleLocation.lat',newStatus.vehicleLocation.coord.lat);
-        await this.setStateAsync('vehicleLocation.lon',newStatus.vehicleLocation.coord.lon);
-        await this.setStateAsync('vehicleLocation.speed',newStatus.vehicleLocation.speed.value);
+        await this.setStateAsync('vehicleLocation.lat', { val: newStatus.vehicleLocation.coord.lat, ack: true });
+        await this.setStateAsync('vehicleLocation.lon', { val: newStatus.vehicleLocation.coord.lon, ack: true });
+        await this.setStateAsync('vehicleLocation.speed', { val: newStatus.vehicleLocation.speed.value, ack: true });
 
         //Odometer
-        await this.setStateAsync('odometer.value', newStatus.odometer.value);
-        await this.setStateAsync('odometer.unit', newStatus.odometer.unit);
+        await this.setStateAsync('odometer.value', { val: newStatus.odometer.value, ack: true });
+        await this.setStateAsync('odometer.unit', { val: newStatus.odometer.unit, ack: true });
     }
 
     /**
