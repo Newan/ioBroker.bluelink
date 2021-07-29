@@ -105,6 +105,14 @@ class Bluelink extends utils.Adapter {
                     //Force refresh for new states
                     this.readStatus(true);
                     break;
+                case 'charge':
+                    this.log.info('Start charging');
+                    response = await vehicle.startCharge();
+                    break;
+                case 'stop_charge':
+                    this.log.info('Stop charging');
+                    response = await vehicle.stopCharge();
+                    break;
                 case 'battery':
                     if (!state.ack) {
                         if (!POSSIBLE_CHARGE_LIMIT_VALUES.includes(state.val)) {
@@ -138,7 +146,7 @@ class Bluelink extends utils.Adapter {
     login() {
         try {
             this.log.info('Login to api');
-
+            this.log.debug(this.config.vin);
             const tmpConfig = {
                 username: this.config.username,
                 password: this.config.client_secret,
@@ -239,25 +247,33 @@ class Bluelink extends utils.Adapter {
                     newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel, ack: true });
                     fast_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
                 }
+
             } else {
                 //Bei Hyundai sieht es anders aus:
 
             }
+
+            //Nur für Elektro Fahrzeuge - Battery
+            await this.setStateAsync('vehicleStatus.dte', { val: newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.totalAvailableRange.value, ack: true });
+            await this.setStateAsync('vehicleStatus.evModeRange', { val: newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.evModeRange.value, ack: true });
+            if (newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.gasModeRange != undefined) {
+                //Only for PHEV
+                await this.setStateAsync('vehicleStatus.gasModeRange', { val: newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.gasModeRange.value, ack: true });
+            }
+
+            await this.setStateAsync('vehicleStatus.battery.soc', { val: newStatus.vehicleStatus.evStatus.batteryStatus, ack: true });
+            await this.setStateAsync('vehicleStatus.battery.charge', { val: newStatus.vehicleStatus.evStatus.batteryCharge, ack: true });
+            await this.setStateAsync('vehicleStatus.battery.plugin', { val: newStatus.vehicleStatus.evStatus.batteryPlugin, ack: true });
+
+            //Ladezeit anzeigen, da noch nicht klar welche Werte
+            await this.setStateAsync('vehicleStatus.battery.minutes_to_charged', { val: newStatus.vehicleStatus.evStatus.remainTime2.atc.value, ack: true });
+            this.log.debug('Folgende Ladezeiten Moeglichkeiten wurden gefunden:');
+            this.log.debug(JSON.stringify(newStatus.vehicleStatus.evStatus.remainTime2));
+
+
         } else {
             //Kein Elektromodell, Diesel etc
         }
-
-        // Battery
-        await this.setStateAsync('vehicleStatus.dte', { val: newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.totalAvailableRange.value, ack: true });
-        await this.setStateAsync('vehicleStatus.evModeRange', { val: newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.evModeRange.value, ack: true });
-        if (newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.gasModeRange != undefined) {
-            //Only for PHEV
-            await this.setStateAsync('vehicleStatus.gasModeRange', { val: newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.gasModeRange.value, ack: true });
-        }
-
-        await this.setStateAsync('vehicleStatus.battery.soc', { val: newStatus.vehicleStatus.evStatus.batteryStatus, ack: true });
-        await this.setStateAsync('vehicleStatus.battery.charge', { val: newStatus.vehicleStatus.evStatus.batteryCharge, ack: true });
-        await this.setStateAsync('vehicleStatus.battery.plugin', { val: newStatus.vehicleStatus.evStatus.batteryPlugin, ack: true });
 
         // nur für Kia
         if(newStatus.vehicleStatus.battery != undefined) {
@@ -265,10 +281,6 @@ class Bluelink extends utils.Adapter {
             await this.setStateAsync('vehicleStatus.battery.state-12V', { val: newStatus.vehicleStatus.battery.batState, ack: true });
         }
 
-        //Ladezeit anziegen, da noch nicht kla welche Werte
-        await this.setStateAsync('vehicleStatus.battery.minutes_to_charged', { val: newStatus.vehicleStatus.evStatus.remainTime2.atc.value, ack: true });
-        this.log.debug('Folgende Ladezeiten Moeglichkeiten wurden gefunden:');
-        this.log.debug(JSON.stringify(newStatus.vehicleStatus.evStatus.remainTime2));
 
         //Location
         await this.setStateAsync('vehicleLocation.lat', { val: newStatus.vehicleLocation.coord.lat, ack: true });
@@ -285,6 +297,31 @@ class Bluelink extends utils.Adapter {
 	 */
 
     async setControlObjects() {
+        await this.setObjectNotExistsAsync('control.charge', {
+            type: 'state',
+            common: {
+                name: 'Start charging',
+                type: 'boolean',
+                role: 'button',
+                read: true,
+                write: true,
+            },
+            native: {},
+        });
+        this.subscribeStates('control.charge');
+
+        await this.setObjectNotExistsAsync('control.charge_stop', {
+            type: 'state',
+            common: {
+                name: 'Stop charging',
+                type: 'boolean',
+                role: 'button',
+                read: true,
+                write: true,
+            },
+            native: {},
+        });
+        this.subscribeStates('control.charge_stop');
 
         await this.setObjectNotExistsAsync('control.lock', {
             type: 'state',
