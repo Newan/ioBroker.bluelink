@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "news": {
+      "1.0.8": {
+        "en": "Add charge start/stop option",
+        "de": "Ladestart/-stopp-Option hinzufügen",
+        "ru": "Добавить опцию запуска / остановки зарядки",
+        "pt": "Adicionar opção de iniciar / parar carga",
+        "nl": "Start/stop-optie voor opladen toevoegen",
+        "fr": "Ajouter une option de démarrage/arrêt de charge",
+        "it": "Aggiungi l'opzione di avvio/arresto della carica",
+        "es": "Agregue la opción de inicio / parada de carga",
+        "pl": "Dodaj opcję rozpoczęcia/zatrzymania ładowania",
+        "zh-cn": "添加充电开始/停止选项"
+      },
       "1.0.7": {
         "en": "Fix for KIA Sorento (Diesel)",
         "de": "Fix für KIA Sorento (Diesel)",
