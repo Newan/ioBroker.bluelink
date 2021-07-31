@@ -283,9 +283,11 @@ class Bluelink extends utils.Adapter {
 
 
         //Location
-        await this.setStateAsync('vehicleLocation.lat', { val: newStatus.vehicleLocation.coord.lat, ack: true });
-        await this.setStateAsync('vehicleLocation.lon', { val: newStatus.vehicleLocation.coord.lon, ack: true });
-        await this.setStateAsync('vehicleLocation.speed', { val: newStatus.vehicleLocation.speed.value, ack: true });
+        if(newStatus.vehicleStatus.coord != undefined) {
+            await this.setStateAsync('vehicleLocation.lat', { val: newStatus.vehicleLocation.coord.lat, ack: true });
+            await this.setStateAsync('vehicleLocation.lon', { val: newStatus.vehicleLocation.coord.lon, ack: true });
+            await this.setStateAsync('vehicleLocation.speed', { val: newStatus.vehicleLocation.speed.value, ack: true });
+        }
 
         //Odometer
         await this.setStateAsync('odometer.value', { val: newStatus.odometer.value, ack: true });

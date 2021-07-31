@@ -1,9 +1,9 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "news": {
-      "1.0.8": {
+      "1.0.9": {
         "en": "Add charge start/stop option",
         "de": "Ladestart/-stopp-Option hinzufügen",
         "ru": "Добавить опцию запуска / остановки зарядки",
