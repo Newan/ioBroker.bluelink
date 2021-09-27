@@ -548,7 +548,7 @@ class Bluelink extends utils.Adapter {
             type: 'state',
             common: {
                 name: 'Charger connected (UNPLUGED = 0, FAST = 1, PORTABLE = 2, STATION = 3)',
-                type: 'boolean',
+                type: 'number',
                 role: 'indicator',
                 read: true,
                 write: false,
