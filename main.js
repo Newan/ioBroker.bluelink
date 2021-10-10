@@ -273,6 +273,8 @@ class Bluelink extends utils.Adapter {
 
         } else {
             //Kein Elektromodell, Diesel etc
+            await this.setStateAsync('vehicleStatus.dte', { val: newStatus.vehicleStatus.dte.value, ack: true });
+
         }
 
         // nur für Kia
