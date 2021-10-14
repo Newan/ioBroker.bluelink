@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "news": {
+      "1.1.1": {
+        "en": "Bug fix vehicle location",
+        "de": "Fehlerbehebung Fahrzeugposition",
+        "ru": "Исправлена ошибка",
+        "pt": "Correção de bug",
+        "nl": "Bugfix",
+        "fr": "Correction d'un bug",
+        "it": "Risoluzione del problema",
+        "es": "Arreglo del fallo",
+        "pl": "Naprawa błędów",
+        "zh-cn": "错误修复"      
+      },
       "1.1.0": {
         "en": "Bug fix",
         "de": "Fehlerbehebung",

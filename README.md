@@ -18,7 +18,7 @@ Adapter to control Hyundai or Kia vehicle
 Discussion: https://forum.iobroker.net/topic/43592/adapter-hyundai-bluelink-oder-kia-uvo
 
 ## Changelog
-### 1.0.9
+### 1.1.1
 * (Newan) Bug fixes vehicle location
 ### 1.0.9
 * (Newan) + (dklinger) Bug fixes
