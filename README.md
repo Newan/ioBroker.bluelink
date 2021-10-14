@@ -19,9 +19,11 @@ Discussion: https://forum.iobroker.net/topic/43592/adapter-hyundai-bluelink-oder
 
 ## Changelog
 ### 1.0.9
+* (Newan) Bug fixes vehicle location
+### 1.0.9
 * (Newan) + (dklinger) Bug fixes
 
-### 1.0.9
+### 1.0.8
 * (Newan)Add charge start/stop option
 
 ### 1.0.7
