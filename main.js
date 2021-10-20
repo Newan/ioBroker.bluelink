@@ -65,8 +65,6 @@ class Bluelink extends utils.Adapter {
     }
 
     async onStateChange(id, state) {
-        this.log.debug(state);
-        this.log.debug(id);
         if (state) {
 
             this.log.debug('New Event for state: ' + JSON.stringify(state));
@@ -118,7 +116,7 @@ class Bluelink extends utils.Adapter {
                         if (!POSSIBLE_CHARGE_LIMIT_VALUES.includes(state.val)) {
                             this.log.error(`Charge target values are limited to ${POSSIBLE_CHARGE_LIMIT_VALUES.join(', ')}`);
                         } else {
-                            this.log.info('Set nee charging options');
+                            this.log.info('Set new charging options');
                             const charge_option = { fast: fast_charging, slow: slow_charging };
                             if(tmpControl[4] == 'charge_limit_fast') {
                                 //set fast charging
@@ -218,10 +216,27 @@ class Bluelink extends utils.Adapter {
 
     //Set new values to ioBroker
     async setNewStatus(newStatus) {
+        //open / door
         await this.setStateAsync('vehicleStatus.doorLock', { val:newStatus.vehicleStatus.doorLock, ack: true });
         await this.setStateAsync('vehicleStatus.trunkOpen', { val: newStatus.vehicleStatus.trunkOpen, ack: true });
         await this.setStateAsync('vehicleStatus.hoodOpen', { val: newStatus.vehicleStatus.hoodOpen, ack: true });
+
+        if (newStatus.vehicleStatus.doorOpen != undefined) {
+            await this.setStateAsync('vehicleStatus.doorOpen.frontLeft', { val: newStatus.vehicleStatus.doorOpen.frontLeft, ack: true });
+            await this.setStateAsync('vehicleStatus.doorOpen.frontRight', { val: newStatus.vehicleStatus.doorOpen.frontRight, ack: true });
+            await this.setStateAsync('vehicleStatus.doorOpen.backLeft', { val: newStatus.vehicleStatus.doorOpen.backLeft, ack: true });
+            await this.setStateAsync('vehicleStatus.doorOpen.backRight', { val: newStatus.vehicleStatus.doorOpen.backRight, ack: true });
+        }
+
+
+        //status parameter
         await this.setStateAsync('vehicleStatus.airCtrlOn', { val: newStatus.vehicleStatus.airCtrlOn, ack: true });
+        await this.setStateAsync('vehicleStatus.smartKeyBatteryWarning', { val: newStatus.vehicleStatus.smartKeyBatteryWarning, ack: true });
+        await this.setStateAsync('vehicleStatus.washerFluidStatus', { val: newStatus.vehicleStatus.washerFluidStatus, ack: true });
+        await this.setStateAsync('vehicleStatus.breakOilStatus', { val: newStatus.vehicleStatus.breakOilStatus, ack: true });
+        await this.setStateAsync('vehicleStatus.steerWheelHeat', { val: newStatus.vehicleStatus.steerWheelHeat, ack: true });
+        await this.setStateAsync('vehicleStatus.sideBackWindowHeat', { val: newStatus.vehicleStatus.sideBackWindowHeat, ack: true });
+
 
         //Charge
 
@@ -434,11 +449,121 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
 
+        //Doors open
+        await this.setObjectNotExistsAsync('vehicleStatus.doorOpen.frontLeft', {
+            type: 'state',
+            common: {
+                name: 'Door open front left open',
+                type: 'number',
+                role: 'indicator',
+                read: true,
+                write: false,
+            },
+            native: {},
+        });
+
+        await this.setObjectNotExistsAsync('vehicleStatus.doorOpen.frontRight', {
+            type: 'state',
+            common: {
+                name: 'Door open front right open',
+                type: 'number',
+                role: 'indicator',
+                read: true,
+                write: false,
+            },
+            native: {},
+        });
+
+        await this.setObjectNotExistsAsync('vehicleStatus.doorOpen.backLeft', {
+            type: 'state',
+            common: {
+                name: 'Door open back left open',
+                type: 'number',
+                role: 'indicator',
+                read: true,
+                write: false,
+            },
+            native: {},
+        });
+
+        await this.setObjectNotExistsAsync('vehicleStatus.doorOpen.backRight', {
+            type: 'state',
+            common: {
+                name: 'Door open back right left open',
+                type: 'number',
+                role: 'indicator',
+                read: true,
+                write: false,
+            },
+            native: {},
+        });
+
         await this.setObjectNotExistsAsync('vehicleStatus.airCtrlOn', {
             type: 'state',
             common: {
                 name: 'Vehicle air control',
                 type: 'boolean',
+                role: 'indicator',
+                read: true,
+                write: false,
+            },
+            native: {},
+        });
+
+
+        await this.setObjectNotExistsAsync('vehicleStatus.smartKeyBatteryWarning', {
+            type: 'state',
+            common: {
+                name: 'Smart key battery Warning',
+                type: 'boolean',
+                role: 'indicator',
+                read: true,
+                write: false,
+            },
+            native: {},
+        });
+
+        await this.setObjectNotExistsAsync('vehicleStatus.washerFluidStatus', {
+            type: 'state',
+            common: {
+                name: 'Washer fluid status',
+                type: 'boolean',
+                role: 'indicator',
+                read: true,
+                write: false,
+            },
+            native: {},
+        });
+
+        await this.setObjectNotExistsAsync('vehicleStatus.breakOilStatus', {
+            type: 'state',
+            common: {
+                name: 'Breal oil status',
+                type: 'boolean',
+                role: 'indicator',
+                read: true,
+                write: false,
+            },
+            native: {},
+        });
+
+        await this.setObjectNotExistsAsync('vehicleStatus.steerWheelHeat', {
+            type: 'state',
+            common: {
+                name: 'Steer wheel heat',
+                type: 'number',
+                role: 'indicator',
+                read: true,
+                write: false,
+            },
+            native: {},
+        });
+
+        await this.setObjectNotExistsAsync('vehicleStatus.sideBackWindowHeat', {
+            type: 'state',
+            common: {
+                name: 'Side back window heat',
+                type: 'number',
                 role: 'indicator',
                 read: true,
                 write: false,
