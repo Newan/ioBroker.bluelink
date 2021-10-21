@@ -1,19 +1,20 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "1.2",
+    "version": "2.0",
     "news": {
-      "1.2": {
-        "en": "Datapoints has changed. Script needs to be adjusted. Multiple car support added no manual VIN input needed. Raw Datapoints from API added.",
-        "de": "DATENPUNKTE HABEN SICHER GEÄNDERT. Skripte müssen angepasst werden. Unterstützung für mehrere Autos hinzugefügt, keine manuelle VIN-Eingabe erforderlich. Rohdatenpunkte von API hinzugefügt.",
-        "ru": "Datapoints изменились. Скрипт нужно настроить. Добавлена поддержка нескольких автомобилей, не требуется ручной ввод VIN. Добавлены необработанные точки данных из API.",
-        "pt": "Os pontos de dados mudaram. O script precisa ser ajustado. Suporte a vários carros adicionado sem entrada de VIN manual necessária. Pontos de dados brutos da API adicionados.",
-        "nl": "Gegevenspunten zijn gewijzigd. Script moet worden aangepast. Ondersteuning voor meerdere auto's toegevoegd, geen handmatige VIN-invoer nodig. Ruwe datapunten van API toegevoegd.",
-        "fr": "Les points de données ont changé. Le script doit être ajusté. Prise en charge de plusieurs voitures ajoutées, aucune entrée manuelle du VIN n'est nécessaire. Points de données bruts de l'API ajoutés.",
-        "it": "I punti dati sono cambiati. La sceneggiatura deve essere aggiustata. Il supporto per più auto non ha aggiunto alcun input VIN manuale necessario. Aggiunti punti dati grezzi dall'API.",
-        "es": "Los puntos de datos han cambiado. Es necesario ajustar el guión. Se agregó soporte para múltiples autos sin necesidad de entrada manual de VIN. Se agregaron puntos de datos sin procesar de la API.",
-        "pl": "Punkty danych uległy zmianie. Skrypt wymaga dostosowania. Obsługa wielu samochodów nie wymaga ręcznego wprowadzania numeru VIN. Dodano surowe punkty danych z API.",
-        "zh-cn": "数据点已更改。脚本需要调整。多车支持无需手动输入 VIN。添加了来自 API 的原始数据点。"
+      "2.0": {
+          "en": "DATA POINTS HAVE CHANGED. Scripts have to be adapted. Added support for multiple cars, no manual VIN entry required. Added raw data points from API and EV Drive History (must be activated in the options).",
+          "de": "DATENPUNKTE SIND GEÄNDERT. Skripte müssen angepasst werden. Unterstützung für mehrere Autos hinzugefügt, keine manuelle VIN-Eingabe erforderlich. Rohdatenpunkte aus API und EV Drive History hinzugefügt (muss in den Optionen aktiviert werden).",
+          "ru": "ТОЧКИ ДАННЫХ ИЗМЕНИЛИСЬ. Скрипты нужно адаптировать. Добавлена поддержка нескольких автомобилей, ручной ввод VIN не требуется. Добавлены точки необработанных данных из API и истории EV Drive (необходимо активировать в настройках).",
+          "pt": "OS PONTOS DE DADOS MUDARAM. Os scripts devem ser adaptados. Adicionado suporte para vários carros, nenhuma entrada manual de VIN necessária. Adicionados pontos de dados brutos de API e EV Drive History (deve ser ativado nas opções).",
+          "nl": "DATA PUNTEN ZIJN GEWIJZIGD. Scripts moeten worden aangepast. Ondersteuning toegevoegd voor meerdere auto's, geen handmatige VIN-invoer vereist. Onbewerkte datapunten toegevoegd uit API en EV Drive History (moet worden geactiveerd in de opties).",
+          "fr": "LES POINTS DE DONNÉES ONT CHANGÉ. Les scripts doivent être adaptés. Ajout de la prise en charge de plusieurs voitures, aucune saisie manuelle du VIN n'est requise. Ajout de points de données brutes de l'API et de l'historique de conduite EV (doit être activé dans les options).",
+          "it": "I PUNTI DATI SONO CAMBIATI. Gli script devono essere adattati. Aggiunto il supporto per più auto, non è richiesta l'immissione manuale del VIN. Aggiunti punti dati grezzi dall'API e dalla cronologia di EV Drive (deve essere attivato nelle opzioni).",
+          "es": "LOS PUNTOS DE DATOS HAN CAMBIADO. Los guiones deben adaptarse. Se agregó soporte para varios autos, no se requiere entrada manual de VIN. Se agregaron puntos de datos sin procesar de API y EV Drive History (debe estar activado en las opciones).",
+          "pl": "ZMIENIŁY SIĘ PUNKTY DANYCH. Skrypty muszą zostać dostosowane. Dodano obsługę wielu samochodów, nie wymaga ręcznego wprowadzania numeru VIN. Dodano surowe punkty danych z API i historii napędu EV (należy aktywować w opcjach).",
+          "zh-cn": "数据点已更改。必须修改脚本。添加了对多辆车的支持，无需手动输入 VIN。添加了来自 API 和 EV Drive History 的原始数据点（必须在选项中激活）。"
+        }
       },
       "1.1.1": {
         "en": "Bug fix vehicle location",

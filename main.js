@@ -33,6 +33,7 @@ class Bluelink extends utils.Adapter {
         this.vehiclesDict = {}
         this.vehicles=  [];
         this.json2iob = new Json2iob(this);
+        this.evHistoryInterval = null;
     }
 
     //Start Adapter
@@ -59,6 +60,7 @@ class Bluelink extends utils.Adapter {
     onUnload(callback) {
         try {
             clearTimeout(adapterIntervals.readAllStates);
+            clearInterval(this.evHistoryInterval);
             this.log.info('Adapter bluelink cleaned up everything...');
             callback();
         } catch (e) {
@@ -192,11 +194,20 @@ class Bluelink extends utils.Adapter {
                         native: {},
                     });
                     this.json2iob.parse(vin + ".general", vehicle.vehicleConfig);
+                    if (this.config.evHistory) {
+                        await this.receiveEVInformation(vehicle, vin);
+                        this.evHistoryInterval = setInterval(() => {
+                            this.receiveEVInformation(vehicle, vin);
+                        }, 24 * 60 * 60 * 1000); //24h
+    
+                    }
                 };
     
 
                 //start time cycle
                 await this.readStatus();
+
+               
             });
 
             client.on('error', async (err) => {
@@ -236,6 +247,8 @@ class Bluelink extends utils.Adapter {
                     native: {},
                 });
                 this.json2iob.parse(vin + ".vehicleStatusRaw", newStatus);
+
+         
             } catch (error) {
                 this.log.error('Error on API-Request GetFullStatus');
                 this.log.debug(error.message);
@@ -247,6 +260,36 @@ class Bluelink extends utils.Adapter {
         }
         adapterIntervals.readAllStates = setTimeout(this.readStatus.bind(this), ((24*60) / request_count) * 60000);
 
+    }
+
+    async receiveEVInformation(vehicle, vin) {
+        const driveHistory = await vehicle.driveHistory();
+        await this.setObjectNotExistsAsync(vin + ".driveHistory", {
+            type: "channel",
+            common: {
+                name: "drive history",
+            },
+            native: {},
+        });
+        this.json2iob.parse(vin + ".driveHistory", driveHistory,{preferedArrayName:"rawDate"});
+        const monthlyReport = await vehicle.monthlyReport();
+        await this.setObjectNotExistsAsync(vin + ".monthlyReport", {
+            type: "channel",
+            common: {
+                name: "monthly report",
+            },
+            native: {},
+        });
+        this.json2iob.parse(vin + ".monthlyReport", monthlyReport);
+        const tripInfo = await vehicle.tripInfo({year: new Date().getFullYear(),month: new Date().getMonth()+1});
+        await this.setObjectNotExistsAsync(vin + ".tripInfo", {
+            type: "channel",
+            common: {
+                name: "trip information",
+            },
+            native: {},
+        });
+        this.json2iob.parse(vin + ".tripInfo", tripInfo);
     }
 
     //Set new values to ioBroker

@@ -133,5 +133,17 @@ systemDictionary = {
         'es': "Si le gusta el adaptador y desea apoyar el desarrollo posterior, puede agradecerme con una donación en <a href='https://www.paypal.com/donate?hosted_button_id=AAFQ3WMM46LT8' target='_blank'>PayPal</a>. También puede enviarme solicitudes de funciones para futuras versiones del adaptador.",
         'pl': "Jeśli podoba Ci się adapter i chcesz wesprzeć dalszy rozwój, możesz mi podziękować darowizną w ramach <a href='https://www.paypal.com/donate?hosted_button_id=AAFQ3WMM46LT8' target='_blank'>PayPal</a>. Zapraszam również do przesyłania mi próśb o funkcje dotyczące przyszłych wersji adaptera.",
         'zh-cn': "如果您喜欢适配器并希望支持进一步的开发，可以在<a href='https://www.paypal.com/donate?hosted_button_id=AAFQ3WMM46LT8' target='_blank'>PayPal</a>下捐款以表示感谢。也欢迎您向我发送有关适配器将来版本的功能请求。"
-    }
+    },
+    "Receive Daily drive History (EV cars only, needs 3 request per day)": {
+        "en": "Receive Daily drive History (EV cars only, needs 3 request per day)",
+        "de": "Fahrverlauf und Tripinfo abrufen. (nur EV-Autos, benötigt 3 Anfragen pro Tag)",
+        "ru": "Получать ежедневную историю вождения (только для электромобилей, требуется 3 запроса в день)",
+        "pt": "Receber histórico de condução diário (carros EV apenas, precisa de 3 solicitações por dia)",
+        "nl": "Dagelijkse rijgeschiedenis ontvangen (alleen EV-auto's, heeft 3 verzoeken per dag nodig)",
+        "fr": "Recevez l'historique de conduite quotidien (voitures EV uniquement, nécessite 3 demandes par jour)",
+        "it": "Ricevi la cronologia di guida giornaliera (solo auto EV, richiede 3 richieste al giorno)",
+        "es": "Reciba el historial de conducción diario (solo vehículos eléctricos, se necesitan 3 solicitudes por día)",
+        "pl": "Otrzymuj historię dziennych przejazdów (tylko samochody elektryczne, wymaga 3 żądań dziennie)",
+        "zh-cn": "接收每日驾驶历史记录（仅限电动汽车，每天需要 3 个请求）"
+      }
 };
