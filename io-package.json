@@ -206,7 +206,8 @@
     "client_secret_pin": "",
     "brand": "K",
     "vin": "",
-    "request": 100
+    "request": 100,
+    "evHistory": true
   },
   "objects": [],
   "instanceObjects": []
