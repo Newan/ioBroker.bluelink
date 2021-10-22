@@ -69,7 +69,7 @@ class Bluelink extends utils.Adapter {
     }
 
     async onStateChange(id, state) {
-        this.log.debug(state);
+        this.log.debug(JSON.stringify(state));
         this.log.debug(id);
         if (state) {
 
@@ -161,7 +161,7 @@ class Bluelink extends utils.Adapter {
                 region: 'EU' //set over GUI next time
             };
 
-            this.log.debug(JSON.stringify(tmpConfig));
+          
             // @ts-ignore
             client = new bluelinky(tmpConfig);
 
@@ -206,6 +206,9 @@ class Bluelink extends utils.Adapter {
 
                 //start time cycle
                 await this.readStatus();
+
+                //clean legacy states
+                this.cleanObjects()
 
                
             });
@@ -263,33 +266,38 @@ class Bluelink extends utils.Adapter {
     }
 
     async receiveEVInformation(vehicle, vin) {
-        const driveHistory = await vehicle.driveHistory();
-        await this.setObjectNotExistsAsync(vin + ".driveHistory", {
-            type: "channel",
-            common: {
-                name: "drive history",
-            },
-            native: {},
-        });
-        this.json2iob.parse(vin + ".driveHistory", driveHistory,{preferedArrayName:"rawDate"});
-        const monthlyReport = await vehicle.monthlyReport();
-        await this.setObjectNotExistsAsync(vin + ".monthlyReport", {
-            type: "channel",
-            common: {
-                name: "monthly report",
-            },
-            native: {},
-        });
-        this.json2iob.parse(vin + ".monthlyReport", monthlyReport);
-        const tripInfo = await vehicle.tripInfo({year: new Date().getFullYear(),month: new Date().getMonth()+1});
-        await this.setObjectNotExistsAsync(vin + ".tripInfo", {
-            type: "channel",
-            common: {
-                name: "trip information",
-            },
-            native: {},
-        });
-        this.json2iob.parse(vin + ".tripInfo", tripInfo);
+        try { 
+            const driveHistory = await vehicle.driveHistory();
+            await this.setObjectNotExistsAsync(vin + ".driveHistory", {
+                type: "channel",
+                common: {
+                    name: "drive history",
+                },
+                native: {},
+            });
+            this.json2iob.parse(vin + ".driveHistory", driveHistory,{preferedArrayName:"rawDate"});
+            const monthlyReport = await vehicle.monthlyReport();
+            await this.setObjectNotExistsAsync(vin + ".monthlyReport", {
+                type: "channel",
+                common: {
+                    name: "monthly report",
+                },
+                native: {},
+            });
+            this.json2iob.parse(vin + ".monthlyReport", monthlyReport);
+            const tripInfo = await vehicle.tripInfo({year: new Date().getFullYear(),month: new Date().getMonth()+1});
+            await this.setObjectNotExistsAsync(vin + ".tripInfo", {
+                type: "channel",
+                common: {
+                    name: "trip information",
+                },
+                native: {},
+            });
+            this.json2iob.parse(vin + ".tripInfo", tripInfo);
+        } catch (error) {
+            this.log.error("EV History fetching failed")
+            this.log.error(error)
+        }
     }
 
     //Set new values to ioBroker
@@ -720,6 +728,20 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
     }
+    async cleanObjects() {
+
+            const controlState = await this.getObjectAsync ("control.charge");
+
+            if (controlState) {
+              
+                await this.delObjectAsync("control", { recursive: true });
+                await this.delObjectAsync("odometer", { recursive: true });
+                await this.delObjectAsync("vehicleLocation", { recursive: true });
+                await this.delObjectAsync("vehicleStatus", { recursive: true });
+      
+            }
+    }
+    
     getCircularReplacer = () => {
         const seen = new WeakSet;
         return (key, value) => {
