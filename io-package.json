@@ -1,9 +1,9 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "2.0",
+    "version": "2.0.0",
     "news": {
-      "2.0": {
+      "2.0.0": {
         "en": "DATA POINTS HAVE CHANGED. Scripts have to be adapted. Added support for multiple cars, no manual VIN entry required. Added raw data points from API and EV Drive History (must be activated in the options).",
         "de": "DATENPUNKTE SIND GEÄNDERT. Skripte müssen angepasst werden. Unterstützung für mehrere Autos hinzugefügt, keine manuelle VIN-Eingabe erforderlich. Rohdatenpunkte aus API und EV Drive History hinzugefügt (muss in den Optionen aktiviert werden).",
         "ru": "ТОЧКИ ДАННЫХ ИЗМЕНИЛИСЬ. Скрипты нужно адаптировать. Добавлена поддержка нескольких автомобилей, ручной ввод VIN не требуется. Добавлены точки необработанных данных из API и истории EV Drive (необходимо активировать в настройках).",
