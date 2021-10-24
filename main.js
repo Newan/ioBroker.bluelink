@@ -72,7 +72,7 @@ class Bluelink extends utils.Adapter {
         this.log.debug(JSON.stringify(state));
         this.log.debug(id);
         if (state) {
-            if (id.indexOf(".control." === -1)) {
+            if (id.indexOf(".control.") === -1) {
                 return
             }
             this.log.debug('New Event for state: ' + JSON.stringify(state));
