@@ -257,7 +257,7 @@ class Bluelink extends utils.Adapter {
     }
 
     async receiveEVInformation(vehicle, vin) {
-        try { 
+        try {
             const driveHistory = await vehicle.driveHistory();
             await this.setObjectNotExistsAsync(vin + '.driveHistory', {
                 type: 'channel',
@@ -366,24 +366,24 @@ class Bluelink extends utils.Adapter {
         await this.setStateAsync(vin + '.odometer.unit', { val: newStatus.odometer.unit, ack: true });
 
         //open / door
-        await this.setStateAsync('vehicleStatus.doorLock', { val:newStatus.vehicleStatus.doorLock, ack: true });
-        await this.setStateAsync('vehicleStatus.trunkOpen', { val: newStatus.vehicleStatus.trunkOpen, ack: true });
-        await this.setStateAsync('vehicleStatus.hoodOpen', { val: newStatus.vehicleStatus.hoodOpen, ack: true });
+        await this.setStateAsync(vin + '.vehicleStatus.doorLock', { val:newStatus.vehicleStatus.doorLock, ack: true });
+        await this.setStateAsync(vin + '.vehicleStatus.trunkOpen', { val: newStatus.vehicleStatus.trunkOpen, ack: true });
+        await this.setStateAsync(vin + '.vehicleStatus.hoodOpen', { val: newStatus.vehicleStatus.hoodOpen, ack: true });
 
         if (newStatus.vehicleStatus.doorOpen != undefined) {
-            await this.setStateAsync('vehicleStatus.doorOpen.frontLeft', { val: newStatus.vehicleStatus.doorOpen.frontLeft, ack: true });
-            await this.setStateAsync('vehicleStatus.doorOpen.frontRight', { val: newStatus.vehicleStatus.doorOpen.frontRight, ack: true });
-            await this.setStateAsync('vehicleStatus.doorOpen.backLeft', { val: newStatus.vehicleStatus.doorOpen.backLeft, ack: true });
-            await this.setStateAsync('vehicleStatus.doorOpen.backRight', { val: newStatus.vehicleStatus.doorOpen.backRight, ack: true });
+            await this.setStateAsync(vin + '.vehicleStatus.doorOpen.frontLeft', { val: newStatus.vehicleStatus.doorOpen.frontLeft, ack: true });
+            await this.setStateAsync(vin + '.vehicleStatus.doorOpen.frontRight', { val: newStatus.vehicleStatus.doorOpen.frontRight, ack: true });
+            await this.setStateAsync(vin + '.vehicleStatus.doorOpen.backLeft', { val: newStatus.vehicleStatus.doorOpen.backLeft, ack: true });
+            await this.setStateAsync(vin + '.vehicleStatus.doorOpen.backRight', { val: newStatus.vehicleStatus.doorOpen.backRight, ack: true });
         }
 
         //status parameter
-        await this.setStateAsync('vehicleStatus.airCtrlOn', { val: newStatus.vehicleStatus.airCtrlOn, ack: true });
-        await this.setStateAsync('vehicleStatus.smartKeyBatteryWarning', { val: newStatus.vehicleStatus.smartKeyBatteryWarning, ack: true });
-        await this.setStateAsync('vehicleStatus.washerFluidStatus', { val: newStatus.vehicleStatus.washerFluidStatus, ack: true });
-        await this.setStateAsync('vehicleStatus.breakOilStatus', { val: newStatus.vehicleStatus.breakOilStatus, ack: true });
-        await this.setStateAsync('vehicleStatus.steerWheelHeat', { val: newStatus.vehicleStatus.steerWheelHeat, ack: true });
-        await this.setStateAsync('vehicleStatus.sideBackWindowHeat', { val: newStatus.vehicleStatus.sideBackWindowHeat, ack: true });
+        await this.setStateAsync(vin + '.vehicleStatus.airCtrlOn', { val: newStatus.vehicleStatus.airCtrlOn, ack: true });
+        await this.setStateAsync(vin + '.vehicleStatus.smartKeyBatteryWarning', { val: newStatus.vehicleStatus.smartKeyBatteryWarning, ack: true });
+        await this.setStateAsync(vin + '.vehicleStatus.washerFluidStatus', { val: newStatus.vehicleStatus.washerFluidStatus, ack: true });
+        await this.setStateAsync(vin + '.vehicleStatus.breakOilStatus', { val: newStatus.vehicleStatus.breakOilStatus, ack: true });
+        await this.setStateAsync(vin + '.vehicleStatus.steerWheelHeat', { val: newStatus.vehicleStatus.steerWheelHeat, ack: true });
+        await this.setStateAsync(vin + '.vehicleStatus.sideBackWindowHeat', { val: newStatus.vehicleStatus.sideBackWindowHeat, ack: true });
     }
 
     /**
@@ -525,7 +525,7 @@ class Bluelink extends utils.Adapter {
         });
 
         //Doors open
-        await this.setObjectNotExistsAsync('vehicleStatus.doorOpen.frontLeft', {
+        await this.setObjectNotExistsAsync(vin + '.vehicleStatus.doorOpen.frontLeft', {
             type: 'state',
             common: {
                 name: 'Door open front left open',
@@ -537,7 +537,7 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
 
-        await this.setObjectNotExistsAsync('vehicleStatus.doorOpen.frontRight', {
+        await this.setObjectNotExistsAsync(vin + '.vehicleStatus.doorOpen.frontRight', {
             type: 'state',
             common: {
                 name: 'Door open front right open',
@@ -549,7 +549,7 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
 
-        await this.setObjectNotExistsAsync('vehicleStatus.doorOpen.backLeft', {
+        await this.setObjectNotExistsAsync(vin + '.vehicleStatus.doorOpen.backLeft', {
             type: 'state',
             common: {
                 name: 'Door open back left open',
@@ -561,7 +561,7 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
 
-        await this.setObjectNotExistsAsync('vehicleStatus.doorOpen.backRight', {
+        await this.setObjectNotExistsAsync(vin + '.vehicleStatus.doorOpen.backRight', {
             type: 'state',
             common: {
                 name: 'Door open back right left open',
@@ -573,7 +573,7 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
 
-        await this.setObjectNotExistsAsync('vehicleStatus.airCtrlOn', {
+        await this.setObjectNotExistsAsync(vin + '.vehicleStatus.airCtrlOn', {
             type: 'state',
             common: {
                 name: 'Vehicle air control',
@@ -586,7 +586,7 @@ class Bluelink extends utils.Adapter {
         });
 
 
-        await this.setObjectNotExistsAsync('vehicleStatus.smartKeyBatteryWarning', {
+        await this.setObjectNotExistsAsync(vin + '.vehicleStatus.smartKeyBatteryWarning', {
             type: 'state',
             common: {
                 name: 'Smart key battery Warning',
@@ -598,7 +598,7 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
 
-        await this.setObjectNotExistsAsync('vehicleStatus.washerFluidStatus', {
+        await this.setObjectNotExistsAsync(vin + '.vehicleStatus.washerFluidStatus', {
             type: 'state',
             common: {
                 name: 'Washer fluid status',
@@ -610,7 +610,7 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
 
-        await this.setObjectNotExistsAsync('vehicleStatus.breakOilStatus', {
+        await this.setObjectNotExistsAsync(vin + '.vehicleStatus.breakOilStatus', {
             type: 'state',
             common: {
                 name: 'Breal oil status',
@@ -622,7 +622,7 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
 
-        await this.setObjectNotExistsAsync('vehicleStatus.steerWheelHeat', {
+        await this.setObjectNotExistsAsync(vin + '.vehicleStatus.steerWheelHeat', {
             type: 'state',
             common: {
                 name: 'Steer wheel heat',
@@ -634,7 +634,7 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
 
-        await this.setObjectNotExistsAsync('vehicleStatus.sideBackWindowHeat', {
+        await this.setObjectNotExistsAsync(vin + '.vehicleStatus.sideBackWindowHeat', {
             type: 'state',
             common: {
                 name: 'Side back window heat',
@@ -646,7 +646,7 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
 
-        await this.setObjectNotExistsAsync('vehicleStatus.dte', {
+        await this.setObjectNotExistsAsync(vin + '.vehicleStatus.dte', {
             type: 'state',
             common: {
                 name: 'Vehicle total available range',
