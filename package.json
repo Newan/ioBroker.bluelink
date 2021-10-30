@@ -1,11 +1,21 @@
 {
   "name": "iobroker.bluelink",
-  "version": "1.1.2",
+  "version": "2.1.0",
   "description": "Adapter to control Hyundai or Kia vehicle",
   "author": {
     "name": "Newan",
     "email": "info@newan.de"
   },
+  "contributors": [
+    {
+      "name": "Newan",
+      "email": "info@newan.de"
+    },
+    {
+      "name": "ta2k",
+      "email": "tombox2020@gmail.com"
+    }
+  ],
   "homepage": "https://github.com/Newan/ioBroker.bluelink",
   "license": "MIT",
   "keywords": [
