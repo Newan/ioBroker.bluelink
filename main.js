@@ -214,7 +214,11 @@ class Bluelink extends utils.Adapter {
 
         } catch (error) {
             this.log.error('Error in login/on function');
-            this.log.error(error.message);
+            if (typeof error === 'string') {
+                this.log.error(error);
+            } else if (error instanceof Error) {
+                this.log.error(error.message);
+            }
         }
     }
 
@@ -245,7 +249,11 @@ class Bluelink extends utils.Adapter {
 
             } catch (error) {
                 this.log.error('Error on API-Request GetFullStatus');
-                this.log.debug(error.message);
+                if (typeof error === 'string') {
+                    this.log.error(error);
+                } else if (error instanceof Error) {
+                    this.log.error(error.message);
+                }
             }
         }
         //set ne cycle
@@ -287,7 +295,12 @@ class Bluelink extends utils.Adapter {
             this.json2iob.parse(vin + '.tripInfo', tripInfo);
         } catch (error) {
             this.log.error('EV History fetching failed');
-            this.log.error(error);        }
+            if (typeof error === 'string') {
+                this.log.error(error);
+            } else if (error instanceof Error) {
+                this.log.error(error.message);
+            }
+        }
     }
 
     //Set new values to ioBroker

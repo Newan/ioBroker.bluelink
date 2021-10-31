@@ -3,6 +3,18 @@
     "name": "bluelink",
     "version": "2.1.0",
     "news": {
+      "2.1.1": {
+        "en": "Update lib bluelinky",
+        "de": "Lib bluelinky aktualisiert",
+        "ru": "Обновить lib bluelinky",
+        "pt": "Atualizar lib bluelinky",
+        "nl": "Update lib bluelinky",
+        "fr": "Mettre à jour la bibliothèque bluelinky",
+        "it": "Aggiorna lib bluelinky",
+        "es": "Actualizar lib bluelinky",
+        "pl": "Zaktualizuj bibliotekę bluelinky",
+        "zh-cn": "更新库 bluelinky"
+      },        
       "2.1.0": {
         "en": "Add Datapoints for doors etc",
         "de": "Datenpunkte für Türen usw. hinzugefügt",
