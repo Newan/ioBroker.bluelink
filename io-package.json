@@ -1,9 +1,9 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "2.1.1",
+    "version": "2.1.2",
     "news": {
-      "2.1.1": {
+      "2.1.2": {
         "en": "Update lib bluelinky",
         "de": "Lib bluelinky aktualisiert",
         "ru": "Обновить lib bluelinky",
@@ -14,7 +14,7 @@
         "es": "Actualizar lib bluelinky",
         "pl": "Zaktualizuj bibliotekę bluelinky",
         "zh-cn": "更新库 bluelinky"
-      },        
+      },
       "2.1.0": {
         "en": "Add Datapoints for doors etc",
         "de": "Datenpunkte für Türen usw. hinzugefügt",
@@ -25,8 +25,8 @@
         "it": "Aggiungi punti dati per porte ecc",
         "es": "Agregue puntos de datos para puertas, etc.",
         "pl": "Dodaj punkty danych dla drzwi itp.",
-        "zh-cn": "为门等添加数据点"      
-      },        
+        "zh-cn": "为门等添加数据点"
+      },
       "2.0.0": {
         "en": "DATA POINTS HAVE CHANGED. Scripts have to be adapted. Added support for multiple cars, no manual VIN entry required. Added raw data points from API and EV Drive History (must be activated in the options).",
         "de": "DATENPUNKTE SIND GEÄNDERT. Skripte müssen angepasst werden. Unterstützung für mehrere Autos hinzugefügt, keine manuelle VIN-Eingabe erforderlich. Rohdatenpunkte aus API und EV Drive History hinzugefügt (muss in den Optionen aktiviert werden).",
@@ -38,7 +38,6 @@
         "es": "LOS PUNTOS DE DATOS HAN CAMBIADO. Los guiones deben adaptarse. Se agregó soporte para varios autos, no se requiere entrada manual de VIN. Se agregaron puntos de datos sin procesar de API y EV Drive History (debe estar activado en las opciones).",
         "pl": "ZMIENIŁY SIĘ PUNKTY DANYCH. Skrypty muszą zostać dostosowane. Dodano obsługę wielu samochodów, nie wymaga ręcznego wprowadzania numeru VIN. Dodano surowe punkty danych z API i historii napędu EV (należy aktywować w opcjach).",
         "zh-cn": "数据点已更改。必须修改脚本。添加了对多辆车的支持，无需手动输入 VIN。添加了来自 API 和 EV Drive History 的原始数据点（必须在选项中激活）。"
-      
       },
       "1.1.1": {
         "en": "Bug fix vehicle location",
@@ -50,7 +49,7 @@
         "it": "Risoluzione del problema",
         "es": "Arreglo del fallo",
         "pl": "Naprawa błędów",
-        "zh-cn": "错误修复"      
+        "zh-cn": "错误修复"
       },
       "1.1.0": {
         "en": "Bug fix",
@@ -62,7 +61,7 @@
         "it": "Risoluzione del problema",
         "es": "Arreglo del fallo",
         "pl": "Naprawa błędów",
-        "zh-cn": "错误修复"      
+        "zh-cn": "错误修复"
       },
       "1.0.9": {
         "en": "Add charge start/stop option",
@@ -86,7 +85,7 @@
         "it": "Correzione per KIA Sorento (Diesel)",
         "es": "Arreglo para KIA Sorento (Diesel)",
         "pl": "Poprawka dla KIA Sorento (Diesel)",
-        "zh-cn": "修复起亚索兰托"  
+        "zh-cn": "修复起亚索兰托"
       },
       "1.0.6": {
         "en": "Fix for server connection",
@@ -110,7 +109,7 @@
         "it": "Risoluzione del problema",
         "es": "Arreglo del fallo",
         "pl": "Naprawa błędów",
-        "zh-cn": "错误修复"      
+        "zh-cn": "错误修复"
       },
       "1.0.4": {
         "en": "Typo & Errorhandling",
@@ -122,7 +121,7 @@
         "it": "Errore di battitura e gestione degli errori",
         "es": "Error tipográfico y manejo de errores",
         "pl": "Literówka i obsługa błędów",
-        "zh-cn": "错字和错误处理"        
+        "zh-cn": "错字和错误处理"
       },
       "1.0.3": {
         "en": "Changes for PHEV",
