@@ -210,6 +210,7 @@ class Bluelink extends utils.Adapter {
                 // something went wrong with login
                 this.log.debug('Error on Api login');
                 this.log.error(err);
+                this.log.error('Please logout in the app and relogin in the app');
             });
 
         } catch (error) {
