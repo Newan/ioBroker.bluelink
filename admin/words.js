@@ -134,27 +134,28 @@ systemDictionary = {
         'pl': "Jeśli podoba Ci się adapter i chcesz wesprzeć dalszy rozwój, możesz mi podziękować darowizną w ramach <a href='https://www.paypal.com/donate?hosted_button_id=AAFQ3WMM46LT8' target='_blank'>PayPal</a>. Zapraszam również do przesyłania mi próśb o funkcje dotyczące przyszłych wersji adaptera.",
         'zh-cn': "如果您喜欢适配器并希望支持进一步的开发，可以在<a href='https://www.paypal.com/donate?hosted_button_id=AAFQ3WMM46LT8' target='_blank'>PayPal</a>下捐款以表示感谢。也欢迎您向我发送有关适配器将来版本的功能请求。"
     },
-    "Receive Daily drive History (EV cars only, needs 3 request per day)": {
-        "en": "Receive Daily drive History (EV cars only, needs 3 request per day)",
-        "de": "Fahrverlauf und Tripinfo abrufen. (nur EV-Autos, benötigt 3 Anfragen pro Tag)",
-        "ru": "Получать ежедневную историю вождения (только для электромобилей, требуется 3 запроса в день)",
-        "pt": "Receber histórico de condução diário (carros EV apenas, precisa de 3 solicitações por dia)",
-        "nl": "Dagelijkse rijgeschiedenis ontvangen (alleen EV-auto's, heeft 3 verzoeken per dag nodig)",
-        "fr": "Recevez l'historique de conduite quotidien (voitures EV uniquement, nécessite 3 demandes par jour)",
-        "it": "Ricevi la cronologia di guida giornaliera (solo auto EV, richiede 3 richieste al giorno)",
-        "es": "Reciba el historial de conducción diario (solo vehículos eléctricos, se necesitan 3 solicitudes por día)",
-        "pl": "Otrzymuj historię dziennych przejazdów (tylko samochody elektryczne, wymaga 3 żądań dziennie)",
-        "zh-cn": "接收每日驾驶历史记录（仅限电动汽车，每天需要 3 个请求）"
-      },
-      "Stop refresh if 12V battery is under 50%": {
-        "en": "Stop refresh if 12V battery is under 50%",
-        "de": "Aktualisierung stoppen, wenn die 12-V-Batterie unter 50% ist",
-        "ru": "Остановите обновление, если батарея 12 В менее 50%",
-        "pt": "Pare a atualização se a bateria de 12 V estiver abaixo de 50%",
-        "nl": "Stop met vernieuwen als de 12V-batterij minder dan 50% is",
-        "fr": "Arrêtez le rafraîchissement si la batterie 12V est inférieure à 50%",
-        "it": "Interrompi l'aggiornamento se la batteria da 12 V è inferiore al 50%",
-        "es": "Detenga la actualización si la batería de 12 V está por debajo del 50%",
-        "pl": "Zatrzymaj odświeżanie, jeśli poziom naładowania akumulatora 12 V spadnie poniżej 50%",
-        "zh-cn": "如果 12V 电池电量低于 50%，则停止刷新"
+    'Receive Daily drive History (EV cars only, needs 3 request per day)': {
+        'en': 'Receive Daily drive History (EV cars only, needs 3 request per day)',
+        'de': 'Fahrverlauf und Tripinfo abrufen. (nur EV-Autos, benötigt 3 Anfragen pro Tag)',
+        'ru': 'Получать ежедневную историю вождения (только для электромобилей, требуется 3 запроса в день)',
+        'pt': 'Receber histórico de condução diário (carros EV apenas, precisa de 3 solicitações por dia)',
+        'nl': "Dagelijkse rijgeschiedenis ontvangen (alleen EV-auto's, heeft 3 verzoeken per dag nodig)",
+        'fr': "Recevez l'historique de conduite quotidien (voitures EV uniquement, nécessite 3 demandes par jour)",
+        'it': 'Ricevi la cronologia di guida giornaliera (solo auto EV, richiede 3 richieste al giorno)',
+        'es': 'Reciba el historial de conducción diario (solo vehículos eléctricos, se necesitan 3 solicitudes por día)',
+        'pl': 'Otrzymuj historię dziennych przejazdów (tylko samochody elektryczne, wymaga 3 żądań dziennie)',
+        'zh-cn': '接收每日驾驶历史记录（仅限电动汽车，每天需要 3 个请求）'
+    },
+    'Stop refresh if 12V battery is under 50%': {
+        'en': 'Stop refresh if 12V battery is under 50%',
+        'de': 'Aktualisierung stoppen, wenn die 12-V-Batterie unter 50% ist',
+        'ru': 'Остановите обновление, если батарея 12 В менее 50%',
+        'pt': 'Pare a atualização se a bateria de 12 V estiver abaixo de 50%',
+        'nl': 'Stop met vernieuwen als de 12V-batterij minder dan 50% is',
+        'fr': 'Arrêtez le rafraîchissement si la batterie 12V est inférieure à 50%',
+        'it': "Interrompi l'aggiornamento se la batteria da 12 V è inferiore al 50%",
+        'es': 'Detenga la actualización si la batería de 12 V está por debajo del 50%',
+        'pl': 'Zatrzymaj odświeżanie, jeśli poziom naładowania akumulatora 12 V spadnie poniżej 50%',
+        'zh-cn': '如果 12V 电池电量低于 50%，则停止刷新'
+    }
 };
