@@ -249,6 +249,7 @@ class Bluelink extends utils.Adapter {
                 await this.setNewStatus(newStatus, vin);
 
                 if (newStatus.vehicleStatus && newStatus.vehicleStatus.battery && newStatus.vehicleStatus.battery.batSoc) {
+                    this.log.debug('Set ' + newStatus.vehicleStatus.battery.batSoc + ' battery state for ' + vin);
                     this.batteryState12V[vin]= newStatus.vehicleStatus.battery.batSoc;
                 }
 
