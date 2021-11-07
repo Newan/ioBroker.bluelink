@@ -145,5 +145,16 @@ systemDictionary = {
         "es": "Reciba el historial de conducción diario (solo vehículos eléctricos, se necesitan 3 solicitudes por día)",
         "pl": "Otrzymuj historię dziennych przejazdów (tylko samochody elektryczne, wymaga 3 żądań dziennie)",
         "zh-cn": "接收每日驾驶历史记录（仅限电动汽车，每天需要 3 个请求）"
-      }
+      },
+      "Stop refresh if 12V battery is under 50%": {
+        "en": "Stop refresh if 12V battery is under 50%",
+        "de": "Aktualisierung stoppen, wenn die 12-V-Batterie unter 50% ist",
+        "ru": "Остановите обновление, если батарея 12 В менее 50%",
+        "pt": "Pare a atualização se a bateria de 12 V estiver abaixo de 50%",
+        "nl": "Stop met vernieuwen als de 12V-batterij minder dan 50% is",
+        "fr": "Arrêtez le rafraîchissement si la batterie 12V est inférieure à 50%",
+        "it": "Interrompi l'aggiornamento se la batteria da 12 V è inferiore al 50%",
+        "es": "Detenga la actualización si la batería de 12 V está por debajo del 50%",
+        "pl": "Zatrzymaj odświeżanie, jeśli poziom naładowania akumulatora 12 V spadnie poniżej 50%",
+        "zh-cn": "如果 12V 电池电量低于 50%，则停止刷新"
 };

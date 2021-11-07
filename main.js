@@ -31,6 +31,7 @@ class Bluelink extends utils.Adapter {
         // this.on('message', this.onMessage.bind(this));
         this.on('unload', this.onUnload.bind(this));
         this.vehiclesDict = {};
+        this.batteryState12V ={};
         this.vehicles=  [];
         this.json2iob = new Json2iob(this);
         adapterIntervals.evHistoryInterval = null;
@@ -229,6 +230,13 @@ class Bluelink extends utils.Adapter {
         for (const vehicle of this.vehicles) {
             const vin =  vehicle.vehicleConfig.vin;
             this.log.debug('Read new status from api for ' + vin);
+            if(this.batteryState12V[vin] && this.batteryState12V[vin] < 50) {
+                this.log.warn('12V Battery state is low: ' + this.batteryState12V[vin] + '%');
+                if(this.config.stopRefreshUnder50 && !force) {
+                    this.log.warn('Auto Refresh is disabled, use force refresh to enable refresh again');
+                    continue;
+                }
+            }
             try {
                 const newStatus = await vehicle.fullStatus({
                     refresh: true,
@@ -239,6 +247,11 @@ class Bluelink extends utils.Adapter {
                 this.log.debug('Set new status for ' + vin);
                 this.log.debug(JSON.stringify(newStatus));
                 await this.setNewStatus(newStatus, vin);
+
+                if (newStatus.vehicleStatus && newStatus.vehicleStatus.battery && newStatus.vehicleStatus.battery.batSoc) {
+                    this.batteryState12V[vin]= newStatus.vehicleStatus.battery.batSoc;
+                }
+
                 await this.setObjectNotExistsAsync(vin + '.vehicleStatusRaw', {
                     type: 'channel',
                     common: {

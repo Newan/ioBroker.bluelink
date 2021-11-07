@@ -1,8 +1,20 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "2.1.2",
+    "version": "2.2.0",
     "news": {
+      "2.2.0": {
+        "en": "Adding refresh stop if 12V battery is under 50%.",
+        "de": "Aktualisierungsstopp hinzufügen, wenn die 12V-Batterie unter 50% ist.",
+        "ru": "Добавление остановки обновления, если батарея 12 В менее 50%.",
+        "pt": "Adicionando parada de atualização se a bateria de 12 V estiver abaixo de 50%.",
+        "nl": "Verversingsstop toevoegen als de 12V-batterij minder dan 50% is.",
+        "fr": "Ajout d'un arrêt de rafraîchissement si la batterie 12V est inférieure à 50%.",
+        "it": "Aggiunta dell'arresto di aggiornamento se la batteria da 12 V è inferiore al 50%.",
+        "es": "Agregar parada de actualización si la batería de 12 V está por debajo del 50%.",
+        "pl": "Dodanie zatrzymania odświeżania, jeśli poziom naładowania akumulatora 12 V jest niższy niż 50%.",
+        "zh-cn": "如果 12V 电池电量低于 50%，则添加刷新停止。"
+      },
       "2.1.2": {
         "en": "Update lib bluelinky",
         "de": "Lib bluelinky aktualisiert",
@@ -229,7 +241,8 @@
     "client_secret_pin": "",
     "brand": "K",
     "request": 100,
-    "evHistory": true
+    "evHistory": true,
+    "stopRefreshUnder50": true
   },
   "objects": [],
   "instanceObjects": []
