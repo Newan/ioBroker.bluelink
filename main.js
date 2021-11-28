@@ -2,7 +2,7 @@
 
 const utils = require('@iobroker/adapter-core');
 const bluelinky = require('bluelinky');
-
+const bluelinkyUtils = require('bluelinky/dist/util');
 const Json2iob = require('./lib/json2iob');
 
 const adapterIntervals = {}; //halten von allen Intervallen
@@ -321,6 +321,7 @@ class Bluelink extends utils.Adapter {
     //Set new values to ioBroker
     async setNewStatus(newStatus, vin) {
         await this.setStateAsync(vin + '.vehicleStatus.airCtrlOn', { val: newStatus.vehicleStatus.airCtrlOn, ack: true });
+        await this.setStateAsync(vin + '.vehicleStatus.airTemp', { val: bluelinkyUtils.tempCodeToCelsius( 'EU', newStatus.vehicleStatus.airTemp.value), ack: true });
 
         //Charge
 
@@ -613,6 +614,17 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
 
+        await this.setObjectNotExistsAsync(vin + '.vehicleStatus.airTemp', {
+            type: 'state',
+            common: {
+                name: 'Vehicle air tempereature',
+                type: 'boolean',
+                role: 'indicator',
+                read: true,
+                write: false,
+            },
+            native: {},
+        });
 
         await this.setObjectNotExistsAsync(vin + '.vehicleStatus.smartKeyBatteryWarning', {
             type: 'state',
