@@ -2,7 +2,6 @@
 
 const utils = require('@iobroker/adapter-core');
 const bluelinky = require('bluelinky');
-const bluelinkyUtils = require('bluelinky/dist/util');
 const Json2iob = require('./lib/json2iob');
 
 const adapterIntervals = {}; //halten von allen Intervallen
@@ -321,7 +320,7 @@ class Bluelink extends utils.Adapter {
     //Set new values to ioBroker
     async setNewStatus(newStatus, vin) {
         await this.setStateAsync(vin + '.vehicleStatus.airCtrlOn', { val: newStatus.vehicleStatus.airCtrlOn, ack: true });
-        await this.setStateAsync(vin + '.vehicleStatus.airTemp', { val: bluelinkyUtils.tempCodeToCelsius( 'EU', newStatus.vehicleStatus.airTemp.value), ack: true });
+        await this.setStateAsync(vin + '.vehicleStatus.airTemp', { val: this.getCelsiusFromTempcode( newStatus.vehicleStatus.airTemp.value), ack: true });
 
         //Charge
 
@@ -907,6 +906,21 @@ class Bluelink extends utils.Adapter {
             }
             return value;
         };
+    }
+
+    getCelsiusFromTempcode(tempCode) {
+        // create a range
+        const tempRange = [];
+        //Range for EU
+        for (let i = 14; i <= 30; i += 0.5) {
+            tempRange.push(i);
+        }
+
+        // get the index
+        const tempIndex = parseInt(tempCode, 16);
+
+        // return the relevant celsius temp
+        return tempRange[tempIndex];
     }
 }
 
