@@ -2,6 +2,7 @@
 
 const utils = require('@iobroker/adapter-core');
 const bluelinky = require('bluelinky');
+//const  { ManagedBluelinkyError }  = require('bluelinky/src/tools/common.tools');
 const Json2iob = require('./lib/json2iob');
 
 const adapterIntervals = {}; //halten von allen Intervallen
@@ -98,7 +99,7 @@ class Bluelink extends utils.Adapter {
                         igniOnDuration: 10,
                         airTempvalue: 70,
                         defrost: false,
-                        heating1: false,
+                        heating: false,
                     });
                     this.log.debug(JSON.stringify(response));
                     break;
@@ -237,32 +238,64 @@ class Bluelink extends utils.Adapter {
                 }
             }
             try {
-                const newStatus = await vehicle.fullStatus({
-                    refresh: true,
-                    parsed: true
-                });
+                let newStatus;
+                try {
+                    newStatus = await vehicle.fullStatus({
+                        refresh: true,
+                        parsed: true
+                    });
 
-                //set all values
-                this.log.debug('Set new status for ' + vin);
-                this.log.debug(JSON.stringify(newStatus));
-                await this.setNewStatus(newStatus, vin);
+                    //set all values
+                    this.log.debug('Set new full status for ' + vin);
+                    this.log.debug(JSON.stringify(newStatus));
+                    await this.setNewFullStatus(newStatus, vin);
 
-                if (newStatus.vehicleStatus && newStatus.vehicleStatus.battery && newStatus.vehicleStatus.battery.batSoc) {
-                    this.log.debug('Set ' + newStatus.vehicleStatus.battery.batSoc + ' battery state for ' + vin);
-                    this.batteryState12V[vin]= newStatus.vehicleStatus.battery.batSoc;
+                    if (newStatus.vehicleStatus && newStatus.vehicleStatus.battery && newStatus.vehicleStatus.battery.batSoc) {
+                        this.log.debug('Set ' + newStatus.vehicleStatus.battery.batSoc + ' battery state for ' + vin);
+                        this.batteryState12V[vin]= newStatus.vehicleStatus.battery.batSoc;
+                    }
+
+                    //Set RAW Data for overview
+                    await this.setObjectNotExistsAsync(vin + '.vehicleStatusRaw', {
+                        type: 'channel',
+                        common: {
+                            name: 'Unformatted vehicle status',
+                        },
+                        native: {},
+                    });
+                    this.json2iob.parse(vin + '.vehicleStatusRaw', newStatus);
+                } catch (error) {
+                    if (typeof error === 'string') {
+                        this.log.error('Error on API-Request GetFullStatus');
+                        this.log.error(error);
+                    //TODO option abfragen
+                    } else {
+                        //if(error.source.statusCode == 503) {
+                        this.log.info('Error on API-Full-Status - Fallback GetNormalStatus');
+
+                        //Abfrage Full hat nicht gekalppt. Haben wir einen Fallback?
+                        newStatus = await vehicle.status({
+                            refresh: true,
+                            parsed: true
+                        });
+                        this.log.debug('Set new small status for ' + vin);
+                        this.log.debug(JSON.stringify(newStatus));
+
+                        await this.setNewStatus(newStatus, vin);
+
+                        if (newStatus.engine && newStatus.engine.batteryCharge12v) {
+                            this.log.debug('Set ' + newStatus.engine.batteryCharge12v + ' battery state for ' + vin);
+                            this.batteryState12V[vin]= newStatus.engine.batteryCharge12v;
+                        }
+
+                    }
+                // }
                 }
 
-                await this.setObjectNotExistsAsync(vin + '.vehicleStatusRaw', {
-                    type: 'channel',
-                    common: {
-                        name: 'Unformatted vehicle status',
-                    },
-                    native: {},
-                });
-                this.json2iob.parse(vin + '.vehicleStatusRaw', newStatus);
+
 
             } catch (error) {
-                this.log.error('Error on API-Request GetFullStatus');
+                this.log.error('Error on API-Request Status');
                 if (typeof error === 'string') {
                     this.log.error(error);
                 } else if (error instanceof Error) {
@@ -317,8 +350,46 @@ class Bluelink extends utils.Adapter {
         }
     }
 
-    //Set new values to ioBroker
+    //Set new values to ioBroker for normal Status
     async setNewStatus(newStatus, vin) {
+
+        //chassis
+        await this.setStateAsync(vin + '.vehicleStatus.doorLock', { val:newStatus.chassis.locked, ack: true });
+        await this.setStateAsync(vin + '.vehicleStatus.trunkOpen', { val: newStatus.chassis.trunkOpen, ack: true });
+        await this.setStateAsync(vin + '.vehicleStatus.hoodOpen', { val: newStatus.chassis.hoodOpen, ack: true });
+
+        //chassis/doors
+        if (newStatus.chassis.openDoors != undefined) {
+            this.log.info('Door status');
+
+            this.log.info(newStatus.chassis.openDoors.backRight);
+            await this.setStateAsync(vin + '.vehicleStatus.doorOpen.frontLeft', { val: newStatus.chassis.openDoors.frontLeft, ack: true });
+            await this.setStateAsync(vin + '.vehicleStatus.doorOpen.frontRight', { val: newStatus.chassis.openDoors.frontRight, ack: true });
+            await this.setStateAsync(vin + '.vehicleStatus.doorOpen.backLeft', { val: newStatus.chassis.openDoors.backLeft, ack: true });
+            await this.setStateAsync(vin + '.vehicleStatus.doorOpen.backRight', { val: newStatus.chassis.openDoors.backRight, ack: true });
+        }
+
+        //chassis/tirePressure
+        if(newStatus.chassis.tirePressureWarningLamp != undefined) {
+            //TODO anlegen der Objekte
+            //await this.setStateAsync(vin + '.vehicleStatus.doorOpen.frontLeft', { val: newStatus.chassis.openDoors.frontLeft, ack: true });
+        }
+
+        //climate
+        await this.setStateAsync(vin + '.vehicleStatus.airCtrlOn', { val: newStatus.climate.active, ack: true });
+        await this.setStateAsync(vin + '.vehicleStatus.airTemp', { val: newStatus.climate.temperatureSetpoint, ack: true });
+        await this.setStateAsync(vin + '.vehicleStatus.steerWheelHeat', { val: newStatus.climate.steeringwheelHeat, ack: true });
+        //await this.setStateAsync(vin + '.vehicleStatus.sideBackWindowHeat', { val: newStatus.climate.sideBackWindowHeat, ack: true });
+
+        //Engine
+        await this.setStateAsync(vin + '.vehicleStatus.battery.soc', { val: newStatus.engine.batteryChargeHV, ack: true });
+        await this.setStateAsync(vin + '.vehicleStatus.battery.charge', { val: newStatus.engine.charging, ack: true });
+
+
+    }
+
+    //Set new values to ioBroker
+    async setNewFullStatus(newStatus, vin) {
         await this.setStateAsync(vin + '.vehicleStatus.airCtrlOn', { val: newStatus.vehicleStatus.airCtrlOn, ack: true });
         await this.setStateAsync(vin + '.vehicleStatus.airTemp', { val: this.getCelsiusFromTempcode( newStatus.vehicleStatus.airTemp.value), ack: true });
 
@@ -557,7 +628,7 @@ class Bluelink extends utils.Adapter {
             type: 'state',
             common: {
                 name: 'Door open front left open',
-                type: 'number',
+                type: 'boolean',
                 role: 'indicator',
                 read: true,
                 write: false,
@@ -569,7 +640,7 @@ class Bluelink extends utils.Adapter {
             type: 'state',
             common: {
                 name: 'Door open front right open',
-                type: 'number',
+                type: 'boolean',
                 role: 'indicator',
                 read: true,
                 write: false,
@@ -581,7 +652,7 @@ class Bluelink extends utils.Adapter {
             type: 'state',
             common: {
                 name: 'Door open back left open',
-                type: 'number',
+                type: 'boolean',
                 role: 'indicator',
                 read: true,
                 write: false,
@@ -593,7 +664,7 @@ class Bluelink extends utils.Adapter {
             type: 'state',
             common: {
                 name: 'Door open back right left open',
-                type: 'number',
+                type: 'boolean',
                 role: 'indicator',
                 read: true,
                 write: false,
@@ -617,7 +688,7 @@ class Bluelink extends utils.Adapter {
             type: 'state',
             common: {
                 name: 'Vehicle air tempereature',
-                type: 'boolean',
+                type: 'number',
                 role: 'indicator',
                 read: true,
                 write: false,
@@ -665,7 +736,7 @@ class Bluelink extends utils.Adapter {
             type: 'state',
             common: {
                 name: 'Steer wheel heat',
-                type: 'number',
+                type: 'boolean',
                 role: 'indicator',
                 read: true,
                 write: false,
