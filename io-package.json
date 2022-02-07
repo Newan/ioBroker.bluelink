@@ -1,12 +1,15 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "2.2.1",
+    "version": "2.2.2",
     "news": {
+      "2.2.2": {
+        "en": "update bluelinky to 7.6.3"
+        "de": "Aktualisierung bluelinky 7.6.3"
+      },
       "2.2.1": {
         "en": "Testrelease for 503 error"
       },
-
       "2.2.0": {
         "en": "Adding refresh stop if 12V battery is under 50%.",
         "de": "Aktualisierungsstopp hinzufügen, wenn die 12V-Batterie unter 50% ist.",
