@@ -314,6 +314,7 @@ class Bluelink extends utils.Adapter {
     async receiveEVInformation(vehicle, vin) {
         try {
             const driveHistory = await vehicle.driveHistory();
+            this.log.debug('driveHistory-Data: ' + JSON.stringify(driveHistory));
             await this.setObjectNotExistsAsync(vin + '.driveHistory', {
                 type: 'channel',
                 common: {
@@ -360,9 +361,6 @@ class Bluelink extends utils.Adapter {
 
         //chassis/doors
         if (newStatus.chassis.openDoors != undefined) {
-            this.log.info('Door status');
-
-            this.log.info(newStatus.chassis.openDoors.backRight);
             await this.setStateAsync(vin + '.vehicleStatus.doorOpen.frontLeft', { val: newStatus.chassis.openDoors.frontLeft, ack: true });
             await this.setStateAsync(vin + '.vehicleStatus.doorOpen.frontRight', { val: newStatus.chassis.openDoors.frontRight, ack: true });
             await this.setStateAsync(vin + '.vehicleStatus.doorOpen.backLeft', { val: newStatus.chassis.openDoors.backLeft, ack: true });
