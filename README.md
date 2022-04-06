@@ -18,6 +18,14 @@ Adapter to control Hyundai or Kia vehicle
 Discussion: https://forum.iobroker.net/topic/43592/adapter-hyundai-bluelink-oder-kia-uvo
 
 ## Changelog
+
+<!--
+  Placeholder for the next version (at the beginning of the line):
+  ### **WORK IN PROGRESS**
+-->
+### **WORK IN PROGRESS**
+Update dependencies
+
 ### 2.2.0
 * (Newan) Test release for 503 Error
 

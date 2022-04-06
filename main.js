@@ -278,7 +278,7 @@ class Bluelink extends utils.Adapter {
                             refresh: true,
                             parsed: true
                         });
-                        this.log.debug('Set new small status for ' + vin);
+                        this.log.debug('Set new GetNormalStatus for ' + vin);
                         this.log.debug(JSON.stringify(newStatus));
 
                         await this.setNewStatus(newStatus, vin);
@@ -382,7 +382,7 @@ class Bluelink extends utils.Adapter {
         //Engine
         await this.setStateAsync(vin + '.vehicleStatus.battery.soc', { val: newStatus.engine.batteryChargeHV, ack: true });
         await this.setStateAsync(vin + '.vehicleStatus.battery.charge', { val: newStatus.engine.charging, ack: true });
-
+        await this.setStateAsync(vin + '.vehicleStatus.battery.soc-12V', { val: newStatus.engine.batteryCharge12v, ack: true });
 
     }
 
