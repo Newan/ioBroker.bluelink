@@ -65,7 +65,7 @@ Discussion: https://forum.iobroker.net/topic/43592/adapter-hyundai-bluelink-oder
 ## License
 MIT License
 
-Copyright (c) 2021 Newan <info@newan.de>
+Copyright (c) 2022 Newan <info@newan.de>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
