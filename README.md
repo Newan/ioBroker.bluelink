@@ -23,7 +23,7 @@ Discussion: https://forum.iobroker.net/topic/43592/adapter-hyundai-bluelink-oder
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
-### **WORK IN PROGRESS**
+### 2.2.3 (2022-04-06)
 Update dependencies
 
 ### 2.2.0
@@ -32,15 +32,9 @@ Update dependencies
 ### 2.2.0
 
 * (TA2k, Newan) Adding refresh stop if 12V battery is under 50%.
-  
+
 ### 2.1.2
 * (TA2k, Newan) Update lib bluelinky
-
-### 2.1
-* (Newan) Add Datapoints for doors etc
- 
-### 2.0
-* (TA2k) DATA POINTS HAVE CHANGED. Scripts have to be adapted. Added support for multiple cars, no manual VIN entry required. Added raw data points from API and EV Drive History (must be activated in the options).
 
 ### 1.1.1
 * (Newan) Bug fixes vehicle location
