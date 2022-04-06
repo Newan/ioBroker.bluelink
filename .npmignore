@@ -1,6 +1,4 @@
-.create-adapter.json
-.gitignore
-.eslintrc.json
+.*
 node_modules/
 nbproject/
 *.code-workspace
@@ -25,3 +23,5 @@ admin/i18n
 
 # maintenance scripts
 maintenance/**
+
+src/
