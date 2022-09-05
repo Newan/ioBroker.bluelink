@@ -191,7 +191,7 @@ class Bluelink extends utils.Adapter {
                         },
                         native: {},
                     });
-                    this.json2iob.parse(vin + '.general', vehicle.vehicleConfig);
+                    await this.json2iob.parse(vin + '.general', vehicle.vehicleConfig);
                     if (this.config.evHistory) {
                         await this.receiveEVInformation(vehicle, vin);
                         adapterIntervals.evHistoryInterval = setInterval(() => {
@@ -261,7 +261,7 @@ class Bluelink extends utils.Adapter {
                         },
                         native: {},
                     });
-                    this.json2iob.parse(vin + '.vehicleStatusRaw', newStatus);
+                    await this.json2iob.parse(vin + '.vehicleStatusRaw', newStatus);
                 } catch (error) {
                     if (typeof error === 'string') {
                         this.log.error('Error on API-Request GetFullStatus');
@@ -323,7 +323,7 @@ class Bluelink extends utils.Adapter {
                 },
                 native: {},
             });
-            this.json2iob.parse(vin + '.driveHistory', driveHistory, { preferedArrayName: 'rawDate' });
+            await this.json2iob.parse(vin + '.driveHistory', driveHistory, { preferedArrayName: 'rawDate' });
             const monthlyReport = await vehicle.monthlyReport();
             await this.setObjectNotExistsAsync(vin + '.monthlyReport', {
                 type: 'channel',
@@ -332,7 +332,7 @@ class Bluelink extends utils.Adapter {
                 },
                 native: {},
             });
-            this.json2iob.parse(vin + '.monthlyReport', monthlyReport);
+            await this.json2iob.parse(vin + '.monthlyReport', monthlyReport);
             const tripInfo = await vehicle.tripInfo({ year: new Date().getFullYear(), month: new Date().getMonth() + 1 });
             await this.setObjectNotExistsAsync(vin + '.tripInfo', {
                 type: 'channel',
@@ -341,7 +341,7 @@ class Bluelink extends utils.Adapter {
                 },
                 native: {},
             });
-            this.json2iob.parse(vin + '.tripInfo', tripInfo);
+            await this.json2iob.parse(vin + '.tripInfo', tripInfo);
         } catch (error) {
             this.log.error('EV History fetching failed');
             if (typeof error === 'string') {
