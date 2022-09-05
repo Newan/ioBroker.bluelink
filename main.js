@@ -117,7 +117,7 @@ class Bluelink extends utils.Adapter {
                     this.log.info('Start charging');
                     response = await vehicle.startCharge();
                     break;
-                case 'stop_charge':
+                case 'charge_stop':
                     this.log.info('Stop charging');
                     response = await vehicle.stopCharge();
                     break;
