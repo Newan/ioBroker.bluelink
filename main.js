@@ -14,10 +14,9 @@ let fast_charging;
 const POSSIBLE_CHARGE_LIMIT_VALUES = [50, 60, 70, 80, 90, 100];
 
 class Bluelink extends utils.Adapter {
-
     /**
-	 * @param {Partial<utils.AdapterOptions>} [options={}]
-	 */
+     * @param {Partial<utils.AdapterOptions>} [options={}]
+     */
     constructor(options) {
         super({
             ...options,
@@ -30,8 +29,8 @@ class Bluelink extends utils.Adapter {
         // this.on('message', this.onMessage.bind(this));
         this.on('unload', this.onUnload.bind(this));
         this.vehiclesDict = {};
-        this.batteryState12V ={};
-        this.vehicles=  [];
+        this.batteryState12V = {};
+        this.vehicles = [];
         this.json2iob = new Json2iob(this);
         adapterIntervals.evHistoryInterval = null;
         this.countError = 0;
@@ -46,7 +45,7 @@ class Bluelink extends utils.Adapter {
             request_count = this.config.request;
         }
 
-        if (this.config.username == '' ) {
+        if (this.config.username == '') {
             this.log.error('No Username set');
         } else {
             //Start logic with login
@@ -55,9 +54,9 @@ class Bluelink extends utils.Adapter {
     }
 
     /**
-	 * Is called when adapter shuts down - callback has to be called under any circumstances!
-	 * @param {() => void} callback
-	 */
+     * Is called when adapter shuts down - callback has to be called under any circumstances!
+     * @param {() => void} callback
+     */
     onUnload(callback) {
         try {
             clearTimeout(adapterIntervals.readAllStates);
@@ -128,7 +127,7 @@ class Bluelink extends utils.Adapter {
                         } else {
                             this.log.info('Set new charging options');
                             const charge_option = { fast: fast_charging, slow: slow_charging };
-                            if(tmpControl[4] == 'charge_limit_fast') {
+                            if (tmpControl[4] == 'charge_limit_fast') {
                                 //set fast charging
                                 this.log.debug('Set fast charging');
                                 charge_option.fast = state.val;
@@ -149,8 +148,8 @@ class Bluelink extends utils.Adapter {
     }
 
     /**
-	 * Funktion to login in bluelink / UVO
-	 */
+     * Funktion to login in bluelink / UVO
+     */
     login() {
         try {
             this.log.info('Login to api');
@@ -159,7 +158,7 @@ class Bluelink extends utils.Adapter {
                 password: this.config.client_secret,
                 pin: this.config.client_secret_pin,
                 brand: this.config.brand,
-                region: 'EU' //set over GUI next time
+                region: 'EU', //set over GUI next time
             };
 
             // @ts-ignore
@@ -168,7 +167,7 @@ class Bluelink extends utils.Adapter {
             client.on('ready', async (vehicles) => {
                 // wir haben eine Verbindung und haben Autos
                 this.log.info(vehicles.length + ' Vehicles found');
-                this.log.debug(JSON.stringify(vehicles,this.getCircularReplacer()));
+                this.log.debug(JSON.stringify(vehicles, this.getCircularReplacer()));
 
                 this.vehicles = vehicles;
                 for (const vehicle of vehicles) {
@@ -213,7 +212,6 @@ class Bluelink extends utils.Adapter {
                 this.log.error(err);
                 this.log.error('Please logout in the app and relogin in the app');
             });
-
         } catch (error) {
             this.log.error('Error in login/on function');
             if (typeof error === 'string') {
@@ -225,14 +223,14 @@ class Bluelink extends utils.Adapter {
     }
 
     //read new sates from vehicle
-    async readStatus(force=false) {
+    async readStatus(force = false) {
         //read new verhicle status
         for (const vehicle of this.vehicles) {
-            const vin =  vehicle.vehicleConfig.vin;
+            const vin = vehicle.vehicleConfig.vin;
             this.log.debug('Read new status from api for ' + vin);
-            if(this.batteryState12V[vin] && this.batteryState12V[vin] < 50) {
+            if (this.batteryState12V[vin] && this.batteryState12V[vin] < 50) {
                 this.log.warn('12V Battery state is low: ' + this.batteryState12V[vin] + '%');
-                if(this.config.stopRefreshUnder50 && !force) {
+                if (this.config.stopRefreshUnder50 && !force) {
                     this.log.warn('Auto Refresh is disabled, use force refresh to enable refresh again');
                     continue;
                 }
@@ -242,7 +240,7 @@ class Bluelink extends utils.Adapter {
                 try {
                     newStatus = await vehicle.fullStatus({
                         refresh: true,
-                        parsed: true
+                        parsed: true,
                     });
 
                     //set all values
@@ -252,7 +250,7 @@ class Bluelink extends utils.Adapter {
 
                     if (newStatus.vehicleStatus && newStatus.vehicleStatus.battery && newStatus.vehicleStatus.battery.batSoc) {
                         this.log.debug('Set ' + newStatus.vehicleStatus.battery.batSoc + ' battery state for ' + vin);
-                        this.batteryState12V[vin]= newStatus.vehicleStatus.battery.batSoc;
+                        this.batteryState12V[vin] = newStatus.vehicleStatus.battery.batSoc;
                     }
 
                     //Set RAW Data for overview
@@ -268,7 +266,7 @@ class Bluelink extends utils.Adapter {
                     if (typeof error === 'string') {
                         this.log.error('Error on API-Request GetFullStatus');
                         this.log.error(error);
-                    //TODO option abfragen
+                        //TODO option abfragen
                     } else {
                         //if(error.source.statusCode == 503) {
                         this.log.info('Error on API-Full-Status - Fallback GetNormalStatus');
@@ -276,7 +274,7 @@ class Bluelink extends utils.Adapter {
                         //Abfrage Full hat nicht gekalppt. Haben wir einen Fallback?
                         newStatus = await vehicle.status({
                             refresh: true,
-                            parsed: true
+                            parsed: true,
                         });
                         this.log.debug('Set new GetNormalStatus for ' + vin);
                         this.log.debug(JSON.stringify(newStatus));
@@ -285,17 +283,16 @@ class Bluelink extends utils.Adapter {
 
                         if (newStatus.engine && newStatus.engine.batteryCharge12v) {
                             this.log.debug('Set ' + newStatus.engine.batteryCharge12v + ' battery state for ' + vin);
-                            this.batteryState12V[vin]= newStatus.engine.batteryCharge12v;
+                            this.batteryState12V[vin] = newStatus.engine.batteryCharge12v;
                         }
                     }
                 }
 
                 //Abfrage war erfolgreich, lösche ErrorCounter
                 this.countError = 0;
-
             } catch (error) {
                 this.countError = this.countError + 1;
-                this.log.error('Error on API-Request Status, ErrorCount:' +  this.countError);
+                this.log.error('Error on API-Request Status, ErrorCount:' + this.countError);
                 if (typeof error === 'string') {
                     this.log.error(error);
                 } else if (error instanceof Error) {
@@ -303,7 +300,7 @@ class Bluelink extends utils.Adapter {
                 }
             }
 
-            if(this.countError > 10) {
+            if (this.countError > 10) {
                 //Error counter over 10 erros, restart Adapter to fix te API Token
                 this.restart();
             }
@@ -312,8 +309,7 @@ class Bluelink extends utils.Adapter {
         if (force) {
             clearTimeout(adapterIntervals.readAllStates);
         }
-        adapterIntervals.readAllStates = setTimeout(this.readStatus.bind(this), ((24*60) / request_count) * 60000);
-
+        adapterIntervals.readAllStates = setTimeout(this.readStatus.bind(this), ((24 * 60) / request_count) * 60000);
     }
 
     async receiveEVInformation(vehicle, vin) {
@@ -327,7 +323,7 @@ class Bluelink extends utils.Adapter {
                 },
                 native: {},
             });
-            this.json2iob.parse(vin + '.driveHistory', driveHistory,{preferedArrayName:'rawDate'});
+            this.json2iob.parse(vin + '.driveHistory', driveHistory, { preferedArrayName: 'rawDate' });
             const monthlyReport = await vehicle.monthlyReport();
             await this.setObjectNotExistsAsync(vin + '.monthlyReport', {
                 type: 'channel',
@@ -337,7 +333,7 @@ class Bluelink extends utils.Adapter {
                 native: {},
             });
             this.json2iob.parse(vin + '.monthlyReport', monthlyReport);
-            const tripInfo = await vehicle.tripInfo({year: new Date().getFullYear(),month: new Date().getMonth()+1});
+            const tripInfo = await vehicle.tripInfo({ year: new Date().getFullYear(), month: new Date().getMonth() + 1 });
             await this.setObjectNotExistsAsync(vin + '.tripInfo', {
                 type: 'channel',
                 common: {
@@ -358,9 +354,8 @@ class Bluelink extends utils.Adapter {
 
     //Set new values to ioBroker for normal Status
     async setNewStatus(newStatus, vin) {
-
         //chassis
-        await this.setStateAsync(vin + '.vehicleStatus.doorLock', { val:newStatus.chassis.locked, ack: true });
+        await this.setStateAsync(vin + '.vehicleStatus.doorLock', { val: newStatus.chassis.locked, ack: true });
         await this.setStateAsync(vin + '.vehicleStatus.trunkOpen', { val: newStatus.chassis.trunkOpen, ack: true });
         await this.setStateAsync(vin + '.vehicleStatus.hoodOpen', { val: newStatus.chassis.hoodOpen, ack: true });
 
@@ -373,7 +368,7 @@ class Bluelink extends utils.Adapter {
         }
 
         //chassis/tirePressure
-        if(newStatus.chassis.tirePressureWarningLamp != undefined) {
+        if (newStatus.chassis.tirePressureWarningLamp != undefined) {
             //TODO anlegen der Objekte
             //await this.setStateAsync(vin + '.vehicleStatus.doorOpen.frontLeft', { val: newStatus.chassis.openDoors.frontLeft, ack: true });
         }
@@ -388,50 +383,65 @@ class Bluelink extends utils.Adapter {
         await this.setStateAsync(vin + '.vehicleStatus.battery.soc', { val: newStatus.engine.batteryChargeHV, ack: true });
         await this.setStateAsync(vin + '.vehicleStatus.battery.charge', { val: newStatus.engine.charging, ack: true });
         await this.setStateAsync(vin + '.vehicleStatus.battery.soc-12V', { val: newStatus.engine.batteryCharge12v, ack: true });
-
     }
 
     //Set new values to ioBroker
     async setNewFullStatus(newStatus, vin) {
         await this.setStateAsync(vin + '.vehicleStatus.airCtrlOn', { val: newStatus.vehicleStatus.airCtrlOn, ack: true });
-        await this.setStateAsync(vin + '.vehicleStatus.airTemp', { val: this.getCelsiusFromTempcode( newStatus.vehicleStatus.airTemp.value), ack: true });
+        await this.setStateAsync(vin + '.vehicleStatus.airTemp', {
+            val: this.getCelsiusFromTempcode(newStatus.vehicleStatus.airTemp.value),
+            ack: true,
+        });
 
         //Charge
 
         //Bei Kia sind die Werte in einer targetSOClist
         if (newStatus.vehicleStatus.evStatus != undefined) {
-
             if (newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist != undefined) {
-
                 if (newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].plugType == 1) {
                     //Slow  = 1  -> Index 0 ist slow
-                    await this.setStateAsync(vin + '.vehicleStatus.battery.charge_limit_slow', { val:
-                    newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel, ack: true });
+                    await this.setStateAsync(vin + '.vehicleStatus.battery.charge_limit_slow', {
+                        val: newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel,
+                        ack: true,
+                    });
                     slow_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
-                    await this.setStateAsync(vin + '.vehicleStatus.battery.charge_limit_fast', { val:
-                    newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel, ack: true });
+                    await this.setStateAsync(vin + '.vehicleStatus.battery.charge_limit_fast', {
+                        val: newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel,
+                        ack: true,
+                    });
                     fast_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel;
                 } else {
                     //fast  = 0  -> Index 0 ist fast
-                    await this.setStateAsync(vin + '.vehicleStatus.battery.charge_limit_slow', { val:
-                    newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel, ack: true });
+                    await this.setStateAsync(vin + '.vehicleStatus.battery.charge_limit_slow', {
+                        val: newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel,
+                        ack: true,
+                    });
                     slow_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel;
-                    await this.setStateAsync(vin + '.vehicleStatus.battery.charge_limit_fast', { val:
-                    newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel, ack: true });
+                    await this.setStateAsync(vin + '.vehicleStatus.battery.charge_limit_fast', {
+                        val: newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel,
+                        ack: true,
+                    });
                     fast_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
                 }
-
             } else {
                 //Bei Hyundai sieht es anders aus:
-
             }
 
             //Nur für Elektro Fahrzeuge - Battery
-            await this.setStateAsync(vin + '.vehicleStatus.dte', { val: newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.totalAvailableRange.value, ack: true });
-            await this.setStateAsync(vin + '.vehicleStatus.evModeRange', { val: newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.evModeRange.value, ack: true });
+            await this.setStateAsync(vin + '.vehicleStatus.dte', {
+                val: newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.totalAvailableRange.value,
+                ack: true,
+            });
+            await this.setStateAsync(vin + '.vehicleStatus.evModeRange', {
+                val: newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.evModeRange.value,
+                ack: true,
+            });
             if (newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.gasModeRange != undefined) {
                 //Only for PHEV
-                await this.setStateAsync(vin + '.vehicleStatus.gasModeRange', { val: newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.gasModeRange.value, ack: true });
+                await this.setStateAsync(vin + '.vehicleStatus.gasModeRange', {
+                    val: newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.gasModeRange.value,
+                    ack: true,
+                });
             }
 
             await this.setStateAsync(vin + '.vehicleStatus.battery.soc', { val: newStatus.vehicleStatus.evStatus.batteryStatus, ack: true });
@@ -439,26 +449,27 @@ class Bluelink extends utils.Adapter {
             await this.setStateAsync(vin + '.vehicleStatus.battery.plugin', { val: newStatus.vehicleStatus.evStatus.batteryPlugin, ack: true });
 
             //Ladezeit anzeigen, da noch nicht klar welche Werte
-            await this.setStateAsync(vin + '.vehicleStatus.battery.minutes_to_charged', { val: newStatus.vehicleStatus.evStatus.remainTime2.atc.value, ack: true });
+            await this.setStateAsync(vin + '.vehicleStatus.battery.minutes_to_charged', {
+                val: newStatus.vehicleStatus.evStatus.remainTime2.atc.value,
+                ack: true,
+            });
             this.log.debug('Folgende Ladezeiten Moeglichkeiten wurden gefunden:');
             this.log.debug(JSON.stringify(newStatus.vehicleStatus.evStatus.remainTime2));
-
-
         } else {
             //Kein Elektromodell, Diesel etc
             await this.setStateAsync(vin + '.vehicleStatus.dte', { val: newStatus.vehicleStatus.dte.value, ack: true });
-
         }
 
         // nur für Kia
-        if(newStatus.vehicleStatus.battery != undefined) {
+        if (newStatus.vehicleStatus.battery != undefined) {
             await this.setStateAsync(vin + '.vehicleStatus.battery.soc-12V', { val: newStatus.vehicleStatus.battery.batSoc, ack: true });
             await this.setStateAsync(vin + '.vehicleStatus.battery.state-12V', { val: newStatus.vehicleStatus.battery.batState, ack: true });
         }
 
         //Location
-        if(newStatus.vehicleLocation != undefined) { //#47 KIA Seed have no vehicleLocation
-            if(newStatus.vehicleLocation.coord != undefined) {
+        if (newStatus.vehicleLocation != undefined) {
+            //#47 KIA Seed have no vehicleLocation
+            if (newStatus.vehicleLocation.coord != undefined) {
                 await this.setStateAsync(vin + '.vehicleLocation.lat', { val: newStatus.vehicleLocation.coord.lat, ack: true });
                 await this.setStateAsync(vin + '.vehicleLocation.lon', { val: newStatus.vehicleLocation.coord.lon, ack: true });
                 await this.setStateAsync(vin + '.vehicleLocation.speed', { val: newStatus.vehicleLocation.speed.value, ack: true });
@@ -470,7 +481,7 @@ class Bluelink extends utils.Adapter {
         await this.setStateAsync(vin + '.odometer.unit', { val: newStatus.odometer.unit, ack: true });
 
         //open / door
-        await this.setStateAsync(vin + '.vehicleStatus.doorLock', { val:newStatus.vehicleStatus.doorLock, ack: true });
+        await this.setStateAsync(vin + '.vehicleStatus.doorLock', { val: newStatus.vehicleStatus.doorLock, ack: true });
         await this.setStateAsync(vin + '.vehicleStatus.trunkOpen', { val: newStatus.vehicleStatus.trunkOpen, ack: true });
         await this.setStateAsync(vin + '.vehicleStatus.hoodOpen', { val: newStatus.vehicleStatus.hoodOpen, ack: true });
 
@@ -491,8 +502,8 @@ class Bluelink extends utils.Adapter {
     }
 
     /**
-	 * Functions to create the ioBroker objects
-	 */
+     * Functions to create the ioBroker objects
+     */
 
     async setControlObjects(vin) {
         await this.setObjectNotExistsAsync(vin + '.control.charge', {
@@ -585,12 +596,9 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
         this.subscribeStates(vin + '.control.force_refresh');
-
     }
 
-
     async setStatusObjects(vin) {
-
         //Bereicht vehicleStatus
         await this.setObjectNotExistsAsync(vin + '.vehicleStatus.doorLock', {
             type: 'state',
@@ -960,8 +968,7 @@ class Bluelink extends utils.Adapter {
         });
     }
     async cleanObjects() {
-
-        const controlState = await this.getObjectAsync ('control.charge');
+        const controlState = await this.getObjectAsync('control.charge');
 
         if (controlState) {
             await this.delObjectAsync('control', { recursive: true });
@@ -972,7 +979,7 @@ class Bluelink extends utils.Adapter {
     }
 
     getCircularReplacer() {
-        const seen = new WeakSet;
+        const seen = new WeakSet();
         return (key, value) => {
             if (typeof value === 'object' && value !== null) {
                 if (seen.has(value)) {
@@ -1003,8 +1010,8 @@ class Bluelink extends utils.Adapter {
 if (require.main !== module) {
     // Export the constructor in compact mode
     /**
-	 * @param {Partial<utils.AdapterOptions>} [options={}]
-	 */
+     * @param {Partial<utils.AdapterOptions>} [options={}]
+     */
     module.exports = (options) => new Bluelink(options);
 } else {
     // otherwise start the instance directly
