@@ -2,7 +2,6 @@
 
 const utils = require('@iobroker/adapter-core');
 const bluelinky = require('bluelinky');
-//const  { ManagedBluelinkyError }  = require('bluelinky/src/tools/common.tools');
 const Json2iob = require('./lib/json2iob');
 
 const adapterIntervals = {}; //halten von allen Intervallen
@@ -35,6 +34,7 @@ class Bluelink extends utils.Adapter {
         this.vehicles=  [];
         this.json2iob = new Json2iob(this);
         adapterIntervals.evHistoryInterval = null;
+        this.countError = 0;
     }
 
     //Start Adapter
@@ -287,20 +287,25 @@ class Bluelink extends utils.Adapter {
                             this.log.debug('Set ' + newStatus.engine.batteryCharge12v + ' battery state for ' + vin);
                             this.batteryState12V[vin]= newStatus.engine.batteryCharge12v;
                         }
-
                     }
-                // }
                 }
 
-
+                //Abfrage war erfolgreich, lösche ErrorCounter
+                this.countError = 0;
 
             } catch (error) {
-                this.log.error('Error on API-Request Status');
+                this.countError = this.countError + 1;
+                this.log.error('Error on API-Request Status, ErrorCount:' +  this.countError);
                 if (typeof error === 'string') {
                     this.log.error(error);
                 } else if (error instanceof Error) {
                     this.log.error(error.message);
                 }
+            }
+
+            if(this.countError > 10) {
+                //Error counter over 10 erros, restart Adapter to fix te API Token
+                this.restart();
             }
         }
         //set ne cycle
