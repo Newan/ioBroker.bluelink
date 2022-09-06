@@ -6,7 +6,6 @@
       "2.2.2": {
         "en": "Update dependencies"
       },
-
       "2.2.1": {
         "en": "Testrelease for 503 error"
       },
@@ -209,10 +208,9 @@
       "TA2k <tombox2020@gmail.de>"
     ],
     "keywords": [
-      "ioBroker",
       "Kia",
       "Hyundai",
-      "home automation"
+      "Bluelink"
     ],
     "license": "MIT",
     "platform": "Javascript/Node.js",
