@@ -19,10 +19,9 @@
   "homepage": "https://github.com/Newan/ioBroker.bluelink",
   "license": "MIT",
   "keywords": [
-    "ioBroker",
-    "template",
-    "Smart Home",
-    "home automation"
+    "bluelink",
+    "hyundai",
+    "kia"
   ],
   "repository": {
     "type": "git",
