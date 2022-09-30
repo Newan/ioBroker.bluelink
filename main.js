@@ -382,6 +382,8 @@ class Bluelink extends utils.Adapter {
         //Engine
         await this.setStateAsync(vin + '.vehicleStatus.battery.soc', { val: newStatus.engine.batteryChargeHV, ack: true });
         await this.setStateAsync(vin + '.vehicleStatus.battery.charge', { val: newStatus.engine.charging, ack: true });
+        
+        this.log.info('LOG soc-12 ' + Vvin + '.vehicleStatus.battery.soc-12V --> ' +  newStatus.engine.batteryCharge12v );
         await this.setStateAsync(vin + '.vehicleStatus.battery.soc-12V', { val: newStatus.engine.batteryCharge12v, ack: true });
     }
 
@@ -461,6 +463,9 @@ class Bluelink extends utils.Adapter {
         }
 
         // nur für Kia
+        
+         this.log.info('LOG2 soc-12 --> ' + JSON.stringify(newStatus.vehicleStatus.battery));
+        
         if (newStatus.vehicleStatus.battery != undefined) {
             await this.setStateAsync(vin + '.vehicleStatus.battery.soc-12V', { val: newStatus.vehicleStatus.battery.batSoc, ack: true });
             await this.setStateAsync(vin + '.vehicleStatus.battery.state-12V', { val: newStatus.vehicleStatus.battery.batState, ack: true });
