@@ -224,6 +224,9 @@ class Bluelink extends utils.Adapter {
 
     //read new sates from vehicle
     async readStatus(force = false) {
+        // last update
+        await this.setStateAsync(`${id}.lastInfoUpdate`, Number(Date.now()), true);
+       
         //read new verhicle status
         for (const vehicle of this.vehicles) {
             const vin = vehicle.vehicleConfig.vin;
@@ -605,6 +608,17 @@ class Bluelink extends utils.Adapter {
     }
 
     async setStatusObjects(vin) {
+        await this.setObjectNotExistsAsync(`${vin}.lastInfoUpdate`, {
+            type: 'state',
+            common: {
+                name: 'Date/Time of last information update',
+                type: 'number',
+                role: 'value.time',
+                read: true,
+                write: false
+            },
+            native: {},
+        });
         //Bereicht vehicleStatus
         await this.setObjectNotExistsAsync(vin + '.vehicleStatus.doorLock', {
             type: 'state',
