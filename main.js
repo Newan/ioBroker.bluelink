@@ -93,12 +93,18 @@ class Bluelink extends utils.Adapter {
                     break;
                 case 'start':
                     this.log.info('Starting clima for vehicle');
+
+                    let airCtrl = await this.getStateAsync(`${vin}.control.airCtrl`);                
+                    let airTemp = await this.getStateAsync(`${vin}.control.airTemp`);
+                    let defrost = await this.getStateAsync(`${vin}.control.defrost`);
+                    let heating = await this.getStateAsync(`${vin}.control.heating`);
+                    
                     response = await vehicle.start({
-                        airCtrl: false,
+                        airCtrl: airCtrl,
                         igniOnDuration: 10,
-                        airTempvalue: 70,
-                        defrost: false,
-                        heating: false,
+                        airTempvalue: airTemp,
+                        defrost: defrost,
+                        heating: heating,
                     });
                     this.log.debug(JSON.stringify(response));
                     break;
@@ -561,7 +567,7 @@ class Bluelink extends utils.Adapter {
         await this.setObjectNotExistsAsync(vin + '.control.start', {
             type: 'state',
             common: {
-                name: 'Start clima fpr the vehicle',
+                name: 'Start clima for the vehicle',
                 type: 'boolean',
                 role: 'button',
                 read: true,
@@ -570,7 +576,59 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
         this.subscribeStates(vin + '.control.start');
+        
+        await this.setObjectNotExistsAsync(vin + '.control.airTemp', {
+            type: 'state',
+            common: {
+                name: 'set air temperature for clima',
+                type: 'number',
+                role: 'value.temperature',
+                read: true,
+                write: true,
+                def: 20,
+            },
+            native: {},
+        });
+        
+        await this.setObjectNotExistsAsync(vin + '.control.defrost', {
+            type: 'state',
+            common: {
+                name: 'set defrost function for clima',
+                type: 'boolean',
+                role: 'state',
+                read: true,
+                write: true,
+                def: false,
+            },
+            native: {},
+        });
 
+        await this.setObjectNotExistsAsync(vin + '.control.heating', {
+            type: 'state',
+            common: {
+                name: 'set heating function for clima',
+                type: 'boolean',
+                role: 'state',
+                read: true,
+                write: true,
+                def: false,
+            },
+            native: {},
+        });
+
+        await this.setObjectNotExistsAsync(vin + '.control.airCtrl', {
+            type: 'state',
+            common: {
+                name: 'set airCtrl function for clima',
+                type: 'boolean',
+                role: 'state',
+                read: true,
+                write: true,
+                def: false,
+            },
+            native: {},
+        });
+        
         await this.setObjectNotExistsAsync(vin + '.control.stop', {
             type: 'state',
             common: {
