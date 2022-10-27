@@ -224,12 +224,12 @@ class Bluelink extends utils.Adapter {
 
     //read new sates from vehicle
     async readStatus(force = false) {
-        // last update
-        await this.setStateAsync(`${id}.lastInfoUpdate`, Number(Date.now()), true);
-       
         //read new verhicle status
         for (const vehicle of this.vehicles) {
             const vin = vehicle.vehicleConfig.vin;
+         // last update
+            await this.setStateAsync(`${vin}.lastInfoUpdate`, Number(Date.now()), true);
+
             this.log.debug('Read new status from api for ' + vin);
             if (this.batteryState12V[vin] && this.batteryState12V[vin] < 50) {
                 this.log.warn('12V Battery state is low: ' + this.batteryState12V[vin] + '%');
