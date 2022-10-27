@@ -311,7 +311,7 @@ class Bluelink extends utils.Adapter {
                 }
             }
 
-            await this.setStateAsync(`${vin}.error_count`, this.countError, true);
+            await this.setStateAsync(`${vin}.error_counter`, this.countError, true);
             
             if (this.countError > 10) {
                 //Error counter over 10 erros, restart Adapter to fix te API Token
@@ -677,10 +677,10 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
      
-        await this.setObjectNotExistsAsync(`${vin}.error_count`, {
+        await this.setObjectNotExistsAsync(`${vin}.error_counter`, {
             type: 'state',
             common: {
-                name: 'error_count',
+                name: 'error_counter',
                 type: 'number',
                 role: 'state',
                 read: true,
