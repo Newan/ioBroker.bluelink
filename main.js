@@ -661,7 +661,8 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
         this.subscribeStates(vin + '.control.force_refresh');
-    
+        
+    async setStatusObjects(vin) {            
         await this.setObjectNotExistsAsync(`${vin}.lastInfoUpdate`, {
             type: 'state',
             common: {
