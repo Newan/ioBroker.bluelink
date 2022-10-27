@@ -299,8 +299,10 @@ class Bluelink extends utils.Adapter {
 
                 //Abfrage war erfolgreich, lösche ErrorCounter
                 this.countError = 0;
+
             } catch (error) {
-                this.countError = this.countError + 1;
+                this.countError += 1;  // add 1
+               
                 this.log.error('Error on API-Request Status, ErrorCount:' + this.countError);
                 if (typeof error === 'string') {
                     this.log.error(error);
@@ -309,6 +311,8 @@ class Bluelink extends utils.Adapter {
                 }
             }
 
+            await this.setStateAsync(`${vin}.error_count`, this.countError, true);
+            
             if (this.countError > 10) {
                 //Error counter over 10 erros, restart Adapter to fix te API Token
                 this.restart();
@@ -668,6 +672,19 @@ class Bluelink extends utils.Adapter {
                 role: 'value.time',
                 read: true,
                 write: false
+            },
+            native: {},
+        });
+        async setStatusObjects(vin) {
+        await this.setObjectNotExistsAsync(`${vin}.error_count`, {
+            type: 'state',
+            common: {
+                name: 'error_count',
+                type: 'number',
+                role: 'state',
+                read: true,
+                write: false,
+                def: 0,
             },
             native: {},
         });
