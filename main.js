@@ -94,10 +94,10 @@ class Bluelink extends utils.Adapter {
                 case 'start':
                     this.log.info('Starting clima for vehicle');
 
-                    let airCtrl = await this.getStateAsync(`${vin}.control.airCtrl`);                
-                    let airTemp = await this.getStateAsync(`${vin}.control.airTemp`);
-                    let defrost = await this.getStateAsync(`${vin}.control.defrost`);
-                    let heating = await this.getStateAsync(`${vin}.control.heating`);
+                    let airCtrl = await this.getStateAsync(`${vin}.control.set.airCtrl`);                
+                    let airTemp = await this.getStateAsync(`${vin}.control.set.airTemp`);
+                    let defrost = await this.getStateAsync(`${vin}.control.set.defrost`);
+                    let heating = await this.getStateAsync(`${vin}.control.set.heating`);
                     
                     response = await vehicle.start({
                         airCtrl: airCtrl,
@@ -584,7 +584,7 @@ class Bluelink extends utils.Adapter {
         });
         this.subscribeStates(vin + '.control.start');
         
-        await this.setObjectNotExistsAsync(vin + '.control.airTemp', {
+        await this.setObjectNotExistsAsync(vin + '.control.set.airTemp', {
             type: 'state',
             common: {
                 name: 'set air temperature for clima',
@@ -597,7 +597,7 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
         
-        await this.setObjectNotExistsAsync(vin + '.control.defrost', {
+        await this.setObjectNotExistsAsync(vin + '.control.set.defrost', {
             type: 'state',
             common: {
                 name: 'set defrost function for clima',
@@ -610,7 +610,7 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
 
-        await this.setObjectNotExistsAsync(vin + '.control.heating', {
+        await this.setObjectNotExistsAsync(vin + '.control.set.heating', {
             type: 'state',
             common: {
                 name: 'set heating function for clima',
@@ -623,7 +623,7 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
 
-        await this.setObjectNotExistsAsync(vin + '.control.airCtrl', {
+        await this.setObjectNotExistsAsync(vin + '.control.set.airCtrl', {
             type: 'state',
             common: {
                 name: 'set airCtrl function for clima',
