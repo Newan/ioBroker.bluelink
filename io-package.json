@@ -247,7 +247,8 @@
     "brand": "K",
     "request": 100,
     "evHistory": true,
-    "stopRefreshUnder50": true
+    "stopRefreshUnder50": true,
+    "errorConter": 5
   },
   "objects": [],
   "instanceObjects": []

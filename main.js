@@ -93,12 +93,18 @@ class Bluelink extends utils.Adapter {
                     break;
                 case 'start':
                     this.log.info('Starting clima for vehicle');
+
+                    let airCtrl = await this.getStateAsync(`${vin}.control.set.airCtrl`);                
+                    let airTemp = await this.getStateAsync(`${vin}.control.set.airTemp`);
+                    let defrost = await this.getStateAsync(`${vin}.control.set.defrost`);
+                    let heating = await this.getStateAsync(`${vin}.control.set.heating`);
+                    
                     response = await vehicle.start({
-                        airCtrl: false,
+                        airCtrl: airCtrl,
                         igniOnDuration: 10,
-                        airTempvalue: 70,
-                        defrost: false,
-                        heating: false,
+                        airTempvalue: airTemp,
+                        defrost: defrost,
+                        heating: heating,
                     });
                     this.log.debug(JSON.stringify(response));
                     break;
@@ -227,6 +233,9 @@ class Bluelink extends utils.Adapter {
         //read new verhicle status
         for (const vehicle of this.vehicles) {
             const vin = vehicle.vehicleConfig.vin;
+         // last update
+            await this.setStateAsync(`${vin}.lastInfoUpdate`, Number(Date.now()), true);
+
             this.log.debug('Read new status from api for ' + vin);
             if (this.batteryState12V[vin] && this.batteryState12V[vin] < 50) {
                 this.log.warn('12V Battery state is low: ' + this.batteryState12V[vin] + '%');
@@ -290,8 +299,10 @@ class Bluelink extends utils.Adapter {
 
                 //Abfrage war erfolgreich, lösche ErrorCounter
                 this.countError = 0;
+
             } catch (error) {
-                this.countError = this.countError + 1;
+                this.countError += 1;  // add 1
+               
                 this.log.error('Error on API-Request Status, ErrorCount:' + this.countError);
                 if (typeof error === 'string') {
                     this.log.error(error);
@@ -300,8 +311,10 @@ class Bluelink extends utils.Adapter {
                 }
             }
 
-            if (this.countError > 10) {
-                //Error counter over 10 erros, restart Adapter to fix te API Token
+            await this.setStateAsync(`${vin}.error_counter`, this.countError, true);
+            
+            if (this.countError > this.config.errorCounter) {
+                //Error counter over x erros, restart Adapter to fix te API Token
                 this.restart();
             }
         }
@@ -381,7 +394,7 @@ class Bluelink extends utils.Adapter {
 
         //Engine
         await this.setStateAsync(vin + '.vehicleStatus.battery.soc', { val: newStatus.engine.batteryChargeHV, ack: true });
-        await this.setStateAsync(vin + '.vehicleStatus.battery.charge', { val: newStatus.engine.charging, ack: true });
+        await this.setStateAsync(vin + '.vehicleStatus.battery.charge', { val: newStatus.engine.charging, ack: true });       
         await this.setStateAsync(vin + '.vehicleStatus.battery.soc-12V', { val: newStatus.engine.batteryCharge12v, ack: true });
     }
 
@@ -460,7 +473,7 @@ class Bluelink extends utils.Adapter {
             await this.setStateAsync(vin + '.vehicleStatus.dte', { val: newStatus.vehicleStatus.dte.value, ack: true });
         }
 
-        // nur für Kia
+        // nur für Kia              
         if (newStatus.vehicleStatus.battery != undefined) {
             await this.setStateAsync(vin + '.vehicleStatus.battery.soc-12V', { val: newStatus.vehicleStatus.battery.batSoc, ack: true });
             await this.setStateAsync(vin + '.vehicleStatus.battery.state-12V', { val: newStatus.vehicleStatus.battery.batState, ack: true });
@@ -561,7 +574,7 @@ class Bluelink extends utils.Adapter {
         await this.setObjectNotExistsAsync(vin + '.control.start', {
             type: 'state',
             common: {
-                name: 'Start clima fpr the vehicle',
+                name: 'Start clima for the vehicle',
                 type: 'boolean',
                 role: 'button',
                 read: true,
@@ -570,7 +583,59 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
         this.subscribeStates(vin + '.control.start');
+        
+        await this.setObjectNotExistsAsync(vin + '.control.set.airTemp', {
+            type: 'state',
+            common: {
+                name: 'set air temperature for clima',
+                type: 'number',
+                role: 'value.temperature',
+                read: true,
+                write: true,
+                def: 20,
+            },
+            native: {},
+        });
+        
+        await this.setObjectNotExistsAsync(vin + '.control.set.defrost', {
+            type: 'state',
+            common: {
+                name: 'set defrost function for clima',
+                type: 'boolean',
+                role: 'state',
+                read: true,
+                write: true,
+                def: false,
+            },
+            native: {},
+        });
 
+        await this.setObjectNotExistsAsync(vin + '.control.set.heating', {
+            type: 'state',
+            common: {
+                name: 'set heating function for clima',
+                type: 'boolean',
+                role: 'state',
+                read: true,
+                write: true,
+                def: false,
+            },
+            native: {},
+        });
+
+        await this.setObjectNotExistsAsync(vin + '.control.set.airCtrl', {
+            type: 'state',
+            common: {
+                name: 'set airCtrl function for clima',
+                type: 'boolean',
+                role: 'state',
+                read: true,
+                write: true,
+                def: false,
+            },
+            native: {},
+        });
+        
         await this.setObjectNotExistsAsync(vin + '.control.stop', {
             type: 'state',
             common: {
@@ -596,9 +661,34 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
         this.subscribeStates(vin + '.control.force_refresh');
-    }
+        
+   }
 
-    async setStatusObjects(vin) {
+   async setStatusObjects(vin) {          
+        await this.setObjectNotExistsAsync(`${vin}.lastInfoUpdate`, {
+            type: 'state',
+            common: {
+                name: 'Date/Time of last information update',
+                type: 'number',
+                role: 'value.time',
+                read: true,
+                write: false
+            },
+            native: {},
+        });
+     
+        await this.setObjectNotExistsAsync(`${vin}.error_counter`, {
+            type: 'state',
+            common: {
+                name: 'error_counter',
+                type: 'number',
+                role: 'state',
+                read: true,
+                write: false,
+                def: 0,
+            },
+            native: {},
+        });
         //Bereicht vehicleStatus
         await this.setObjectNotExistsAsync(vin + '.vehicleStatus.doorLock', {
             type: 'state',
