@@ -3,6 +3,9 @@
     "name": "bluelink",
     "version": "2.2.3",
     "news": {
+      "2.2.4": {
+        "en":"Fix and extend clima & errorcounter"
+      },
       "2.2.2": {
         "en": "Update dependencies"
       },
