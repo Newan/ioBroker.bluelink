@@ -23,8 +23,11 @@ Discussion: https://forum.iobroker.net/topic/43592/adapter-hyundai-bluelink-oder
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
+### **WORK IN PROGRESS**
+* (arteck) fix / extend clima & errorcounter
+
 ### 2.2.3 (2022-04-06)
-Update dependencies
+* (Newan) Update dependencies
 
 ### 2.2.0
 * (Newan) Test release for 503 Error
