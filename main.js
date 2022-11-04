@@ -313,8 +313,8 @@ class Bluelink extends utils.Adapter {
 
             await this.setStateAsync(`${vin}.error_counter`, this.countError, true);
             
-            if (this.countError > 10) {
-                //Error counter over 10 erros, restart Adapter to fix te API Token
+            if (this.countError > this.config.errorCounter) {
+                //Error counter over x erros, restart Adapter to fix te API Token
                 this.restart();
             }
         }
