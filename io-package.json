@@ -1,9 +1,9 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "2.2.3",
+    "version": "2.2.5",
     "news": {
-      "2.2.4": {
+      "2.2.5": {
         "en": "fix / extend clima & errorcounter"
       },
       "2.2.2": {
