@@ -114,7 +114,7 @@ class Bluelink extends utils.Adapter {
                             heating: heating,
                         });
                     } catch (err) {
-                        this.log.error(JSON.stringify(response));                    
+                        this.log.error(JSON.stringify(err));                    
                     }    
                     break;
                 case 'stop':
