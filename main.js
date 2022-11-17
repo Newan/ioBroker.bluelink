@@ -99,10 +99,10 @@ class Bluelink extends utils.Adapter {
                     let defrost = await this.getStateAsync(`${vin}.control.set.defrost`);
                     let heating = await this.getStateAsync(`${vin}.control.set.heating`);
                     
-                    this.log.info(`airCtrl ${vin}.control.set.airCtrl`);
-                    this.log.info(`airTemp ${vin}.control.set.airTemp`);
-                    this.log.info(`defrost ${vin}.control.set.defrost`);
-                    this.log.info(`heating ${vin}.control.set.heating`);
+                    this.log.info(`--> airCtrl ${vin}.control.set.airCtrl`);
+                    this.log.info(`--> airTemp ${vin}.control.set.airTemp`);
+                    this.log.info(`--> defrost ${vin}.control.set.defrost`);
+                    this.log.info(`--> heating ${vin}.control.set.heating`);
                                        
                     
                     try {
