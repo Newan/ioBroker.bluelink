@@ -102,7 +102,7 @@ class Bluelink extends utils.Adapter {
                     this.log.info('--> airCtrl ' + airCtrl.val);
                     this.log.info('--> airTemp ' + airTemp.val);
                     this.log.info('--> defrost ' + airTemp.val);
-                    this.log.info('--> heating ' + airTemp.val);
+                    this.log.info('--> heating ' + heating.val);
                                        
                     
                     try {
