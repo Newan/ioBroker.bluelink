@@ -98,15 +98,18 @@ class Bluelink extends utils.Adapter {
                     let airTemp = await this.getStateAsync(`${vin}.control.set.airTemp`);
                     let defrost = await this.getStateAsync(`${vin}.control.set.defrost`);
                     let heating = await this.getStateAsync(`${vin}.control.set.heating`);
-                    
-                    response = await vehicle.start({
-                        airCtrl: airCtrl,
-                        igniOnDuration: 10,
-                        airTempvalue: airTemp,
-                        defrost: defrost,
-                        heating: heating,
-                    });
-                    this.log.debug(JSON.stringify(response));
+                  
+                    try {
+                        response = await vehicle.start({
+                            airCtrl: airCtrl.val,
+                            igniOnDuration: 10,
+                            airTempvalue: airTemp.val,
+                            defrost: defrost.val,
+                            heating: heating.val,
+                        });
+                    } catch (err) {
+                        this.log.error(JSON.stringify(err));                    
+                    }    
                     break;
                 case 'stop':
                     this.log.info('Stop clima for vehicle');
