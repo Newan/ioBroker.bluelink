@@ -164,11 +164,11 @@ systemDictionary = {
         'ru': 'Ошибка Counter для перезагрузки адаптера после неудачного подключения',
         'pt': 'Contador de erro para reiniciar o adaptador após a conexão de falha',
         'nl': 'Vertaling:',
-        'fr': 'Compteur d'erreur pour redémarrer l'adaptateur après connexion à défaut',
-        'it': 'Contatore di errore per riavviare l'adattatore dopo la connessione non riuscita',
+        'fr': "Compteur d'erreur pour redémarrer l'adaptateur après connexion à défaut",
+        'it': "Contatore di errore per riavviare l'adattatore dopo la connessione non riuscita",
         'es': 'Contador de error para reiniciar el adaptador después de la conexión fallida',
         'pl': 'Error Counter do ponownego uruchomienia adapteru po nieudanym połączeniu połączenia',
-        'uk': 'Помилки для перезавантаження адаптера після з'єднання',
+        'uk': "Помилки для перезавантаження адаптера після з'єднання",
         'zh-cn': '在发生意外之后恢复适应者的行为'
      },
     'App Lang':{
