@@ -105,7 +105,7 @@ class Bluelink extends utils.Adapter {
                             igniOnDuration: 10,
                             airTempvalue: airTemp.val,
                             defrost: defrost.val,
-                            heating: heating.val,
+                            heating1: heating.val,
                         });
                     } catch (err) {
                         this.log.error(JSON.stringify(err));                    
