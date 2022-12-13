@@ -1,27 +1,34 @@
 <html>
-  <head>    
-    <!-- Load ioBroker scripts and styles-->    
-    <link rel="stylesheet" type="text/css" href="../../css/adapter.css" />    
-    <link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css">    
-<script type="text/javascript" src="../../lib/js/jquery-3.2.1.min.js"></script>    
-<script type="text/javascript" src="../../socket.io/socket.io.js"></script>    
-<script type="text/javascript" src="../../js/translate.js"></script>    
-<script type="text/javascript" src="../../lib/js/materialize.js"></script>    
-<script type="text/javascript" src="../../js/adapter-settings.js"></script>    
-    <!-- Load our own files -->    
-    <link rel="stylesheet" type="text/css" href="style.css" />    
-<script type="text/javascript" src="words.js"></script>    
-<script type="text/javascript">
+<head>
+    <!-- Load ioBroker scripts and styles-->
+    <link rel="stylesheet" type="text/css" href="../../css/adapter.css" />
+    <link rel="stylesheet" type="text/css" href="../../lib/css/materialize.css">
+
+    <script type="text/javascript" src="../../lib/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="../../socket.io/socket.io.js"></script>
+
+    <script type="text/javascript" src="../../js/translate.js"></script>
+    <script type="text/javascript" src="../../lib/js/materialize.js"></script>
+    <script type="text/javascript" src="../../js/adapter-settings.js"></script>
+
+    <!-- Load our own files -->
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <script type="text/javascript" src="words.js"></script>
+
+    <script type="text/javascript">
         var _secret;
   
+
         // This will be called by the admin adapter when the settings page loads
         function load(settings, onChange) {
             if (typeof supportsFeature !== 'function' || !supportsFeature('ADAPTER_AUTO_DECRYPT_NATIVE')) {
+
                 if (typeof systemSecret !== 'undefined') {
                     _secret = systemSecret;
                 } else {
                     _secret = (systemConfig && systemConfig.native && systemConfig.native.secret) || 'Zgfr56gFe87jJOM';
                 }
+
                 if (settings.client_secret) {
                     settings.client_secret = decrypt(_secret, settings.client_secret);
                 }
@@ -54,6 +61,7 @@
             // reinitialize all the Materialize labels on the page if you are dynamically adding inputs:
             if (M) M.updateTextFields();
         }
+
         // This will be called by the admin adapter when the user presses the save button
         function save(callback) {
             // example: select elements with class=value and build settings object
@@ -77,110 +85,97 @@
             callback(obj);
         }
     </script>
-  </head>
-  <body>    
-    <div class="m adapter-container">        
-      <div class="row">            
-        <div class="col s12 m4 l2">                
-          <img src="bluelink.png" class="logo">            
-        </div>        
-      </div>        
-      <div class="row">            
-        <div class="col s12 m12">                
-          <p class="translate title">Donate
-          </p>            
-        </div>            
-        <div class="col s12 m2 center">                
-          <form action="https://www.paypal.com/donate" method="post" target="_top">                    
-            <input type="hidden" name="hosted_button_id" value="AAFQ3WMM46LT8" />                    
-            <input type="image" src="https://www.paypalobjects.com/en_US/DK/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />                    
-            <img alt="" border="0" src="https://www.paypal.com/en_DE/i/scr/pixel.gif" width="1" height="1" />                
-          </form>            
-        </div>            
-        <div class="col s10 m10" style="padding-top: 10px">                
-          <p class="translate">donate_desc
-          </p>              
-        </div>                     
-      </div>		
-      <div class="row">			
-        <div class="col s12">				
-          <h6 class="title translate">Account settings
-          </h6>			
-        </div>		
-      </div>		
-      <div class="row">			
-        <div class="col s12 m8 l5 input-field">				
-          <select class="value" id="brand">					
-            <option value="kia">Kia
-            </option>					
-            <option value="hyundai">Hyundai
-            </option>				
-          </select>        
-          <label class="translate" for="brand">Brand
-          </label>        
-        </div>        
-        <div class="col s12 m8 l5 input-field">  				   				
+</head>
+<body>
+
+    <div class="m adapter-container">
+
+        <div class="row">
+            <div class="col s12 m4 l2">
+                <img src="bluelink.png" class="logo">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col s12 m12">
+                <p class="translate title">Donate</p>
+            </div>
+            <div class="col s12 m2 center">
+                <form action="https://www.paypal.com/donate" method="post" target="_top">
+                    <input type="hidden" name="hosted_button_id" value="AAFQ3WMM46LT8" />
+                    <input type="image" src="https://www.paypalobjects.com/en_US/DK/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+                    <img alt="" border="0" src="https://www.paypal.com/en_DE/i/scr/pixel.gif" width="1" height="1" />
+                </form>
+            </div>
+            <div class="col s10 m10" style="padding-top: 10px">
+                <p class="translate">donate_desc</p> 
+            </div>            
+        </div>
+		<div class="row">
+			<div class="col s12">
+				<h6 class="title translate">Account settings</h6>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s12 m8 l5 input-field">
+				<select class="value" id="brand">
+					<option value="kia">Kia</option>
+					<option value="hyundai">Hyundai</option>
+				</select>
+				<label class="translate" for="brand">Brand</label>
+			</div>
+      <div class="col s12 m8 l5 input-field">  				   				
           <select class="value" id="applang">  					
-            <option value="de">DE
-            </option>  					
-            <option value="en">EN
-            </option>  					
-            <option value="nl">NL
-            </option>  					
-            <option value="it">IT
-            </option>  					
-            <option value="es">ES
-            </option>  					
-            <option value="pl">PL
-            </option>  				
+            <option value="de">DE</option>  					
+            <option value="en">EN</option>  					
+            <option value="nl">NL</option>  					
+            <option value="it">IT</option>  					
+            <option value="es">ES</option>  					
+            <option value="pl">PL</option>  				
           </select>  				
           <label class="translate" for="applang">App Lang
           </label>        
         </div>   			 			
-        <div class="col s6 input-field">                
-          <input type="text" class="value" id="username" />                
-          <label for="username" class="translate">Username
-          </label>            
-        </div>            
-        <div class="col s6 input-field">                
-          <input type="password" class="value" id="client_secret" />                
-          <label for="client_secret" class="translate">Password
-          </label>            
-        </div>			
-        <div class="col s6 input-field">                
-          <input type="password" class="value" id="client_secret_pin" />                
-          <label for="client_secret_pin" class="translate">Pin
-          </label>            
-        </div>		
-      </div>		
-      <div class="row">			
-        <div class="col s12">				
-          <h6 class="title translate">Api settings
-          </h6>			
-        </div>		
-      </div>		
-      <div class="row">			
-        <div class="col s6 input-field">                
-          <input type="checkbox" class="value" id="evHistory" />                
-          <label for="evHistory" class="translate">Receive Daily drive History (EV cars only, needs 3 request per day)
-          </label>            
-        </div>			
-        <div class="col s6 input-field">                
-          <input type="checkbox" class="value" id="stopRefreshUnder50" />                
-          <label for="stopRefreshUnder50" class="translate">Stop refresh if 12V battery is under 50%
-          </label>            
-        </div>		
-        <div class="col s6 input-field">                	
-          <input type="number" class="value" id="request" min="1" max="200"/>                	
-          <label for="request" class="translate">Request
-          </label>            	
-        </div>		
-        <div class="col s6 input-field">                	
-          <input type="number" class="value" id="errorCounter" min="1" max="10"/>                	
-          <label for="errorCounter" class="translate">errorCounter
-          </label>            	
-        </div>			 		
-      </div>    
+			<div class="col s6 input-field">
+                <input type="text" class="value" id="username" />
+                <label for="username" class="translate">Username</label>
+            </div>
+
+            <div class="col s6 input-field">
+                <input type="password" class="value" id="client_secret" />
+                <label for="client_secret" class="translate">Password</label>
+            </div>
+
+			<div class="col s6 input-field">
+                <input type="password" class="value" id="client_secret_pin" />
+                <label for="client_secret_pin" class="translate">Pin</label>
+            </div>
+		</div>
+		<div class="row">
+			<div class="col s12">
+				<h6 class="title translate">Api settings</h6>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s6 input-field">
+                <input type="checkbox" class="value" id="evHistory" />
+                <label for="evHistory" class="translate">Receive Daily drive History (EV cars only, needs 3 request per day)</label>
+            </div>
+			<div class="col s6 input-field">
+                <input type="checkbox" class="value" id="stopRefreshUnder50" />
+                <label for="stopRefreshUnder50" class="translate">Stop refresh if 12V battery is under 50%</label>
+            </div>
+
+		<div class="col s6 input-field">
+                	<input type="number" class="value" id="request" min="1" max="200"/>
+                	<label for="request" class="translate">Request</label>
+            	</div>
+		<div class="col s6 input-field">
+                	<input type="number" class="value" id="errorCounter" min="1" max="10"/>
+                	<label for="errorCounter" class="translate">errorCounter</label>
+            	</div>
+			
+		</div>
     </div>
-  </body>
+</body>
 </html>
