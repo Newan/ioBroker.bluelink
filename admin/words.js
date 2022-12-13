@@ -171,7 +171,7 @@ systemDictionary = {
         'uk': 'Помилки для перезавантаження адаптера після з'єднання',
         'zh-cn': '在发生意外之后恢复适应者的行为'
      },
-    'Language':{
+    'App Lang':{
         'en': 'App Language',
         'de': 'App Sprache',
         'ru': 'Language',
