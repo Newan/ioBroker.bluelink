@@ -252,7 +252,7 @@
     "evHistory": true,
     "stopRefreshUnder50": true,
     "errorCounter": 5,
-     "language": 'de'
+     "language": "de"
   },
   "objects": [],
   "instanceObjects": []
