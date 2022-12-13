@@ -159,20 +159,28 @@ systemDictionary = {
         'zh-cn': '如果 12V 电池电量低于 50%，则停止刷新'
     },
     'ErrorConter':{
-        "en": "Error Counter for restart the adapter after fail connection",
-        "de": "Error Zähler zum Neustart des Adapters nach Verbindungsproblem",
-        "ru": "Ошибка Counter для перезагрузки адаптера после неудачного подключения",
-        "pt": "Contador de erro para reiniciar o adaptador após a conexão de falha",
-        "nl": "Vertaling:",
-        "fr": "Compteur d'erreur pour redémarrer l'adaptateur après connexion à défaut",
-        "it": "Contatore di errore per riavviare l'adattatore dopo la connessione non riuscita",
-        "es": "Contador de error para reiniciar el adaptador después de la conexión fallida",
-        "pl": "Error Counter do ponownego uruchomienia adapteru po nieudanym połączeniu połączenia",
-        "uk": "Помилки для перезавантаження адаптера після з'єднання",
-        "zh-cn": "在发生意外之后恢复适应者的行为"
+        'en': 'Error Counter for restart the adapter after fail connection',
+        'de': 'Error Zähler zum Neustart des Adapters nach Verbindungsproblem',
+        'ru': 'Ошибка Counter для перезагрузки адаптера после неудачного подключения',
+        'pt': 'Contador de erro para reiniciar o adaptador após a conexão de falha',
+        'nl': 'Vertaling:',
+        'fr': 'Compteur d'erreur pour redémarrer l'adaptateur après connexion à défaut',
+        'it': 'Contatore di errore per riavviare l'adattatore dopo la connessione non riuscita',
+        'es': 'Contador de error para reiniciar el adaptador después de la conexión fallida',
+        'pl': 'Error Counter do ponownego uruchomienia adapteru po nieudanym połączeniu połączenia',
+        'uk': 'Помилки для перезавантаження адаптера після з'єднання',
+        'zh-cn': '在发生意外之后恢复适应者的行为'
      },
     'Language':{
-        "en": "App Language",
-        "de": "App Sprache"
+        'en': 'App Language',
+        'de': 'App Sprache',
+        'ru': 'Language',
+        'pt': 'Language',
+        'nl': 'Language',
+        'fr': 'Language',
+        'it': 'Language',
+        'es': 'Language',
+        'pl': 'Language',
+        'zh-cn': 'Language'
       }
 };
