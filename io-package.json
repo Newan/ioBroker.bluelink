@@ -251,7 +251,8 @@
     "request": 100,
     "evHistory": true,
     "stopRefreshUnder50": true,
-    "errorCounter": 5
+    "errorCounter": 5,
+    "language": "DE"
   },
   "objects": [],
   "instanceObjects": []
