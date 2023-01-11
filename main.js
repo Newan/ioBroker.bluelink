@@ -623,7 +623,7 @@ class Bluelink extends utils.Adapter {
                 role: 'state',
                 read: true,
                 write: true,
-                def: 1,
+                def: 0,
             },
             native: {},
         });
