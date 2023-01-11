@@ -619,11 +619,11 @@ class Bluelink extends utils.Adapter {
             type: 'state',
             common: {
                 name: 'set heating function for clima',
-                type: 'boolean',
+                type: 'number',
                 role: 'state',
                 read: true,
                 write: true,
-                def: false,
+                def: 1,
             },
             native: {},
         });
