@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@iobroker/adapter-core": "^2.6.0",
-    "bluelinky": "^7.6.6",
+    "bluelinky": "https://github.com/Hacksore/bluelinky/tarball/22c3d8ed505cb26669eaf624e0142ca46745f22a",
     "axios": "^0.27.2"
   },
   "devDependencies": {
