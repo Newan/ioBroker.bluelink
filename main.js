@@ -169,7 +169,7 @@ class Bluelink extends utils.Adapter {
                 pin: this.config.client_secret_pin,
                 brand: this.config.brand,
                 region: 'EU', //set over GUI next time
-                language:  this.config.applang,
+                language:  this.config.language,
             };
 
             // @ts-ignore
