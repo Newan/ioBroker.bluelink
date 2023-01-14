@@ -334,32 +334,36 @@ class Bluelink extends utils.Adapter {
         try {
             const driveHistory = await vehicle.driveHistory();
             this.log.debug('driveHistory-Data: ' + JSON.stringify(driveHistory));
-            await this.setObjectNotExistsAsync(vin + '.driveHistory', {
-                type: 'channel',
-                common: {
-                    name: 'drive history',
-                },
-                native: {},
-            });
-            await this.json2iob.parse(vin + '.driveHistory', driveHistory, { preferedArrayName: 'rawDate' });
-            const monthlyReport = await vehicle.monthlyReport();
-            await this.setObjectNotExistsAsync(vin + '.monthlyReport', {
-                type: 'channel',
-                common: {
-                    name: 'monthly report',
-                },
-                native: {},
-            });
-            await this.json2iob.parse(vin + '.monthlyReport', monthlyReport);
-            const tripInfo = await vehicle.tripInfo({ year: new Date().getFullYear(), month: new Date().getMonth() + 1 });
-            await this.setObjectNotExistsAsync(vin + '.tripInfo', {
-                type: 'channel',
-                common: {
-                    name: 'trip information',
-                },
-                native: {},
-            });
-            await this.json2iob.parse(vin + '.tripInfo', tripInfo);
+            
+            if (driveHistory != undefined) { 
+            
+                await this.setObjectNotExistsAsync(vin + '.driveHistory', {
+                    type: 'channel',
+                    common: {
+                        name: 'drive history',
+                    },
+                    native: {},
+                });
+                await this.json2iob.parse(vin + '.driveHistory', driveHistory, { preferedArrayName: 'rawDate' });
+                const monthlyReport = await vehicle.monthlyReport();
+                await this.setObjectNotExistsAsync(vin + '.monthlyReport', {
+                    type: 'channel',
+                    common: {
+                        name: 'monthly report',
+                    },
+                    native: {},
+                });
+                await this.json2iob.parse(vin + '.monthlyReport', monthlyReport);
+                const tripInfo = await vehicle.tripInfo({ year: new Date().getFullYear(), month: new Date().getMonth() + 1 });
+                await this.setObjectNotExistsAsync(vin + '.tripInfo', {
+                    type: 'channel',
+                    common: {
+                        name: 'trip information',
+                    },
+                    native: {},
+                });
+                await this.json2iob.parse(vin + '.tripInfo', tripInfo);
+            }
         } catch (error) {
             this.log.error('EV History fetching failed');
             if (typeof error === 'string') {
