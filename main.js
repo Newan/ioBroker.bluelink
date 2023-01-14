@@ -383,7 +383,14 @@ class Bluelink extends utils.Adapter {
 
         //chassis/doors
         if (newStatus.chassis.openDoors != undefined) {
-            await this.setStateAsync(vin + '.vehicleStatus.doorOpen.frontLeft', { val: newStatus.chassis.openDoors.frontLeft, ack: true });
+            let frontLeft = newStatus.chassis.openDoors.frontLeft;
+            if (typeof newStatus.chassis.openDoors.frontLeft == 'number') {
+                frontLeft = newStatus.chassis.openDoors.frontLeft == 0 ? true : false;           
+            }
+            
+          
+            
+            await this.setStateAsync(vin + '.vehicleStatus.doorOpen.frontLeft', { val: frontLeft, ack: true });
             await this.setStateAsync(vin + '.vehicleStatus.doorOpen.frontRight', { val: newStatus.chassis.openDoors.frontRight, ack: true });
             await this.setStateAsync(vin + '.vehicleStatus.doorOpen.backLeft', { val: newStatus.chassis.openDoors.backLeft, ack: true });
             await this.setStateAsync(vin + '.vehicleStatus.doorOpen.backRight', { val: newStatus.chassis.openDoors.backRight, ack: true });
