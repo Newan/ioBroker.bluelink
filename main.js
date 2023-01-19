@@ -5,7 +5,7 @@ const bluelinky = require('bluelinky');
 const Json2iob = require('./lib/json2iob');
 
 const adapterIntervals = {}; //halten von allen Intervallen
-let request_count = 100; //max api request per Day
+let request_count = 48; // halbstündig sollte als Standardeinstellung reichen (zu häufige Abfragen entleeren die Batterie spürbar)
 let client;
 
 let slow_charging;
@@ -242,10 +242,10 @@ class Bluelink extends utils.Adapter {
             await this.setStateAsync(`${vin}.lastInfoUpdate`, Number(Date.now()), true);
 
             this.log.debug('Read new status from api for ' + vin);
-            if (this.batteryState12V[vin] && this.batteryState12V[vin] < 50) {
-                this.log.warn('12V Battery state is low: ' + this.batteryState12V[vin] + '%');
-                if (this.config.stopRefreshUnder50 && !force) {
-                    this.log.warn('Auto Refresh is disabled, use force refresh to enable refresh again');
+            if (this.batteryState12V[vin] && this.batteryState12V[vin] < 88) {
+                this.log.warn('12V Battery state is low: ' + this.batteryState12V[vin] + '%. Recharge to prevent damage!');
+                if (this.config.protectAgainstDeepDischarge && !force) {
+                    this.log.warn('Auto Refresh is disabled, only use force refresh to reenable refresh if you are willing to risk your battery');
                     continue;
                 }
             }
