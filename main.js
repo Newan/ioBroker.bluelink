@@ -96,7 +96,7 @@ class Bluelink extends utils.Adapter {
 
                     let airCtrl = await this.getStateAsync(`${vin}.control.set.airCtrl`);                
                     let airTempC = await this.getStateAsync(`${vin}.control.set.airTemp`);
-                    let airTempF = (airTempC.val * 9/5) + 32;
+                    let airTempF = (airTempC.val * 9/5) + 32;
                     let defrost = await this.getStateAsync(`${vin}.control.set.defrost`);
                     let heating = await this.getStateAsync(`${vin}.control.set.heating`);
                   
@@ -382,25 +382,12 @@ class Bluelink extends utils.Adapter {
         await this.setStateAsync(vin + '.vehicleStatus.hoodOpen', { val: newStatus.chassis.hoodOpen, ack: true });
 
         //chassis/doors
-        if (newStatus.chassis.openDoors != undefined) {
-            let frontLeft = newStatus.chassis.openDoors.frontLeft;
-            if (typeof newStatus.chassis.openDoors.frontLeft == 'number') {
-                frontLeft = newStatus.chassis.openDoors.frontLeft == 0 ? true : false;           
-            }
-            
-          
-            
-            await this.setStateAsync(vin + '.vehicleStatus.doorOpen.frontLeft', { val: frontLeft, ack: true });
-            await this.setStateAsync(vin + '.vehicleStatus.doorOpen.frontRight', { val: newStatus.chassis.openDoors.frontRight, ack: true });
-            await this.setStateAsync(vin + '.vehicleStatus.doorOpen.backLeft', { val: newStatus.chassis.openDoors.backLeft, ack: true });
-            await this.setStateAsync(vin + '.vehicleStatus.doorOpen.backRight', { val: newStatus.chassis.openDoors.backRight, ack: true });
-        }
+        this.checkDoor(vin, newStatus.chassis.openDoors);
 
         //chassis/tirePressure
-        if (newStatus.chassis.tirePressureWarningLamp != undefined) {
-            //TODO anlegen der Objekte
-            //await this.setStateAsync(vin + '.vehicleStatus.doorOpen.frontLeft', { val: newStatus.chassis.openDoors.frontLeft, ack: true });
-        }
+     //   if (newStatus.chassis.tirePressureWarningLamp != undefined) {
+     //
+     //   }
 
         //climate
         await this.setStateAsync(vin + '.vehicleStatus.airCtrlOn', { val: newStatus.climate.active, ack: true });
@@ -514,12 +501,7 @@ class Bluelink extends utils.Adapter {
         await this.setStateAsync(vin + '.vehicleStatus.trunkOpen', { val: newStatus.vehicleStatus.trunkOpen, ack: true });
         await this.setStateAsync(vin + '.vehicleStatus.hoodOpen', { val: newStatus.vehicleStatus.hoodOpen, ack: true });
 
-        if (newStatus.vehicleStatus.doorOpen != undefined) {
-            await this.setStateAsync(vin + '.vehicleStatus.doorOpen.frontLeft', { val: newStatus.vehicleStatus.doorOpen.frontLeft, ack: true });
-            await this.setStateAsync(vin + '.vehicleStatus.doorOpen.frontRight', { val: newStatus.vehicleStatus.doorOpen.frontRight, ack: true });
-            await this.setStateAsync(vin + '.vehicleStatus.doorOpen.backLeft', { val: newStatus.vehicleStatus.doorOpen.backLeft, ack: true });
-            await this.setStateAsync(vin + '.vehicleStatus.doorOpen.backRight', { val: newStatus.vehicleStatus.doorOpen.backRight, ack: true });
-        }
+        this.checkDoor(vin, newStatus.vehicleStatus.doorOpen);
 
         //status parameter
         await this.setStateAsync(vin + '.vehicleStatus.airCtrlOn', { val: newStatus.vehicleStatus.airCtrlOn, ack: true });
@@ -528,6 +510,37 @@ class Bluelink extends utils.Adapter {
         await this.setStateAsync(vin + '.vehicleStatus.breakOilStatus', { val: newStatus.vehicleStatus.breakOilStatus, ack: true });
         await this.setStateAsync(vin + '.vehicleStatus.steerWheelHeat', { val: newStatus.vehicleStatus.steerWheelHeat, ack: true });
         await this.setStateAsync(vin + '.vehicleStatus.sideBackWindowHeat', { val: newStatus.vehicleStatus.sideBackWindowHeat, ack: true });
+    }
+
+    async checkDoor(vin, doors) {
+        if (doors != undefined) {
+            let frontLeft = doors.frontLeft;
+            let frontRight = doors.frontRight;
+            let backLeft = doors.backLeft;
+            let backRight = doors.backRight;
+
+        // HEV hyundai send 0 but we need boolean
+            if (typeof frontLeft == 'number') {
+                frontLeft = frontLeft == 0 ? false : true;
+            }
+
+            if (typeof frontRight == 'number') {
+                frontRight = frontRight == 0 ? false : true;
+            }
+
+            if (typeof backLeft == 'number') {
+                backLeft = backLeft == 0 ? false : true;
+            }
+
+            if (typeof backRight == 'number') {
+                backRight = backRight == 0 ? false : true;
+            }
+
+            await this.setStateAsync(vin + '.vehicleStatus.doorOpen.frontLeft', { val: frontLeft, ack: true });
+            await this.setStateAsync(vin + '.vehicleStatus.doorOpen.frontRight', { val: frontRight, ack: true });
+            await this.setStateAsync(vin + '.vehicleStatus.doorOpen.backLeft', { val: backLeft, ack: true });
+            await this.setStateAsync(vin + '.vehicleStatus.doorOpen.backRight', { val: backRight, ack: true });
+        }
     }
 
     /**
