@@ -287,7 +287,7 @@ class Bluelink extends utils.Adapter {
 
                         //Abfrage Full hat nicht gekalppt. Haben wir einen Fallback?
                         newStatus = await vehicle.status({
-                            refresh: true,
+                            refresh: false,
                             parsed: true,
                         });
                         this.log.debug('Set new GetNormalStatus for ' + vin);
