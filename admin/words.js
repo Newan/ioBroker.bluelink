@@ -146,17 +146,17 @@ systemDictionary = {
         'pl': 'Otrzymuj historię dziennych przejazdów (tylko samochody elektryczne, wymaga 3 żądań dziennie)',
         'zh-cn': '接收每日驾驶历史记录（仅限电动汽车，每天需要 3 个请求）'
     },
-    'Stop refresh if 12V battery is under 50%': {
-        'en': 'Stop refresh if 12V battery is under 50%',
-        'de': 'Aktualisierung stoppen, wenn die 12-V-Batterie unter 50% ist',
-        'ru': 'Остановите обновление, если батарея 12 В менее 50%',
-        'pt': 'Pare a atualização se a bateria de 12 V estiver abaixo de 50%',
-        'nl': 'Stop met vernieuwen als de 12V-batterij minder dan 50% is',
-        'fr': 'Arrêtez le rafraîchissement si la batterie 12V est inférieure à 50%',
-        'it': "Interrompi l'aggiornamento se la batteria da 12 V è inferiore al 50%",
-        'es': 'Detenga la actualización si la batería de 12 V está por debajo del 50%',
-        'pl': 'Zatrzymaj odświeżanie, jeśli poziom naładowania akumulatora 12 V spadnie poniżej 50%',
-        'zh-cn': '如果 12V 电池电量低于 50%，则停止刷新'
+    'Stop refresh if 12V battery is under 10.5 V to protect against irreversible damage': {
+        'en': 'Stop refresh if 12V battery is under 10.5 V to protect against irreversible damage',
+        'de': 'Aktualisierung stoppen, wenn die 12-V-Batterie unter 10,5 V fällt, um irreversible Schäden zu vermeiden',
+        'ru': 'Остановите обновление, если напряжение батареи 12 В ниже 10,5 В, для защиты от необратимого повреждения',
+        'pt': 'Parar a actualização se a bateria de 12V for inferior a 10,5 V para proteger contra danos irreversíveis',
+        'nl': 'Stop verversen als 12V batterij onder 10,5 V is om te beschermen tegen onomkeerbare schade',
+        'fr': 'Arrêtez le rafraîchissement si la batterie 12V est inférieure à 10,5 V pour éviter tout dommage irréversible.',
+        'it': "Interrompe l'aggiornamento se la batteria da 12 V è inferiore a 10,5 V per evitare danni irreversibili.",
+        'es': 'Detiene la actualización si la batería de 12 V está por debajo de 10,5 V para evitar daños irreversibles.',
+        'pl': 'Zatrzymanie odświeżania, jeśli napięcie akumulatora 12V jest niższe niż 10,5 V, aby chronić przed nieodwracalnym uszkodzeniem',
+        'zh-cn': '如果12V电池低于10.5V，则停止刷新，以防止不可逆的损坏。'
     },
     'ErrorConter':{
         'en': 'Error Counter for restart the adapter after fail connection',
