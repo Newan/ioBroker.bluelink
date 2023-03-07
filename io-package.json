@@ -1,8 +1,11 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "2.2.6",
+    "version": "2.2.7",
     "news": {
+      "2.2.7": {
+        "en": "see readme"
+      },
       "2.2.6": {
         "en": "fix / extend clima & errorcounter"
       },
