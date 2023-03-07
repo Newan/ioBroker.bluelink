@@ -27,7 +27,7 @@ Discussion: https://forum.iobroker.net/topic/43592/adapter-hyundai-bluelink-oder
 * (arteck) fix / clima controll
 * (arteck) force update add to admin
 * (devdev24) Fixed error causing dead on-board batteries
-*
+* (arteck) door status is correct
 
 ### 2.2.6 (2022-11-04)
 * (arteck) fix / extend clima & errorcounter
