@@ -285,9 +285,11 @@ class Bluelink extends utils.Adapter {
                         //if(error.source.statusCode == 503) {
                         this.log.info('Error on API-Full-Status - Fallback GetNormalStatus');
 
+                        const force_update = await this.getStateAsync(`${vin}.control.force_update`);   
+
                         //Abfrage Full hat nicht gekalppt. Haben wir einen Fallback?
                         newStatus = await vehicle.status({
-                            refresh: false,
+                            refresh: force_update,
                             parsed: true,
                         });
                         this.log.debug('Set new GetNormalStatus for ' + vin);
@@ -693,6 +695,17 @@ class Bluelink extends utils.Adapter {
         });
         this.subscribeStates(vin + '.control.force_refresh');
         
+        await this.setObjectNotExistsAsync(vin + '.control.force_update', {
+            type: 'state',
+            common: {
+                name: 'Force update state for force refresh',
+                type: 'boolean',
+                role: 'state',
+                read: true,
+                write: true,
+            },
+            native: {},
+        });         
    }
 
    async setStatusObjects(vin) {          
