@@ -1031,7 +1031,7 @@ class Bluelink extends utils.Adapter {
             type: 'state',
             common: {
                 name: 'Vehicle position latitude',
-                type: 'number',
+                type: 'string',
                 role: 'indicator',
                 read: true,
                 write: false,
@@ -1043,7 +1043,7 @@ class Bluelink extends utils.Adapter {
             type: 'state',
             common: {
                 name: 'Vehicle position longitude',
-                type: 'number',
+                type: 'string',
                 role: 'indicator',
                 read: true,
                 write: false,
