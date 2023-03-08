@@ -486,8 +486,10 @@ class Bluelink extends utils.Adapter {
         if (newStatus.vehicleLocation != undefined) {
             //#47 KIA Seed have no vehicleLocation
             if (newStatus.vehicleLocation.coord != undefined) {
-                await this.setStateAsync(vin + '.vehicleLocation.lat', { val: newStatus.vehicleLocation.coord.lat, ack: true });
-                await this.setStateAsync(vin + '.vehicleLocation.lon', { val: newStatus.vehicleLocation.coord.lon, ack: true });
+                const latitude = newStatus.vehicleLocation.coord.lat;
+                const longitude = newStatus.vehicleLocation.coord.lon;
+                await this.setStateAsync(vin + '.vehicleLocation.lat', { val: latitude.replace(",","."), ack: true });
+                await this.setStateAsync(vin + '.vehicleLocation.lon', { val: longitude.replace(",","."), ack: true });
                 await this.setStateAsync(vin + '.vehicleLocation.speed', { val: newStatus.vehicleLocation.speed.value, ack: true });
             }
         }
