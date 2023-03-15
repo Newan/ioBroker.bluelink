@@ -486,8 +486,8 @@ class Bluelink extends utils.Adapter {
             if (newStatus.vehicleLocation.coord != undefined) {
                 const latitude = newStatus.vehicleLocation.coord.lat;
                 const longitude = newStatus.vehicleLocation.coord.lon;
-                await this.setStateAsync(vin + '.vehicleLocation.lat', { val: latitude.replace(",","."), ack: true });
-                await this.setStateAsync(vin + '.vehicleLocation.lon', { val: longitude.replace(",","."), ack: true });
+                await this.setStateAsync(vin + '.vehicleLocation.lat', { val: latitude, ack: true });
+                await this.setStateAsync(vin + '.vehicleLocation.lon', { val: longitude, ack: true });
                 await this.setStateAsync(vin + '.vehicleLocation.speed', { val: newStatus.vehicleLocation.speed.value, ack: true });
             }
         }
