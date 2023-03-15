@@ -729,7 +729,7 @@ class Bluelink extends utils.Adapter {
         });
         
         await this.setObjectNotExistsAsync(vin + '.vehicleStatusRaw', {
-            type: 'chanel',
+            type: 'channel',
             common: {
                 name: 'Unformatted vehicle status',               
             },
