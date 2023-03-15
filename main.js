@@ -259,7 +259,7 @@ class Bluelink extends utils.Adapter {
 
                     //set all values
                     this.log.debug('Set new full status for ' + vin);
-                    this.log.debug(JSON.stringify(newStatus));
+                    this.log.debug('RAW ' + JSON.stringify(newStatus));
                     await this.setNewFullStatus(newStatus, vin);
 
                     if (newStatus.vehicleStatus && newStatus.vehicleStatus.battery && newStatus.vehicleStatus.battery.batSoc) {
