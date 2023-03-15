@@ -267,14 +267,7 @@ class Bluelink extends utils.Adapter {
                         this.batteryState12V[vin] = newStatus.vehicleStatus.battery.batSoc;
                     }
 
-                    //Set RAW Data for overview
-                    await this.setObjectNotExistsAsync(vin + '.vehicleStatusRaw', {
-                        type: 'channel',
-                        common: {
-                            name: 'Unformatted vehicle status',
-                        },
-                        native: {},
-                    });
+                // raw data
                     await this.json2iob.parse(vin + '.vehicleStatusRaw', newStatus);
                 } catch (error) {
                     if (typeof error === 'string') {
@@ -734,6 +727,16 @@ class Bluelink extends utils.Adapter {
             },
             native: {},
         });
+        
+        await this.setObjectNotExistsAsync(vin + '.vehicleStatusRaw', {
+            type: 'chanel',
+            common: {
+                name: 'Unformatted vehicle status',               
+            },
+            native: {},
+        });
+        
+        
         //Bereicht vehicleStatus
         await this.setObjectNotExistsAsync(vin + '.vehicleStatus.doorLock', {
             type: 'state',
