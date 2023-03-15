@@ -260,6 +260,10 @@ class Bluelink extends utils.Adapter {
                     //set all values
                     this.log.debug('Set new full status for ' + vin);
                     this.log.debug('RAW ' + JSON.stringify(newStatus));
+                    
+                    // raw data
+                    await this.json2iob.parse(vin + '.vehicleStatusRaw', newStatus);
+                    
                     await this.setNewFullStatus(newStatus, vin);
 
                     if (newStatus.vehicleStatus && newStatus.vehicleStatus.battery && newStatus.vehicleStatus.battery.batSoc) {
@@ -267,8 +271,7 @@ class Bluelink extends utils.Adapter {
                         this.batteryState12V[vin] = newStatus.vehicleStatus.battery.batSoc;
                     }
 
-                // raw data
-                    await this.json2iob.parse(vin + '.vehicleStatusRaw', newStatus);
+                
                 } catch (error) {
                     if (typeof error === 'string') {
                         this.log.error('Error on API-Request GetFullStatus');
