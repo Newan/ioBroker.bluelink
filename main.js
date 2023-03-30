@@ -3,6 +3,8 @@
 const utils = require('@iobroker/adapter-core');
 const bluelinky = require('bluelinky');
 const Json2iob = require('./lib/json2iob');
+let force_update = {};   
+force_update.val = true;   
 
 const adapterIntervals = {}; //halten von allen Intervallen
 let request_count = 48; // halbstündig sollte als Standardeinstellung reichen (zu häufige Abfragen entleeren die Batterie spürbar)
@@ -15,7 +17,7 @@ const POSSIBLE_CHARGE_LIMIT_VALUES = [50, 60, 70, 80, 90, 100];
 
 class Bluelink extends utils.Adapter {
     /**
-     * @param {Partial<utils.AdapterOptions>} [options={}]
+     * @param {Partial&lt;utils.AdapterOptions&gt;} [options={}]
      */
     constructor(options) {
         super({
@@ -39,8 +41,8 @@ class Bluelink extends utils.Adapter {
     //Start Adapter
     async onReady() {
         //first check account settings
-        if (this.config.request < 1) {
-            this.log.warn('Request is under 1 -> got to default 100');
+        if (this.config.request &lt; 1) {
+            this.log.warn('Request is under 1 -&gt; got to default 100');
         } else {
             request_count = this.config.request;
         }
@@ -55,7 +57,7 @@ class Bluelink extends utils.Adapter {
 
     /**
      * Is called when adapter shuts down - callback has to be called under any circumstances!
-     * @param {() => void} callback
+     * @param {() =&gt; void} callback
      */
     onUnload(callback) {
         try {
@@ -96,7 +98,7 @@ class Bluelink extends utils.Adapter {
 
                     let airCtrl = await this.getStateAsync(`${vin}.control.set.airCtrl`);                
                     let airTempC = await this.getStateAsync(`${vin}.control.set.airTemp`);
-                    let airTempF = (airTempC.val * 9/5) + 32;
+                    let airTempF = (airTempC.val * 9/5) + 32;
                     let defrost = await this.getStateAsync(`${vin}.control.set.defrost`);
                     let heating = await this.getStateAsync(`${vin}.control.set.heating`);
                   
@@ -121,6 +123,14 @@ class Bluelink extends utils.Adapter {
                     this.log.info('Forcing refresh');
                     //Force refresh for new states
                     this.readStatus(true);
+                    break;
+                case 'force_update':
+			        force_update = await this.getStateAsync(`${vin}.control.force_update`);   
+	            	if(force_update.val) {
+    	                this.log.info('Update method for ' + vin + ' changed to "directly from the car"');
+        	        } else {
+            	        this.log.info('Update method for ' + vin + ' changed to "from the server"');
+                	}
                     break;
                 case 'charge':
                     this.log.info('Start charging');
@@ -175,7 +185,7 @@ class Bluelink extends utils.Adapter {
             // @ts-ignore
             client = new bluelinky(tmpConfig);
 
-            client.on('ready', async (vehicles) => {
+            client.on('ready', async (vehicles) =&gt; {
                 // wir haben eine Verbindung und haben Autos
                 this.log.info(vehicles.length + ' Vehicles found');
                 this.log.debug(JSON.stringify(vehicles, this.getCircularReplacer()));
@@ -205,7 +215,7 @@ class Bluelink extends utils.Adapter {
                     await this.json2iob.parse(vin + '.general', vehicle.vehicleConfig);
                     if (this.config.evHistory) {
                         await this.receiveEVInformation(vehicle, vin);
-                        adapterIntervals.evHistoryInterval = setInterval(() => {
+                        adapterIntervals.evHistoryInterval = setInterval(() =&gt; {
                             this.receiveEVInformation(vehicle, vin);
                         }, 24 * 60 * 60 * 1000); //24h
                     }
@@ -217,7 +227,7 @@ class Bluelink extends utils.Adapter {
                 this.cleanObjects();
             });
 
-            client.on('error', async (err) => {
+            client.on('error', async (err) =&gt; {
                 // something went wrong with login
                 this.log.debug('Error on Api login');
                 this.log.error(err);
@@ -238,25 +248,29 @@ class Bluelink extends utils.Adapter {
         //read new verhicle status
         for (const vehicle of this.vehicles) {
             const vin = vehicle.vehicleConfig.vin;
-         // last update
-            await this.setStateAsync(`${vin}.lastInfoUpdate`, Number(Date.now()), true);
 
             this.log.debug('Read new status from api for ' + vin);
-            if (this.batteryState12V[vin] && this.batteryState12V[vin] < 88) {
+            if (this.batteryState12V[vin] &amp;&amp; this.batteryState12V[vin] &lt; 60) {
                 this.log.warn('12V Battery state is low: ' + this.batteryState12V[vin] + '%. Recharge to prevent damage!');
-                if (this.config.protectAgainstDeepDischarge && !force) {
+                if (this.config.protectAgainstDeepDischarge &amp;&amp; !force) {
                     this.log.warn('Auto Refresh is disabled, only use force refresh to reenable refresh if you are willing to risk your battery');
                     continue;
                 }
             }
             try {
                 let newStatus;
-                try {
+
+            	if(force_update.val) {
+                    this.log.info('Read new update for ' + vin + ' directly from the car');
+                } else {
+                    this.log.info('Read new update for ' + vin + ' from the server');
+                }
+                	
+            	try {
                     newStatus = await vehicle.fullStatus({
-                        refresh: true,
+                        refresh: force_update.val,
                         parsed: true,
                     });
-
                     //set all values
                     this.log.debug('Set new full status for ' + vin);
                     this.log.debug('RAW ' + JSON.stringify(newStatus));
@@ -265,13 +279,11 @@ class Bluelink extends utils.Adapter {
                     await this.json2iob.parse(vin + '.vehicleStatusRaw', newStatus);
                     
                     await this.setNewFullStatus(newStatus, vin);
-
-                    if (newStatus.vehicleStatus && newStatus.vehicleStatus.battery && newStatus.vehicleStatus.battery.batSoc) {
+                    if (newStatus.vehicleStatus &amp;&amp; newStatus.vehicleStatus.battery &amp;&amp; newStatus.vehicleStatus.battery.batSoc) {
                         this.log.debug('Set ' + newStatus.vehicleStatus.battery.batSoc + ' battery state for ' + vin);
                         this.batteryState12V[vin] = newStatus.vehicleStatus.battery.batSoc;
                     }
 
-                
                 } catch (error) {
                     if (typeof error === 'string') {
                         this.log.error('Error on API-Request GetFullStatus');
@@ -281,19 +293,16 @@ class Bluelink extends utils.Adapter {
                         //if(error.source.statusCode == 503) {
                         this.log.info('Error on API-Full-Status - Fallback GetNormalStatus');
 
-                        const force_update = await this.getStateAsync(`${vin}.control.force_update`);   
-
                         //Abfrage Full hat nicht gekalppt. Haben wir einen Fallback?
                         newStatus = await vehicle.status({
-                            refresh: force_update,
+                            refresh: force_update.val,
                             parsed: true,
                         });
-                        this.log.debug('Set new GetNormalStatus for ' + vin);
+                    	this.log.debug('Set new GetNormalStatus for ' + vin);
                         this.log.debug(JSON.stringify(newStatus));
 
                         await this.setNewStatus(newStatus, vin);
-
-                        if (newStatus.engine && newStatus.engine.batteryCharge12v) {
+                        if (newStatus.engine &amp;&amp; newStatus.engine.batteryCharge12v) {
                             this.log.debug('Set ' + newStatus.engine.batteryCharge12v + ' battery state for ' + vin);
                             this.batteryState12V[vin] = newStatus.engine.batteryCharge12v;
                         }
@@ -303,6 +312,11 @@ class Bluelink extends utils.Adapter {
                 //Abfrage war erfolgreich, lösche ErrorCounter
                 this.countError = 0;
 
+		        force_update = await this.getStateAsync(`${vin}.control.force_update`);
+                this.log.info('Update for ' + vin + ' successfull');
+	  	       // last update
+    	        await this.setStateAsync(`${vin}.lastInfoUpdate`, Number(Date.now()), true);
+            
             } catch (error) {
                 this.countError += 1;  // add 1
                
@@ -316,11 +330,12 @@ class Bluelink extends utils.Adapter {
 
             await this.setStateAsync(`${vin}.error_counter`, this.countError, true);
             
-            if (this.countError > this.config.errorCounter) {
+            if (this.countError &gt; this.config.errorCounter) {
                 //Error counter over x erros, restart Adapter to fix te API Token
                 this.restart();
             }
         }
+    
         //set ne cycle
         if (force) {
             clearTimeout(adapterIntervals.readAllStates);
@@ -413,7 +428,7 @@ class Bluelink extends utils.Adapter {
         if (newStatus.vehicleStatus.evStatus != undefined) {
             if (newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist != undefined) {
                 if (newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].plugType == 1) {
-                    //Slow  = 1  -> Index 0 ist slow
+                    //Slow  = 1  -&gt; Index 0 ist slow
                     await this.setStateAsync(vin + '.vehicleStatus.battery.charge_limit_slow', {
                         val: newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel,
                         ack: true,
@@ -425,7 +440,7 @@ class Bluelink extends utils.Adapter {
                     });
                     fast_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel;
                 } else {
-                    //fast  = 0  -> Index 0 ist fast
+                    //fast  = 0  -&gt; Index 0 ist fast
                     await this.setStateAsync(vin + '.vehicleStatus.battery.charge_limit_slow', {
                         val: newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel,
                         ack: true,
@@ -696,13 +711,14 @@ class Bluelink extends utils.Adapter {
             common: {
                 name: 'Force update state for force refresh',
                 type: 'boolean',
-                role: 'state',
+                role: 'button',
                 read: true,
                 write: true,
                 def: true,
             },
             native: {},
         });         
+        this.subscribeStates(vin + '.control.force_update');
    }
 
    async setStatusObjects(vin) {          
@@ -1121,8 +1137,8 @@ class Bluelink extends utils.Adapter {
 
     getCircularReplacer() {
         const seen = new WeakSet();
-        return (key, value) => {
-            if (typeof value === 'object' && value !== null) {
+        return (key, value) =&gt; {
+            if (typeof value === 'object' &amp;&amp; value !== null) {
                 if (seen.has(value)) {
                     return;
                 }
@@ -1136,7 +1152,7 @@ class Bluelink extends utils.Adapter {
         // create a range
         const tempRange = [];
         //Range for EU
-        for (let i = 14; i <= 30; i += 0.5) {
+        for (let i = 14; i &lt;= 30; i += 0.5) {
             tempRange.push(i);
         }
 
@@ -1151,9 +1167,9 @@ class Bluelink extends utils.Adapter {
 if (require.main !== module) {
     // Export the constructor in compact mode
     /**
-     * @param {Partial<utils.AdapterOptions>} [options={}]
+     * @param {Partial&lt;utils.AdapterOptions&gt;} [options={}]
      */
-    module.exports = (options) => new Bluelink(options);
+    module.exports = (options) =&gt; new Bluelink(options);
 } else {
     // otherwise start the instance directly
     new Bluelink();
