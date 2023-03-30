@@ -717,8 +717,7 @@ class Bluelink extends utils.Adapter {
                 def: true,
             },
             native: {},
-        });         
-        this.subscribeStates(vin + '.control.force_update');
+        });                
 	
 	await this.setObjectNotExistsAsync(vin + '.control.batteryControlState12V', {
             type: 'state',
