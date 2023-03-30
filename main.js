@@ -727,7 +727,7 @@ class Bluelink extends utils.Adapter {
                 role: 'state',
                 read: true,
                 write: true,
-                def: 60,
+                def: 65,
             },
             native: {},
         });
