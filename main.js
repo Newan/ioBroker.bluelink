@@ -3,7 +3,7 @@
 const utils = require('@iobroker/adapter-core');
 const bluelinky = require('bluelinky');
 const Json2iob = require('./lib/json2iob');
-force_update = true;   
+let force_update = true;   
 
 const adapterIntervals = {}; //halten von allen Intervallen
 let request_count = 48; // halbstündig sollte als Standardeinstellung reichen (zu häufige Abfragen entleeren die Batterie spürbar)
