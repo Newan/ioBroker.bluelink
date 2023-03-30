@@ -247,7 +247,9 @@ class Bluelink extends utils.Adapter {
             const vin = vehicle.vehicleConfig.vin;
 
             this.log.debug('Read new status from api for ' + vin);
-            if (this.batteryState12V[vin] && this.batteryState12V[vin] < 60) {
+	    let batteryControlState12V = await this.getStateAsync(`${vin}.control.batteryControlState12V`);   
+	            	
+            if (this.batteryState12V[vin] && this.batteryState12V[vin] < batteryControlState12V.val) {
                 this.log.warn('12V Battery state is low: ' + this.batteryState12V[vin] + '%. Recharge to prevent damage!');
                 if (this.config.protectAgainstDeepDischarge && !force) {
                     this.log.warn('Auto Refresh is disabled, only use force refresh to reenable refresh if you are willing to risk your battery');
@@ -715,6 +717,20 @@ class Bluelink extends utils.Adapter {
             native: {},
         });         
         this.subscribeStates(vin + '.control.force_update');
+	
+	await this.setObjectNotExistsAsync(vin + '.control.batteryControlState12V', {
+            type: 'state',
+            common: {
+                name: 'set battery monitoring',
+                type: 'number',
+                role: 'state',
+                read: true,
+                write: true,
+                def: 60,
+            },
+            native: {},
+        });
+
    }
 
    async setStatusObjects(vin) {          
