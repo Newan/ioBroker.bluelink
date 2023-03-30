@@ -247,9 +247,9 @@ class Bluelink extends utils.Adapter {
             const vin = vehicle.vehicleConfig.vin;
 
             this.log.debug('Read new status from api for ' + vin);
-            if (this.batteryState12V[vin] &amp;&amp; this.batteryState12V[vin] < 60) {
+            if (this.batteryState12V[vin] && this.batteryState12V[vin] < 60) {
                 this.log.warn('12V Battery state is low: ' + this.batteryState12V[vin] + '%. Recharge to prevent damage!');
-                if (this.config.protectAgainstDeepDischarge &amp;&amp; !force) {
+                if (this.config.protectAgainstDeepDischarge && !force) {
                     this.log.warn('Auto Refresh is disabled, only use force refresh to reenable refresh if you are willing to risk your battery');
                     continue;
                 }
@@ -276,7 +276,7 @@ class Bluelink extends utils.Adapter {
                     await this.json2iob.parse(vin + '.vehicleStatusRaw', newStatus);
                     
                     await this.setNewFullStatus(newStatus, vin);
-                    if (newStatus.vehicleStatus &amp;&amp; newStatus.vehicleStatus.battery &amp;&amp; newStatus.vehicleStatus.battery.batSoc) {
+                    if (newStatus.vehicleStatus && newStatus.vehicleStatus.battery && newStatus.vehicleStatus.battery.batSoc) {
                         this.log.debug('Set ' + newStatus.vehicleStatus.battery.batSoc + ' battery state for ' + vin);
                         this.batteryState12V[vin] = newStatus.vehicleStatus.battery.batSoc;
                     }
@@ -299,7 +299,7 @@ class Bluelink extends utils.Adapter {
                         this.log.debug(JSON.stringify(newStatus));
 
                         await this.setNewStatus(newStatus, vin);
-                        if (newStatus.engine &amp;&amp; newStatus.engine.batteryCharge12v) {
+                        if (newStatus.engine && newStatus.engine.batteryCharge12v) {
                             this.log.debug('Set ' + newStatus.engine.batteryCharge12v + ' battery state for ' + vin);
                             this.batteryState12V[vin] = newStatus.engine.batteryCharge12v;
                         }
@@ -1134,7 +1134,7 @@ class Bluelink extends utils.Adapter {
     getCircularReplacer() {
         const seen = new WeakSet();
         return (key, value) =>; {
-            if (typeof value === 'object' &amp;&amp; value !== null) {
+            if (typeof value === 'object' && value !== null) {
                 if (seen.has(value)) {
                     return;
                 }
