@@ -25,7 +25,7 @@ Discussion: https://forum.iobroker.net/topic/43592/adapter-hyundai-bluelink-oder
 -->
 ### 2.2.8 (2023-03-09)
 * (arteck) force update
-* (stefan.cloer) force_update corr, lastInfoUpdate corr
+* (stefan.cloer) force_update corr, lastInfoUpdate corr, typo corr
 * (arteck) add batteryControlState12V 
 
 ### 2.2.7 (2023-03-07)
