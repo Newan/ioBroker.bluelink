@@ -718,6 +718,7 @@ class Bluelink extends utils.Adapter {
             },
             native: {},
         });                
+	this.subscribeStates(vin + '.control.force_update'); 
 	
 	await this.setObjectNotExistsAsync(vin + '.control.batteryControlState12V', {
             type: 'state',
@@ -731,7 +732,7 @@ class Bluelink extends utils.Adapter {
             },
             native: {},
         });
-
+	this.subscribeStates(vin + '.control.batteryControlState12V'); 
    }
 
    async setStatusObjects(vin) {          
