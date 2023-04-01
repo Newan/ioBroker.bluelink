@@ -37,8 +37,8 @@ class Bluelink extends utils.Adapter {
     //Start Adapter
     async onReady() {
         //first check account settings
-        if (this.config.request < 1) {
-            this.log.warn('Request is under 1 -> got to default 100');
+        if (this.config.request < 1 || this.config.request > 150) {
+            this.log.warn('Request is under 1 -> got to default ' + request_count);
         } else {
             request_count = this.config.request;
         }
