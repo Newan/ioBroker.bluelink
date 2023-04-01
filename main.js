@@ -920,7 +920,7 @@ class Bluelink extends utils.Adapter {
             type: 'state',
             common: {
                 name: 'Steer wheel heat',
-                type: 'boolean',
+                type: 'number',
                 role: 'indicator',
                 read: true,
                 write: false,
@@ -1081,10 +1081,11 @@ class Bluelink extends utils.Adapter {
             type: 'state',
             common: {
                 name: 'Vehicle position latitude',
-                type: 'string',
+                type: 'number',
                 role: 'indicator',
                 read: true,
                 write: false,
+		def: 0,
             },
             native: {},
         });
@@ -1093,10 +1094,11 @@ class Bluelink extends utils.Adapter {
             type: 'state',
             common: {
                 name: 'Vehicle position longitude',
-                type: 'string',
+                type: 'number',
                 role: 'indicator',
                 read: true,
                 write: false,
+		def: 0,
             },
             native: {},
         });
