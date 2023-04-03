@@ -7,6 +7,7 @@ let force_update = true;
 
 const adapterIntervals = {}; //halten von allen Intervallen
 let request_count = 48; // halbstündig sollte als Standardeinstellung reichen (zu häufige Abfragen entleeren die Batterie spürbar)
+const max_request = 400;
 let client;
 
 let slow_charging;
@@ -37,7 +38,7 @@ class Bluelink extends utils.Adapter {
     //Start Adapter
     async onReady() {
         //first check account settings
-        if (this.config.request < 1 || this.config.request > 150) {
+        if (this.config.request < 1 || this.config.request > max_request) {
             this.log.warn('Request is invalid got to default ' + request_count);
         } else {
             request_count = this.config.request;
