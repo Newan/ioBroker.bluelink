@@ -74,16 +74,16 @@ systemDictionary = {
         'pl': 'Marka',
         'zh-cn': '品牌'
     },
-    'Request': {
-        'en': 'Request per day',
-        'de': 'Anfrage pro Tag',
+    'Request max 400': {
+        'en': 'Request per day max 400',
+        'de': 'Anfrage pro Tag max 400',
         'ru': 'Запрос в день',
-        'pt': 'Pedido por dia',
-        'nl': 'Aanvraag per dag',
-        'fr': 'Demande par jour',
-        'it': 'Richiesta al giorno',
-        'es': 'Solicitud por día',
-        'pl': 'Żądanie dziennie',
+        'pt': 'Pedido por dia max 400',
+        'nl': 'Aanvraag per dag max 400',
+        'fr': 'Demande par jour max 400',
+        'it': 'Richiesta al giorno max 400',
+        'es': 'Solicitud por día max 400',
+        'pl': 'Żądanie dziennie max 400',
         'zh-cn': '每天请求'
     },
     'Api settings': {
