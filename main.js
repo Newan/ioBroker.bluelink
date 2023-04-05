@@ -2,8 +2,7 @@
 
 const utils = require('@iobroker/adapter-core');
 const bluelinky = require('bluelinky');
-const Json2iob = require('./lib/json2iob');
-let force_update = true;   
+const Json2iob = require('./lib/json2iob');  
 
 const adapterIntervals = {}; //halten von allen Intervallen
 let request_count = 48; // halbstündig sollte als Standardeinstellung reichen (zu häufige Abfragen entleeren die Batterie spürbar)
@@ -122,9 +121,8 @@ class Bluelink extends utils.Adapter {
                     this.readStatus(true);
                     break;
                 case 'force_update':
-            			let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
-                  force_update = force_update_obj.val;   
-  	            	if (force_update) {
+            		let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);          
+  	            	if (force_update_obj.val) {
       	                	this.log.info('Update method for ' + vin + ' changed to "directly from the car"');
           	        } else {
               	        	this.log.info('Update method for ' + vin + ' changed to "from the server"');
@@ -259,8 +257,9 @@ class Bluelink extends utils.Adapter {
             }
             try {
               let newStatus;
-
-            	if(force_update) {
+              let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);          
+  	            	
+              if(force_update_obj.val) {
                     this.log.info('Read new update for ' + vin + ' directly from the car');
               } else {
                   this.log.info('Read new update for ' + vin + ' from the server');
@@ -268,7 +267,7 @@ class Bluelink extends utils.Adapter {
                 	
             	try {
                     newStatus = await vehicle.fullStatus({
-                        refresh: force_update,
+                        refresh: force_update_obj.val,
                         parsed: true,
                     });
                     //set all values
@@ -292,10 +291,11 @@ class Bluelink extends utils.Adapter {
                     } else {
                         //if(error.source.statusCode == 503) {
                         this.log.info('Error on API-Full-Status - Fallback GetNormalStatus');
-
+                        let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);            	            	
+             
                         //Abfrage Full hat nicht gekalppt. Haben wir einen Fallback?
                         newStatus = await vehicle.status({
-                            refresh: force_update,
+                            refresh: force_update_obj.val,
                             parsed: true,
                         });
                     	this.log.debug('Set new GetNormalStatus for ' + vin);
@@ -310,9 +310,7 @@ class Bluelink extends utils.Adapter {
                 }
 
                 //Abfrage war erfolgreich, lösche ErrorCounter
-                this.countError = 0;
-		            let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);                
-                force_update = force_update_obj.val;
+                this.countError = 0;		
                 
                 this.log.info('Update for ' + vin + ' successfull');
 	  	       // last update
