@@ -218,6 +218,9 @@ class Bluelink extends utils.Adapter {
                         }, 24 * 60 * 60 * 1000); //24h
                     }
                 }
+		    
+		this.countError = 0;
+		await this.setStateAsync(`${vin}.error_counter`, this.countError, true);
                 //start time cycle
                 await this.readStatus();
 
