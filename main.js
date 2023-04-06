@@ -117,8 +117,9 @@ class Bluelink extends utils.Adapter {
                     break;
                 case 'force_refresh':
                     this.log.info('Forcing refresh');
-                    //Force refresh for new states
+                    //Force refresh for new states set counter to 0
 		    this.countError = 0;
+		    await this.setStateAsync(`${vin}.error_counter`, this.countError, true);
                     this.readStatus(true);
                     break;
                 case 'force_update':
