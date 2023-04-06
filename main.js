@@ -226,10 +226,9 @@ class Bluelink extends utils.Adapter {
             });
 
             client.on('error', async (err) => {
-                // something went wrong with login
-                this.log.debug('Error on Api login');
+                // something went wrong with login      
                 this.log.error(err);
-                this.log.error('Please logout in the app and relogin in the app');
+                this.log.error('Server is not available or login credentials are wrong');
             });
         } catch (error) {
             this.log.error('Error in login/on function');
