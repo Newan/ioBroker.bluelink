@@ -8,6 +8,7 @@ const adapterIntervals = {}; //halten von allen Intervallen
 let request_count = 48; // halbstündig sollte als Standardeinstellung reichen (zu häufige Abfragen entleeren die Batterie spürbar)
 const max_request = 400;
 let client;
+const positionUrlConst = 'https://maps.google.com/maps?z=15&t=m&q=loc:';
 
 let slow_charging;
 let fast_charging;
@@ -508,9 +509,13 @@ class Bluelink extends utils.Adapter {
             if (newStatus.vehicleLocation.coord != undefined) {
                 const latitude = newStatus.vehicleLocation.coord.lat;
                 const longitude = newStatus.vehicleLocation.coord.lon;
+		const positionUrl = `${positionUrlConst}${latitude}+${longitude}`;
+		
                 await this.setStateAsync(vin + '.vehicleLocation.lat', { val: latitude, ack: true });
                 await this.setStateAsync(vin + '.vehicleLocation.lon', { val: longitude, ack: true });
                 await this.setStateAsync(vin + '.vehicleLocation.speed', { val: newStatus.vehicleLocation.speed.value, ack: true });
+		await this.setStateAsync(vin + '.vehicleLocation.position_url', { val: positionUrl, ack: true });
+				
             }
         }
 
@@ -1089,7 +1094,8 @@ class Bluelink extends utils.Adapter {
             common: {
                 name: 'Vehicle position latitude',
                 type: 'number',
-                role: 'indicator',
+                role: 'value.gps.longitude',
+		unit:  '°',
                 read: true,
                 write: false,
 		def: 0,
@@ -1102,7 +1108,8 @@ class Bluelink extends utils.Adapter {
             common: {
                 name: 'Vehicle position longitude',
                 type: 'number',
-                role: 'indicator',
+                role: 'value.gps.longitude',
+		unit: '°',
                 read: true,
                 write: false,
 		def: 0,
@@ -1115,12 +1122,26 @@ class Bluelink extends utils.Adapter {
             common: {
                 name: 'Vehicle speed',
                 type: 'number',
-                role: 'indicator',
+                role: 'value.speed',
+		unit: 'km/h',
                 read: true,
                 write: false,
             },
             native: {},
         });
+	
+	await this.setObjectNotExistsAsync(vin + '.vehicleLocation.position_url', {
+            type: 'state',
+            common: {
+                name: 'Position URL',
+                type: 'string',
+                role: 'text.url',
+                read: true,
+                write: false,
+            },
+            native: {},
+        });
+	
 
         //Bereich Odometer
         await this.setObjectNotExistsAsync(vin + '.odometer.value', {
