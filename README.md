@@ -29,6 +29,7 @@ Discussion: https://forum.iobroker.net/topic/43592/adapter-hyundai-bluelink-oder
 * (arteck) add batteryControlState12V init is 60
 * (arteck) max requests set to 400
 * (arteck) vin id for force_refresh 
+* (arteck) positionURL
 
 ### 2.2.7 (2023-03-07)
 * (arteck) fix / clima control
