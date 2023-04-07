@@ -235,7 +235,7 @@ class Bluelink extends utils.Adapter {
                 this.log.error('Server is not available or login credentials are wrong');
 		this.log.error('next auto login attempt in 1 hour or restart adapter manual');
 		    
-		requestTimeout = setTimeout(async () => {
+		let requestTimeout = setTimeout(async () => {
                 	this.login();
             	}, 1000 * 60 * 60);  // warte 1 stunde                    
             });
