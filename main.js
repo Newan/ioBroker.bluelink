@@ -48,7 +48,7 @@ class Bluelink extends utils.Adapter {
             this.log.error('No Username set');
         } else {
             //Start logic with login
-            this.login();
+            await this.login();
         }
     }
 
@@ -169,7 +169,7 @@ class Bluelink extends utils.Adapter {
     /**
      * Funktion to login in bluelink / UVO
      */
-    login() {
+    async login() {
         try {
             this.log.info('Login to api');
             const tmpConfig = {
@@ -234,9 +234,10 @@ class Bluelink extends utils.Adapter {
                 this.log.error(err);
                 this.log.error('Server is not available or login credentials are wrong');
 		this.log.error('next auto login attempt in 1 hour or restart adapter manual');
-                setTimeout(function() {
-			login();
-                }, 1000 * 60 * 60);  // warte 1 stunde      
+		    
+		requestTimeout = setTimeout(async () => {
+                	this.login();
+            	}, 1000 * 60 * 60);  // warte 1 stunde                    
             });
         } catch (error) {
             this.log.error('Error in login/on function');
