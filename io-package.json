@@ -1,8 +1,11 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "2.2.8",
+    "version": "2.3.1",
     "news": {
+      "2.3.1": {
+        "en": "see Readme"
+      },
       "2.2.8": {
         "en": "force update"
       },

@@ -23,6 +23,9 @@ Discussion: https://forum.iobroker.net/topic/43592/adapter-hyundai-bluelink-oder
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
+### 2.3.1 (2023-04-10)
+* (arteck) io-package update
+
 ### 2.3.0 (2023-04-10)
 * (arteck) force update
 * (stefan.cloer) force_update corr, lastInfoUpdate corr, typo corr
