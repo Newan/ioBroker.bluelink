@@ -2,7 +2,7 @@
 
 const utils = require('@iobroker/adapter-core');
 const bluelinky = require('bluelinky');
-const Json2iob = require('./lib/json2iob');  
+const Json2iob = require('./lib/json2iob');
 
 const adapterIntervals = {}; //halten von allen Intervallen
 let request_count = 48; // halbstündig sollte als Standardeinstellung reichen (zu häufige Abfragen entleeren die Batterie spürbar)
@@ -93,12 +93,12 @@ class Bluelink extends utils.Adapter {
                 case 'start':
                     this.log.info('Starting clima for vehicle');
 
-                    let airCtrl = await this.getStateAsync(`${vin}.control.set.airCtrl`);                
+                    let airCtrl = await this.getStateAsync(`${vin}.control.set.airCtrl`);
                     let airTempC = await this.getStateAsync(`${vin}.control.set.airTemp`);
                     let airTempF = (airTempC.val * 9/5) + 32;
                     let defrost = await this.getStateAsync(`${vin}.control.set.defrost`);
                     let heating = await this.getStateAsync(`${vin}.control.set.heating`);
-                  
+
                     try {
                         response = await vehicle.start({
                             airCtrl: airCtrl.val,
@@ -108,8 +108,8 @@ class Bluelink extends utils.Adapter {
                             heating1: heating.val,
                         });
                     } catch (err) {
-                        this.log.error(JSON.stringify(err));                    
-                    }    
+                        this.log.error(JSON.stringify(err));
+                    }
                     break;
                 case 'stop':
                     this.log.info('Stop clima for vehicle');
@@ -119,17 +119,17 @@ class Bluelink extends utils.Adapter {
                 case 'force_refresh':
                     this.log.info('Forcing refresh');
                     //Force refresh for new states set counter to 0
-		    this.countError = 0;
-		    await this.setStateAsync(`${vin}.error_counter`, this.countError, true);
+                    this.countError = 0;
+                    await this.setStateAsync(`${vin}.error_counter`, this.countError, true);
                     this.readStatus(true);
                     break;
                 case 'force_update':
-            		let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);          
-  	            	if (force_update_obj.val) {
-      	                	this.log.info('Update method for ' + vin + ' changed to "directly from the car"');
-          	        } else {
-              	        	this.log.info('Update method for ' + vin + ' changed to "from the server"');
-                  	}
+                    let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
+                    if (force_update_obj.val) {
+                        this.log.info('Update method for ' + vin + ' changed to "directly from the car"');
+                    } else {
+                        this.log.info('Update method for ' + vin + ' changed to "from the server"');
+                    }
                     break;
                 case 'charge':
                     this.log.info('Start charging');
@@ -219,9 +219,10 @@ class Bluelink extends utils.Adapter {
                         }, 24 * 60 * 60 * 1000); //24h
                     }
                 }
-		    
-		this.countError = 0;
-		await this.setStateAsync(`${vin}.error_counter`, this.countError, true);
+
+                this.countError = 0;
+                //await this.setStateAsync(`${vin}.error_counter`, this.countError, true);
+
                 //start time cycle
                 await this.readStatus();
 
@@ -230,14 +231,14 @@ class Bluelink extends utils.Adapter {
             });
 
             client.on('error', async (err) => {
-                // something went wrong with login      
+                // something went wrong with login
                 this.log.error(err);
                 this.log.error('Server is not available or login credentials are wrong');
-		this.log.error('next auto login attempt in 1 hour or restart adapter manual');
-		    
-		let requestTimeout = setTimeout(async () => {
-                	this.login();
-            	}, 1000 * 60 * 60);  // warte 1 stunde                    
+                this.log.error('next auto login attempt in 1 hour or restart adapter manual');
+
+                let requestTimeout = setTimeout(async () => {
+                    this.login();
+                }, 1000 * 60 * 60);  // warte 1 stunde
             });
         } catch (error) {
             this.log.error('Error in login/on function');
@@ -256,8 +257,8 @@ class Bluelink extends utils.Adapter {
             const vin = vehicle.vehicleConfig.vin;
 
             this.log.debug('Read new status from api for ' + vin);
-	    let batteryControlState12V = await this.getStateAsync(`${vin}.control.batteryControlState12V`);   
-	            	
+            let batteryControlState12V = await this.getStateAsync(`${vin}.control.batteryControlState12V`);
+
             if (this.batteryState12V[vin] && this.batteryState12V[vin] < batteryControlState12V.val) {
                 this.log.warn('12V Battery state is low: ' + this.batteryState12V[vin] + '%. Recharge to prevent damage!');
                 if (this.config.protectAgainstDeepDischarge && !force) {
@@ -266,16 +267,16 @@ class Bluelink extends utils.Adapter {
                 }
             }
             try {
-              let newStatus;
-              let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);          
-  	            	
-              if(force_update_obj.val) {
+                let newStatus;
+                let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
+
+                if(force_update_obj.val) {
                     this.log.info('Read new update for ' + vin + ' directly from the car');
-              } else {
-                  this.log.info('Read new update for ' + vin + ' from the server');
-              }
-                	
-            	try {
+                } else {
+                    this.log.info('Read new update for ' + vin + ' from the server');
+                }
+
+                try {
                     newStatus = await vehicle.fullStatus({
                         refresh: force_update_obj.val,
                         parsed: true,
@@ -283,10 +284,10 @@ class Bluelink extends utils.Adapter {
                     //set all values
                     this.log.debug('Set new full status for ' + vin);
                     this.log.debug('RAW ' + JSON.stringify(newStatus));
-                    
+
                     // raw data
                     await this.json2iob.parse(vin + '.vehicleStatusRaw', newStatus);
-                    
+
                     await this.setNewFullStatus(newStatus, vin);
                     if (newStatus.vehicleStatus && newStatus.vehicleStatus.battery && newStatus.vehicleStatus.battery.batSoc) {
                         this.log.debug('Set ' + newStatus.vehicleStatus.battery.batSoc + ' battery state for ' + vin);
@@ -301,14 +302,14 @@ class Bluelink extends utils.Adapter {
                     } else {
                         //if(error.source.statusCode == 503) {
                         this.log.info('Error on API-Full-Status - Fallback GetNormalStatus');
-                        let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);            	            	
-             
+                        let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
+
                         //Abfrage Full hat nicht gekalppt. Haben wir einen Fallback?
                         newStatus = await vehicle.status({
                             refresh: force_update_obj.val,
                             parsed: true,
                         });
-                    	this.log.debug('Set new GetNormalStatus for ' + vin);
+                        this.log.debug('Set new GetNormalStatus for ' + vin);
                         this.log.debug(JSON.stringify(newStatus));
 
                         await this.setNewStatus(newStatus, vin);
@@ -320,15 +321,15 @@ class Bluelink extends utils.Adapter {
                 }
 
                 //Abfrage war erfolgreich, lösche ErrorCounter
-                this.countError = 0;		
-                
+                this.countError = 0;
+
                 this.log.info('Update for ' + vin + ' successfull');
-	  	       // last update
-    	        await this.setStateAsync(`${vin}.lastInfoUpdate`, Number(Date.now()), true);
-            
+                // last update
+                await this.setStateAsync(`${vin}.lastInfoUpdate`, Number(Date.now()), true);
+
             } catch (error) {
                 this.countError += 1;  // add 1
-               
+
                 this.log.error('Error on API-Request Status, ErrorCount:' + this.countError);
                 if (typeof error === 'string') {
                     this.log.error(error);
@@ -338,13 +339,13 @@ class Bluelink extends utils.Adapter {
             }
 
             await this.setStateAsync(`${vin}.error_counter`, this.countError, true);
-            
+
             if (this.countError > this.config.errorCounter) {
                 //Error counter over x erros, restart Adapter to fix te API Token
                 this.restart();
             }
         }
-    
+
         //set ne cycle
         if (force) {
             clearTimeout(adapterIntervals.readAllStates);
@@ -356,9 +357,9 @@ class Bluelink extends utils.Adapter {
         try {
             const driveHistory = await vehicle.driveHistory();
             this.log.debug('driveHistory-Data: ' + JSON.stringify(driveHistory));
-            
-            if (driveHistory != undefined) { 
-            
+
+            if (driveHistory != undefined) {
+
                 await this.setObjectNotExistsAsync(vin + '.driveHistory', {
                     type: 'channel',
                     common: {
@@ -407,9 +408,9 @@ class Bluelink extends utils.Adapter {
         this.checkDoor(vin, newStatus.chassis.openDoors);
 
         //chassis/tirePressure
-     //   if (newStatus.chassis.tirePressureWarningLamp != undefined) {
-     //
-     //   }
+        //   if (newStatus.chassis.tirePressureWarningLamp != undefined) {
+        //
+        //   }
 
         //climate
         await this.setStateAsync(vin + '.vehicleStatus.airCtrlOn', { val: newStatus.climate.active, ack: true });
@@ -419,7 +420,7 @@ class Bluelink extends utils.Adapter {
 
         //Engine
         await this.setStateAsync(vin + '.vehicleStatus.battery.soc', { val: newStatus.engine.batteryChargeHV, ack: true });
-        await this.setStateAsync(vin + '.vehicleStatus.battery.charge', { val: newStatus.engine.charging, ack: true });       
+        await this.setStateAsync(vin + '.vehicleStatus.battery.charge', { val: newStatus.engine.charging, ack: true });
         await this.setStateAsync(vin + '.vehicleStatus.battery.soc-12V', { val: newStatus.engine.batteryCharge12v, ack: true });
     }
 
@@ -498,7 +499,7 @@ class Bluelink extends utils.Adapter {
             await this.setStateAsync(vin + '.vehicleStatus.dte', { val: newStatus.vehicleStatus.dte.value, ack: true });
         }
 
-        // nur für Kia              
+        // nur für Kia
         if (newStatus.vehicleStatus.battery != undefined) {
             await this.setStateAsync(vin + '.vehicleStatus.battery.soc-12V', { val: newStatus.vehicleStatus.battery.batSoc, ack: true });
             await this.setStateAsync(vin + '.vehicleStatus.battery.state-12V', { val: newStatus.vehicleStatus.battery.batState, ack: true });
@@ -510,13 +511,13 @@ class Bluelink extends utils.Adapter {
             if (newStatus.vehicleLocation.coord != undefined) {
                 const latitude = newStatus.vehicleLocation.coord.lat;
                 const longitude = newStatus.vehicleLocation.coord.lon;
-		const positionUrl = `${positionUrlConst}${latitude}+${longitude}`;
-		
+                const positionUrl = `${positionUrlConst}${latitude}+${longitude}`;
+
                 await this.setStateAsync(vin + '.vehicleLocation.lat', { val: latitude, ack: true });
                 await this.setStateAsync(vin + '.vehicleLocation.lon', { val: longitude, ack: true });
                 await this.setStateAsync(vin + '.vehicleLocation.speed', { val: newStatus.vehicleLocation.speed.value, ack: true });
-		await this.setStateAsync(vin + '.vehicleLocation.position_url', { val: positionUrl, ack: true });
-				
+                await this.setStateAsync(vin + '.vehicleLocation.position_url', { val: positionUrl, ack: true });
+
             }
         }
 
@@ -547,7 +548,7 @@ class Bluelink extends utils.Adapter {
             let backLeft = doors.backLeft;
             let backRight = doors.backRight;
 
-        // HEV hyundai send 0 but we need boolean
+            // HEV hyundai send 0 but we need boolean
             if (typeof frontLeft == 'number') {
                 frontLeft = frontLeft == 0 ? false : true;
             }
@@ -640,7 +641,7 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
         this.subscribeStates(vin + '.control.start');
-        
+
         await this.setObjectNotExistsAsync(vin + '.control.set.airTemp', {
             type: 'state',
             common: {
@@ -653,7 +654,7 @@ class Bluelink extends utils.Adapter {
             },
             native: {},
         });
-        
+
         await this.setObjectNotExistsAsync(vin + '.control.set.defrost', {
             type: 'state',
             common: {
@@ -692,7 +693,7 @@ class Bluelink extends utils.Adapter {
             },
             native: {},
         });
-        
+
         await this.setObjectNotExistsAsync(vin + '.control.stop', {
             type: 'state',
             common: {
@@ -718,7 +719,7 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
         this.subscribeStates(vin + '.control.force_refresh');
-        
+
         await this.setObjectNotExistsAsync(vin + '.control.force_update', {
             type: 'state',
             common: {
@@ -730,10 +731,10 @@ class Bluelink extends utils.Adapter {
                 def: true,
             },
             native: {},
-        });                
-	this.subscribeStates(vin + '.control.force_update'); 
-	
-	await this.setObjectNotExistsAsync(vin + '.control.batteryControlState12V', {
+        });
+        this.subscribeStates(vin + '.control.force_update');
+
+        await this.setObjectNotExistsAsync(vin + '.control.batteryControlState12V', {
             type: 'state',
             common: {
                 name: 'set battery monitoring',
@@ -745,10 +746,10 @@ class Bluelink extends utils.Adapter {
             },
             native: {},
         });
-	this.subscribeStates(vin + '.control.batteryControlState12V'); 
-   }
+        this.subscribeStates(vin + '.control.batteryControlState12V');
+    }
 
-   async setStatusObjects(vin) {          
+    async setStatusObjects(vin) {
         await this.setObjectNotExistsAsync(`${vin}.lastInfoUpdate`, {
             type: 'state',
             common: {
@@ -760,7 +761,7 @@ class Bluelink extends utils.Adapter {
             },
             native: {},
         });
-     
+
         await this.setObjectNotExistsAsync(`${vin}.error_counter`, {
             type: 'state',
             common: {
@@ -773,16 +774,16 @@ class Bluelink extends utils.Adapter {
             },
             native: {},
         });
-        
+
         await this.setObjectNotExistsAsync(vin + '.vehicleStatusRaw', {
             type: 'channel',
             common: {
-                name: 'Unformatted vehicle status',               
+                name: 'Unformatted vehicle status',
             },
             native: {},
         });
-        
-        
+
+
         //Bereicht vehicleStatus
         await this.setObjectNotExistsAsync(vin + '.vehicleStatus.doorLock', {
             type: 'state',
@@ -1096,10 +1097,10 @@ class Bluelink extends utils.Adapter {
                 name: 'Vehicle position latitude',
                 type: 'number',
                 role: 'value.gps.longitude',
-		unit:  '°',
+                unit:  '°',
                 read: true,
                 write: false,
-		def: 0,
+                def: 0,
             },
             native: {},
         });
@@ -1110,10 +1111,10 @@ class Bluelink extends utils.Adapter {
                 name: 'Vehicle position longitude',
                 type: 'number',
                 role: 'value.gps.longitude',
-		unit: '°',
+                unit: '°',
                 read: true,
                 write: false,
-		def: 0,
+                def: 0,
             },
             native: {},
         });
@@ -1124,14 +1125,14 @@ class Bluelink extends utils.Adapter {
                 name: 'Vehicle speed',
                 type: 'number',
                 role: 'value.speed',
-		unit: 'km/h',
+                unit: 'km/h',
                 read: true,
                 write: false,
             },
             native: {},
         });
-	
-	await this.setObjectNotExistsAsync(vin + '.vehicleLocation.position_url', {
+
+        await this.setObjectNotExistsAsync(vin + '.vehicleLocation.position_url', {
             type: 'state',
             common: {
                 name: 'Position URL',
@@ -1142,7 +1143,7 @@ class Bluelink extends utils.Adapter {
             },
             native: {},
         });
-	
+
 
         //Bereich Odometer
         await this.setObjectNotExistsAsync(vin + '.odometer.value', {
