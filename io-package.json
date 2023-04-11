@@ -1,8 +1,11 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "2.3.1",
+    "version": "2.3.2",
     "news": {
+      "2.3.2": {
+        "en": "see Readme"
+      },
       "2.3.1": {
         "en": "see Readme"
       },

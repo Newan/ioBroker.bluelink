@@ -118,10 +118,7 @@ class Bluelink extends utils.Adapter {
                     break;
                 case 'force_refresh':
                     this.log.info('Forcing refresh');
-                    //Force refresh for new states set counter to 0
-                    this.countError = 0;
-                    await this.setStateAsync(`${vin}.error_counter`, this.countError, true);
-                    this.readStatus(true);
+                    await this.readStytusVin(vehicle);
                     break;
                 case 'force_update':
                     let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
@@ -224,7 +221,7 @@ class Bluelink extends utils.Adapter {
                 this.countError = 0;
                 
                 //start time cycle
-                await this.readStatus();
+                await this.readStatus(true,null);
 
                 //clean legacy states
                 this.cleanObjects();
@@ -251,99 +248,21 @@ class Bluelink extends utils.Adapter {
     }
 
     //read new sates from vehicle
-    async readStatus(force = false) {
+    async readStatus(force,vin) {
         //read new verhicle status
         for (const vehicle of this.vehicles) {
-            const vin = vehicle.vehicleConfig.vin;
+          const vin = vehicle.vehicleConfig.vin;
+          this.log.debug('Read new status from api for ' + vin);
+          let batteryControlState12V = await this.getStateAsync(`${vin}.control.batteryControlState12V`);
 
-            this.log.debug('Read new status from api for ' + vin);
-            let batteryControlState12V = await this.getStateAsync(`${vin}.control.batteryControlState12V`);
-
-            if (this.batteryState12V[vin] && this.batteryState12V[vin] < batteryControlState12V.val) {
-                this.log.warn('12V Battery state is low: ' + this.batteryState12V[vin] + '%. Recharge to prevent damage!');
-                if (this.config.protectAgainstDeepDischarge && !force) {
-                    this.log.warn('Auto Refresh is disabled, only use force refresh to reenable refresh if you are willing to risk your battery');
-                    continue;
-                }
-            }
-            try {
-                let newStatus;
-                let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
-
-                if(force_update_obj.val) {
-                    this.log.info('Read new update for ' + vin + ' directly from the car');
-                } else {
-                    this.log.info('Read new update for ' + vin + ' from the server');
-                }
-
-                try {
-                    newStatus = await vehicle.fullStatus({
-                        refresh: force_update_obj.val,
-                        parsed: true,
-                    });
-                    //set all values
-                    this.log.debug('Set new full status for ' + vin);
-                    this.log.debug('RAW ' + JSON.stringify(newStatus));
-
-                    // raw data
-                    await this.json2iob.parse(vin + '.vehicleStatusRaw', newStatus);
-
-                    await this.setNewFullStatus(newStatus, vin);
-                    if (newStatus.vehicleStatus && newStatus.vehicleStatus.battery && newStatus.vehicleStatus.battery.batSoc) {
-                        this.log.debug('Set ' + newStatus.vehicleStatus.battery.batSoc + ' battery state for ' + vin);
-                        this.batteryState12V[vin] = newStatus.vehicleStatus.battery.batSoc;
-                    }
-
-                } catch (error) {
-                    if (typeof error === 'string') {
-                        this.log.error('Error on API-Request GetFullStatus');
-                        this.log.error(error);
-                        //TODO option abfragen
-                    } else {
-                        //if(error.source.statusCode == 503) {
-                        this.log.info('Error on API-Full-Status - Fallback GetNormalStatus');
-                        let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
-
-                        //Abfrage Full hat nicht gekalppt. Haben wir einen Fallback?
-                        newStatus = await vehicle.status({
-                            refresh: force_update_obj.val,
-                            parsed: true,
-                        });
-                        this.log.debug('Set new GetNormalStatus for ' + vin);
-                        this.log.debug(JSON.stringify(newStatus));
-
-                        await this.setNewStatus(newStatus, vin);
-                        if (newStatus.engine && newStatus.engine.batteryCharge12v) {
-                            this.log.debug('Set ' + newStatus.engine.batteryCharge12v + ' battery state for ' + vin);
-                            this.batteryState12V[vin] = newStatus.engine.batteryCharge12v;
-                        }
-                    }
-                }
-
-                //Abfrage war erfolgreich, lösche ErrorCounter
-                this.countError = 0;
-
-                this.log.info('Update for ' + vin + ' successfull');
-                // last update
-                await this.setStateAsync(`${vin}.lastInfoUpdate`, Number(Date.now()), true);
-
-            } catch (error) {
-                this.countError += 1;  // add 1
-
-                this.log.error('Error on API-Request Status, ErrorCount:' + this.countError);
-                if (typeof error === 'string') {
-                    this.log.error(error);
-                } else if (error instanceof Error) {
-                    this.log.error(error.message);
-                }
-            }
-
-            await this.setStateAsync(`${vin}.error_counter`, this.countError, true);
-
-            if (this.countError > this.config.errorCounter) {
-                //Error counter over x erros, restart Adapter to fix te API Token
-                this.restart();
-            }
+          if (this.batteryState12V[vin] && this.batteryState12V[vin] < batteryControlState12V.val) {
+              this.log.warn('12V Battery state is low: ' + this.batteryState12V[vin] + '%. Recharge to prevent damage!');
+              if (this.config.protectAgainstDeepDischarge && !force) {
+                  this.log.warn('Auto Refresh is disabled, only use force refresh to reenable refresh if you are willing to risk your battery');
+                  continue;
+              }
+          }
+          await this.readStytusVin(vehicle);
         }
 
         //set ne cycle
@@ -351,6 +270,89 @@ class Bluelink extends utils.Adapter {
             clearTimeout(adapterIntervals.readAllStates);
         }
         adapterIntervals.readAllStates = setTimeout(this.readStatus.bind(this), ((24 * 60) / request_count) * 60000);
+    }
+
+
+    async readStytusVin(vehicle) {      
+      const vin = vehicle.vehicleConfig.vin;
+      try {
+          let newStatus;
+          let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
+
+          if(force_update_obj.val) {
+              this.log.info('Read new update for ' + vin + ' directly from the car');
+          } else {
+              this.log.info('Read new update for ' + vin + ' from the server');
+          }
+
+          try {
+              newStatus = await vehicle.fullStatus({
+                  refresh: force_update_obj.val,
+                  parsed: true,
+              });
+              //set all values
+              this.log.debug('Set new full status for ' + vin);
+              this.log.debug('RAW ' + JSON.stringify(newStatus));
+
+              // raw data
+              await this.json2iob.parse(vin + '.vehicleStatusRaw', newStatus);
+
+              await this.setNewFullStatus(newStatus, vin);
+              
+              if (newStatus.vehicleStatus && newStatus.vehicleStatus.battery && newStatus.vehicleStatus.battery.batSoc) {
+                  this.log.debug('Set ' + newStatus.vehicleStatus.battery.batSoc + ' battery state for ' + vin);
+                  this.batteryState12V[vin] = newStatus.vehicleStatus.battery.batSoc;
+              }
+
+          } catch (error) {
+              if (typeof error === 'string') {
+                  this.log.error('Error on API-Request GetFullStatus');
+                  this.log.error(error);
+              } else {
+                  //if(error.source.statusCode == 503) {
+                  this.log.info('Error on API-Full-Status - Fallback GetNormalStatus');
+                  let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
+
+                  //Abfrage Full hat nicht geklappt. Haben wir einen Fallback?
+                  newStatus = await vehicle.status({
+                      refresh: force_update_obj.val,
+                      parsed: true,
+                  });
+                  this.log.debug('Set new GetNormalStatus for ' + vin);
+                  this.log.debug(JSON.stringify(newStatus));
+
+                  await this.setNewStatus(newStatus, vin);
+                  if (newStatus.engine && newStatus.engine.batteryCharge12v) {
+                      this.log.debug('Set ' + newStatus.engine.batteryCharge12v + ' battery state for ' + vin);
+                      this.batteryState12V[vin] = newStatus.engine.batteryCharge12v;
+                  }
+              }
+          }
+
+          //Abfrage war erfolgreich, lösche ErrorCounter
+          this.countError = 0;
+          await this.setStateAsync(`${vin}.error_counter`, this.countError, true);
+          this.log.info('Update for ' + vin + ' successfull');
+          // last update
+          await this.setStateAsync(`${vin}.lastInfoUpdate`, Number(Date.now()), true);
+
+      } catch (error) {
+          this.countError += 1;  // add 1
+
+          this.log.error('Error on API-Request Status, ErrorCount:' + this.countError);
+          if (typeof error === 'string') {
+              this.log.error(error);
+          } else if (error instanceof Error) {
+              this.log.error(error.message);
+          }
+      }
+
+      await this.setStateAsync(`${vin}.error_counter`, this.countError, true);
+
+      if (this.countError > this.config.errorCounter) {
+          //Error counter over x erros, restart Adapter to fix te API Token
+          this.restart();
+      }
     }
 
     async receiveEVInformation(vehicle, vin) {
