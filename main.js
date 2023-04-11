@@ -79,6 +79,7 @@ class Bluelink extends utils.Adapter {
             const vehicle = this.vehiclesDict[vin];
             const tmpControl = id.split('.')[4];
             let response;
+            let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
             switch (tmpControl) {
                 case 'lock':
                     this.log.info('Starting lock for vehicle');
@@ -118,18 +119,18 @@ class Bluelink extends utils.Adapter {
                     break;
                 case 'force_refresh_from_server':
                     this.log.info('Forcing refresh from Server');
-                    await this.readStatusVin(vehicle);
+                    await this.readStatusVin(vehicle,false);
                     break;
                 case 'force_refresh_from_car':
                     this.log.info('Forcing refresh from Car');
-                    await this.readStatusVin(vehicle);
-                    break;    
+                    await this.readStatusVin(vehicle,true);
+                    break;
                 case 'force_refresh':
                     this.log.info('Forcing refresh');
-                    await this.readStatusVin(vehicle);
-                    break;                    
+                    await this.readStatusVin(vehicle, force_update_obj.val);
+                    break;
                 case 'force_update':
-                    let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
+
                     if (force_update_obj.val) {
                         this.log.info('Update method for ' + vin + ' changed to "directly from the car"');
                     } else {
@@ -270,7 +271,7 @@ class Bluelink extends utils.Adapter {
                   continue;
               }
           }
-          await this.readStatusVin(vehicle);
+          await this.readStatusVin(vehicle,true);
         }
 
         //set ne cycle
@@ -281,13 +282,15 @@ class Bluelink extends utils.Adapter {
     }
 
 
-    async readStatusVin(vehicle) {      
+    // force_update = true Daten vom Auto
+    // force_update = false vom server
+
+    async readStatusVin(vehicle, force_update) {
       const vin = vehicle.vehicleConfig.vin;
       try {
           let newStatus;
-          let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
 
-          if(force_update_obj.val) {
+          if(force_update) {
               this.log.info('Read new update for ' + vin + ' directly from the car');
           } else {
               this.log.info('Read new update for ' + vin + ' from the server');
@@ -295,7 +298,7 @@ class Bluelink extends utils.Adapter {
 
           try {
               newStatus = await vehicle.fullStatus({
-                  refresh: force_update_obj.val,
+                  refresh: force_update,
                   parsed: true,
               });
               //set all values
@@ -319,11 +322,10 @@ class Bluelink extends utils.Adapter {
               } else {
                   //if(error.source.statusCode == 503) {
                   this.log.info('Error on API-Full-Status - Fallback GetNormalStatus');
-                  let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
 
                   //Abfrage Full hat nicht geklappt. Haben wir einen Fallback?
                   newStatus = await vehicle.status({
-                      refresh: force_update_obj.val,
+                      refresh: force_update,
                       parsed: true,
                   });
                   this.log.debug('Set new GetNormalStatus for ' + vin);
@@ -716,6 +718,32 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
         this.subscribeStates(vin + '.control.stop');
+
+        await this.setObjectNotExistsAsync(vin + '.control.force_refresh_from_car', {
+            type: 'state',
+            common: {
+                name: 'Force refresh vehicle status from car',
+                type: 'boolean',
+                role: 'button',
+                read: true,
+                write: true,
+            },
+            native: {},
+        });
+        this.subscribeStates(vin + '.control.force_refresh_from_car');
+
+        await this.setObjectNotExistsAsync(vin + '.control.force_refresh_from_server', {
+            type: 'state',
+            common: {
+                name: 'Force refresh vehicle status from server',
+                type: 'boolean',
+                role: 'button',
+                read: true,
+                write: true,
+            },
+            native: {},
+        });
+        this.subscribeStates(vin + '.control.force_refresh_from_server');
 
         await this.setObjectNotExistsAsync(vin + '.control.force_refresh', {
             type: 'state',
@@ -1226,3 +1254,4 @@ if (require.main !== module) {
     // otherwise start the instance directly
     new Bluelink();
 }
+
