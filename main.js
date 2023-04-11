@@ -116,10 +116,18 @@ class Bluelink extends utils.Adapter {
                     response = await vehicle.stop();
                     this.log.debug(JSON.stringify(response));
                     break;
+                case 'force_refresh_from_server':
+                    this.log.info('Forcing refresh from Server');
+                    await this.readStatusVin(vehicle);
+                    break;
+                case 'force_refresh_from_car':
+                    this.log.info('Forcing refresh from Car');
+                    await this.readStatusVin(vehicle);
+                    break;    
                 case 'force_refresh':
                     this.log.info('Forcing refresh');
-                    await this.readStytusVin(vehicle);
-                    break;
+                    await this.readStatusVin(vehicle);
+                    break;                    
                 case 'force_update':
                     let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
                     if (force_update_obj.val) {
@@ -221,7 +229,7 @@ class Bluelink extends utils.Adapter {
                 this.countError = 0;
                 
                 //start time cycle
-                await this.readStatus(true,null);
+                await this.readStatus();
 
                 //clean legacy states
                 this.cleanObjects();
@@ -248,7 +256,7 @@ class Bluelink extends utils.Adapter {
     }
 
     //read new sates from vehicle
-    async readStatus(force,vin) {
+    async readStatus(force = false) {
         //read new verhicle status
         for (const vehicle of this.vehicles) {
           const vin = vehicle.vehicleConfig.vin;
@@ -262,7 +270,7 @@ class Bluelink extends utils.Adapter {
                   continue;
               }
           }
-          await this.readStytusVin(vehicle);
+          await this.readStatusVin(vehicle);
         }
 
         //set ne cycle
@@ -273,7 +281,7 @@ class Bluelink extends utils.Adapter {
     }
 
 
-    async readStytusVin(vehicle) {      
+    async readStatusVin(vehicle) {      
       const vin = vehicle.vehicleConfig.vin;
       try {
           let newStatus;
