@@ -761,7 +761,7 @@ class Bluelink extends utils.Adapter {
         await this.setObjectNotExistsAsync(vin + '.control.force_update', {
             type: 'state',
             common: {
-                name: 'Force update state for force refresh',
+                name: 'true = car, false = server',
                 type: 'boolean',
                 role: 'button',
                 read: true,
