@@ -17,6 +17,8 @@ Adapter to control Hyundai or Kia vehicle
 
 Discussion: https://forum.iobroker.net/topic/43592/adapter-hyundai-bluelink-oder-kia-uvo
 
+Login Infos : https://developers.kia.com/web/v1/kia/specification/account/account_authorize
+
 ## Changelog
 
 <!--
