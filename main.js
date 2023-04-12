@@ -129,8 +129,7 @@ class Bluelink extends utils.Adapter {
                     this.log.info('Forcing refresh');
                     await this.readStatusVin(vehicle, force_update_obj.val);
                     break;
-                case 'force_update':
-
+                case 'force_update':                    
                     if (force_update_obj.val) {
                         this.log.info('Update method for ' + vin + ' changed to "directly from the car"');
                     } else {
@@ -271,7 +270,9 @@ class Bluelink extends utils.Adapter {
                   continue;
               }
           }
-          await this.readStatusVin(vehicle,true);
+          let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
+            
+          await this.readStatusVin(vehicle,force_update_obj.val);
         }
 
         //set ne cycle
