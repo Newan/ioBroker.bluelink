@@ -4,7 +4,7 @@
     "version": "2.3.2",
     "news": {
       "2.3.2": {
-        "en": "see Readme"
+        "en": "force update only selected vin\n add buttons for force_refresh_from_server and force_refresh_from_car"
       },
       "2.3.1": {
         "en": "see Readme"
