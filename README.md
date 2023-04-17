@@ -5,13 +5,11 @@
 [![Downloads](https://img.shields.io/npm/dm/iobroker.bluelink.svg)](https://www.npmjs.com/package/iobroker.bluelink)
 ![Number of Installations (latest)](https://iobroker.live/badges/bluelink-installed.svg)
 ![Number of Installations (stable)](https://iobroker.live/badges/bluelink-stable.svg)
-[![Dependency Status](https://img.shields.io/david/Newan/iobroker.bluelink.svg)](https://david-dm.org/Newan/iobroker.bluelink)
-
-[![NPM](https://nodei.co/npm/iobroker.bluelink.png?downloads=true)](https://nodei.co/npm/iobroker.bluelink/)
-
 ![Test and Release](https://github.com/Newan/iobroker.bluelink/workflows/Test%20and%20Release/badge.svg)
 [![Translation status](https://weblate.iobroker.net/widgets/adapters/-/bluelink/svg-badge.svg)](https://weblate.iobroker.net/engage/adapters/?utm_source=widget)
-[![Downloads](https://img.shields.io/npm/dm/iobroker.bluelink.svg)](https://www.npmjs.com/package/iobroker.bluelink)
+
+
+[![NPM](https://nodei.co/npm/iobroker.bluelink.png?downloads=true)](https://nodei.co/npm/iobroker.bluelink/)
 
 
 ## bluelink adapter for ioBroker
