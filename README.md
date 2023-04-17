@@ -9,7 +9,10 @@
 
 [![NPM](https://nodei.co/npm/iobroker.bluelink.png?downloads=true)](https://nodei.co/npm/iobroker.bluelink/)
 
-**Tests:** ![Test and Release](https://github.com/Newan/ioBroker.bluelink/workflows/Test%20and%20Release/badge.svg)
+![Test and Release](https://github.com/Newan/iobroker.bluelink/workflows/Test%20and%20Release/badge.svg)
+[![Translation status](https://weblate.iobroker.net/widgets/adapters/-/bluelink/svg-badge.svg)](https://weblate.iobroker.net/engage/adapters/?utm_source=widget)
+[![Downloads](https://img.shields.io/npm/dm/iobroker.bluelink.svg)](https://www.npmjs.com/package/iobroker.bluelink)
+
 
 ## bluelink adapter for ioBroker
 
