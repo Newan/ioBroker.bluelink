@@ -197,8 +197,7 @@ class Bluelink extends utils.Adapter {
                 this.log.info(vehicles.length + ' Vehicles found');
                 this.log.debug(JSON.stringify(vehicles, this.getCircularReplacer()));
 
-                this.vehicles = vehicles;
-                let vin
+                this.vehicles = vehicles;             
                 for (const vehicle of vehicles) {
                     const vin = vehicle.vehicleConfig.vin;
                     this.vehiclesDict[vin] = vehicle;
