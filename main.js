@@ -38,6 +38,8 @@ class Bluelink extends utils.Adapter {
     //Start Adapter
     async onReady() {
         //first check account settings
+        this.setState('info.connection', false, true);
+        
         if (this.config.request < 1 || this.config.request > max_request) {
             this.log.warn('Request is invalid got to default ' + request_count);
         } else {
@@ -190,6 +192,7 @@ class Bluelink extends utils.Adapter {
             client = new bluelinky(tmpConfig);
 
             client.on('ready', async (vehicles) => {
+                this.setState('info.connection', true, true);
                 // wir haben eine Verbindung und haben Autos
                 this.log.info(vehicles.length + ' Vehicles found');
                 this.log.debug(JSON.stringify(vehicles, this.getCircularReplacer()));
