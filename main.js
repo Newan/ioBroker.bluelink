@@ -212,14 +212,14 @@ class Bluelink extends utils.Adapter {
                     await this.setControlObjects(vin);
                     await this.setStatusObjects(vin);
 
-                    await this.setObjectNotExistsAsync(vin + '.general', {
+                    await this.setObjectNotExistsAsync(`${vin}.general`, {
                         type: 'channel',
                         common: {
                             name: 'General Information',
                         },
                         native: {},
                     });
-                    await this.json2iob.parse(vin + '.general', vehicle.vehicleConfig);
+                    await this.json2iob.parse(`${vin}.general`, vehicle.vehicleConfig);
                     if (this.config.evHistory) {
                         await this.receiveEVInformation(vehicle, vin);
                         adapterIntervals.evHistoryInterval = setInterval(() => {
