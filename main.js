@@ -277,9 +277,7 @@ class Bluelink extends utils.Adapter {
                   this.log.warn('Auto Refresh is disabled, only use force refresh to reenable refresh if you are willing to risk your battery');
                   continue;
               }
-          }
-          let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
-            
+          }                      
           await this.readStatusVin(vehicle,force_update_obj.val);
         }
 
