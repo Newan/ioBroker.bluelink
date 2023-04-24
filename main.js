@@ -221,15 +221,14 @@ class Bluelink extends utils.Adapter {
                     });
                     await this.json2iob.parse(`${vin}.general`, vehicle.vehicleConfig);
                     if (this.config.evHistory) {
-                        try {
-                            this.log.debug('-------------> receiveEVInformation ' + JSON.stringify(vehicle));   // kann wieder weg                        
+                        try {                                            
                             await this.receiveEVInformation(vehicle);
                             adapterIntervals.evHistoryInterval = setInterval(() => {
                                 this.receiveEVInformation(vehicle);
                             }, 24 * 60 * 60 * 1000); //24h             
-                            this.log.debug('end receiveEVInformation  <--------');   // kann wieder weg  
                         } catch (error) {
                             this.log.error('Error in receiveEVInformation');
+                            this.log.error('-------------> receiveEVInformation ' + JSON.stringify(vehicle));   // kann wieder weg        
                         }
                     }
                     await this.setStateAsync(`${vin}.error_counter`, 0, true);
