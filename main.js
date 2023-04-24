@@ -221,10 +221,13 @@ class Bluelink extends utils.Adapter {
                     });
                     await this.json2iob.parse(`${vin}.general`, vehicle.vehicleConfig);
                     if (this.config.evHistory) {
-                        await this.receiveEVInformation(vehicle, vin);
-                        adapterIntervals.evHistoryInterval = setInterval(() => {
-                            this.receiveEVInformation(vehicle, vin);
-                        }, 24 * 60 * 60 * 1000); //24h
+                        this.log.debug('receiveEVInformation ' + JSONstringify(vehicle));
+                        if (vehicle.driveHistory() != undefined) {
+                            await this.receiveEVInformation(vehicle);
+                            adapterIntervals.evHistoryInterval = setInterval(() => {
+                                this.receiveEVInformation(vehicle);
+                            }, 24 * 60 * 60 * 1000); //24h
+                        }
                     }
                     await this.setStateAsync(`${vin}.error_counter`, 0, true);
                 }
@@ -368,9 +371,10 @@ class Bluelink extends utils.Adapter {
       }
     }
 
-    async receiveEVInformation(vehicle, vin) {
+    async receiveEVInformation(vehicle) {
         try {
             const driveHistory = await vehicle.driveHistory();
+            const vin = vehicle.vehicleConfig.vin;
             this.log.debug('driveHistory-Data: ' + JSON.stringify(driveHistory));
 
             if (driveHistory != undefined) {
