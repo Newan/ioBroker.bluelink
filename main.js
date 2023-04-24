@@ -225,7 +225,8 @@ class Bluelink extends utils.Adapter {
                         await this.receiveEVInformation(vehicle);
                         adapterIntervals.evHistoryInterval = setInterval(() => {
                             this.receiveEVInformation(vehicle);
-                        }, 24 * 60 * 60 * 1000); //24h                        
+                        }, 24 * 60 * 60 * 1000); //24h             
+                        this.log.debug('end receiveEVInformation  <--------');   // kann wieder weg  
                     }
                     await this.setStateAsync(`${vin}.error_counter`, 0, true);
                 }
