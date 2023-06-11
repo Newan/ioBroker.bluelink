@@ -388,6 +388,10 @@ class Bluelink extends utils.Adapter {
                     native: {},
                 });
                 await this.json2iob.parse(vin + '.driveHistory', driveHistory, { preferedArrayName: 'rawDate' });
+                
+                this.todayOnly(vehicle, vin, driveHistory);
+                
+                
                 const monthlyReport = await vehicle.monthlyReport();
                 await this.setObjectNotExistsAsync(vin + '.monthlyReport', {
                     type: 'channel',
@@ -416,7 +420,39 @@ class Bluelink extends utils.Adapter {
             }
         }
     }
+    
+    async todayOnly(vehicle, vin, driveHistory) {
+        let onlyHistory = driveHistory.history;
+        const today = this.getToday();
 
+        for (const lpEntry in onlyHistory) {
+            let res =  onlyHistory[lpEntry];
+            if (today == res.rawDate) {          // suche heutiges Datum
+                await this.setObjectNotExistsAsync(vin + '.driveHistory.today', {
+                    type: 'channel',
+                    common: {
+                        name: 'today report',
+                    },
+                    native: {},
+                });
+                await this.json2iob.parse(vin + '.driveHistory.today', res);
+                break;
+            }
+        }
+    }
+    
+    getToday() {
+        var today = new Date();
+        const yyyy = today.getFullYear();
+        let mm = today.getMonth() + 1;
+        let dd = today.getDate();
+
+        if (dd < 10) dd = '0' + dd;
+        if (mm < 10) mm = '0' + mm;
+
+        return yyyy + '' + mm + '' + dd;
+    }
+    
     //Set new values to ioBroker for normal Status
     async setNewStatus(newStatus, vin) {
         //chassis
