@@ -227,8 +227,7 @@ class Bluelink extends utils.Adapter {
                                 this.receiveEVInformation(vehicle);
                             }, 24 * 60 * 60 * 1000); //24h             
                         } catch (error) {
-                            this.log.error('Error in receiveEVInformation');
-                            this.log.error('-------------> receiveEVInformation ' + JSON.stringify(vehicle));   // kann wieder weg        
+                            this.log.error('Error in receiveEVInformation');                            
                         }
                     }
                     await this.setStateAsync(`${vin}.error_counter`, 0, true);
