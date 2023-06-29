@@ -82,7 +82,12 @@ class Bluelink extends utils.Adapter {
             const tmpControl = id.split('.')[4];
             let response;
             let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
+            
             switch (tmpControl) {
+               case 'checkDriveInfo':
+                    this.log.info('checkDriveInfo');
+                    this.driveHistory(vehicle);                    
+                    break;
                 case 'lock':
                     this.log.info('Starting lock for vehicle');
                     response = await vehicle.lock();
@@ -224,7 +229,7 @@ class Bluelink extends utils.Adapter {
                         try {                                            
                             await this.receiveEVInformation(vehicle);
                             adapterIntervals.evHistoryInterval = setInterval(() => {
-                                this.receiveEVInformation(vehicle);
+                                this.receiveEVInformation(vehicle,manu);
                             }, 60 * 60 * 1000); // check einmal die stunde nur intern
                         } catch (error) {
                             this.log.error('Error in receiveEVInformation');                            
@@ -372,56 +377,60 @@ class Bluelink extends utils.Adapter {
     }
 
     async receiveEVInformation(vehicle) {
-
         let tickHour = new Date().getHours(); // um 23 uhr daten festschreiben
 
         if (tickHour == 23) {
-            try {            
-                const driveHistory = await vehicle.driveHistory();
-                const vin = vehicle.vehicleConfig.vin;
-                this.log.debug('driveHistory-Data: ' + JSON.stringify(driveHistory));
-    
-                if (driveHistory != undefined) {
-    
-                    await this.setObjectNotExistsAsync(vin + '.driveHistory', {
-                        type: 'channel',
-                        common: {
-                            name: 'drive history',
-                        },
-                        native: {},
-                    });
-                    await this.json2iob.parse(vin + '.driveHistory', driveHistory, { preferedArrayName: 'rawDate' });
-                    
-                    this.todayOnly(vehicle, vin, driveHistory);        
-                    
-                    const monthlyReport = await vehicle.monthlyReport();
-                    await this.setObjectNotExistsAsync(vin + '.monthlyReport', {
-                        type: 'channel',
-                        common: {
-                            name: 'monthly report',
-                        },
-                        native: {},
-                    });
-                    await this.json2iob.parse(vin + '.monthlyReport', monthlyReport);
-                    const tripInfo = await vehicle.tripInfo({ year: new Date().getFullYear(), month: new Date().getMonth() + 1 });
-                    await this.setObjectNotExistsAsync(vin + '.tripInfo', {
-                        type: 'channel',
-                        common: {
-                            name: 'trip information',
-                        },
-                        native: {},
-                    });
-                    await this.json2iob.parse(vin + '.tripInfo', tripInfo);
-                }
-            } catch (error) {
-                this.log.error('EV History fetching failed');
-                if (typeof error === 'string') {
-                    this.log.error(error);
-                } else if (error instanceof Error) {
-                    this.log.error(error.message);
-                }
-            }
+            this.driveHistory(vehicle);    
         } 
+    }
+    
+    async driveHistory(vehicle) {
+        try {            
+            const driveHistory = await vehicle.driveHistory();
+            const vin = vehicle.vehicleConfig.vin;
+            this.log.debug('driveHistory-Data: ' + JSON.stringify(driveHistory));
+
+            if (driveHistory != undefined) {
+
+                await this.setObjectNotExistsAsync(vin + '.driveHistory', {
+                    type: 'channel',
+                    common: {
+                        name: 'drive history',
+                    },
+                    native: {},
+                });
+                
+                await this.json2iob.parse(vin + '.driveHistory', driveHistory, { preferedArrayName: 'rawDate' });
+                
+                this.todayOnly(vehicle, vin, driveHistory);        
+                
+                const monthlyReport = await vehicle.monthlyReport();
+                await this.setObjectNotExistsAsync(vin + '.monthlyReport', {
+                    type: 'channel',
+                    common: {
+                        name: 'monthly report',
+                    },
+                    native: {},
+                });
+                await this.json2iob.parse(vin + '.monthlyReport', monthlyReport);
+                const tripInfo = await vehicle.tripInfo({ year: new Date().getFullYear(), month: new Date().getMonth() + 1 });
+                await this.setObjectNotExistsAsync(vin + '.tripInfo', {
+                    type: 'channel',
+                    common: {
+                        name: 'trip information',
+                    },
+                    native: {},
+                });
+                await this.json2iob.parse(vin + '.tripInfo', tripInfo);
+            }
+        } catch (error) {
+            this.log.error('EV History fetching failed');
+            if (typeof error === 'string') {
+                this.log.error(error);
+            } else if (error instanceof Error) {
+                this.log.error(error.message);
+            }
+        }
     }
     
     async todayOnly(vehicle, vin, driveHistory) {
@@ -638,6 +647,19 @@ class Bluelink extends utils.Adapter {
      */
 
     async setControlObjects(vin) {
+         await this.setObjectNotExistsAsync(vin + '.control.checkDriveInfo', {
+            type: 'state',
+            common: {
+                name: 'load Drive Infos',
+                type: 'boolean',
+                role: 'button',
+                read: true,
+                write: true,
+            },
+            native: {},
+        });
+        this.subscribeStates(vin + '.control.checkDriveInfo');
+        
         await this.setObjectNotExistsAsync(vin + '.control.charge', {
             type: 'state',
             common: {
