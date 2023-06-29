@@ -84,8 +84,8 @@ class Bluelink extends utils.Adapter {
             let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
             
             switch (tmpControl) {
-               case 'checkDriveInfo':
-                    this.log.info('checkDriveInfo');
+               case 'force_checkDriveInfo':
+                    this.log.info('force checkDriveInfo ');
                     this.driveHistory(vehicle);                    
                     break;
                 case 'lock':
@@ -647,10 +647,10 @@ class Bluelink extends utils.Adapter {
      */
 
     async setControlObjects(vin) {
-         await this.setObjectNotExistsAsync(vin + '.control.checkDriveInfo', {
+         await this.setObjectNotExistsAsync(vin + '.control.force_checkDriveInfo', {
             type: 'state',
             common: {
-                name: 'load Drive Infos',
+                name: 'force load Drive Infos',
                 type: 'boolean',
                 role: 'button',
                 read: true,
@@ -658,7 +658,7 @@ class Bluelink extends utils.Adapter {
             },
             native: {},
         });
-        this.subscribeStates(vin + '.control.checkDriveInfo');
+        this.subscribeStates(vin + '.control.force_checkDriveInfo');
         
         await this.setObjectNotExistsAsync(vin + '.control.charge', {
             type: 'state',
