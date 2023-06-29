@@ -426,6 +426,7 @@ class Bluelink extends utils.Adapter {
 
         for (const lpEntry in onlyHistory) {
             let res =  onlyHistory[lpEntry];
+            this.log.debug('check Today ' + today + ' ' + res.rawDate);
             if (today == res.rawDate) {          // suche heutiges Datum
                 await this.setObjectNotExistsAsync(vin + '.driveHistory.today', {
                     type: 'channel',
@@ -434,6 +435,7 @@ class Bluelink extends utils.Adapter {
                     },
                     native: {},
                 });
+                this.log.debug('write Today ' + res);
                 await this.json2iob.parse(vin + '.driveHistory.today', res);
                 break;
             }
