@@ -197,7 +197,6 @@ class Bluelink extends utils.Adapter {
                 language:  this.config.language,
             };
 
-            // @ts-ignore
             client = new bluelinky(tmpConfig);
 
             client.on('ready', async (vehicles) => {
