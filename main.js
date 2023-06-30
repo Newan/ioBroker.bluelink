@@ -13,6 +13,8 @@ const positionUrlConst = 'https://maps.google.com/maps?z=15&t=m&q=loc:';
 let slow_charging;
 let fast_charging;
 
+const todayDriveEmpty = '{"period":0,"rawDate":"20230608","date":"2023-06-07T00:00:01.000Z","consumption":{"total":0,"engine":0,"climate":0,"devices":0,"battery":0},"regen":0,"distance":0}';
+
 const POSSIBLE_CHARGE_LIMIT_VALUES = [50, 60, 70, 80, 90, 100];
 
 class Bluelink extends utils.Adapter {
