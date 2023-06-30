@@ -84,102 +84,99 @@ class Bluelink extends utils.Adapter {
             const tmpControl = id.split('.')[4];
             let response;
             let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
-            try {
-                switch (tmpControl) {
-                   case 'force_checkDriveInfo':
-                        this.log.info('force checkDriveInfo ');
-                        this.driveHistory(vehicle);                    
-                        break;
-                    case 'lock':
-                        this.log.info('Starting lock for vehicle');
-                        response = await vehicle.lock();
-                        this.log.info(response);
-                        break;
-                    case 'unlock':
-                        this.log.info('Starting unlock for vehicle');
-                        response = await vehicle.unlock();
-                        this.log.info(response);
-                        break;
-                    case 'start':
-                        this.log.info('Starting clima for vehicle');
     
-                        let airCtrl = await this.getStateAsync(`${vin}.control.clima.set.airCtrl`);
-                        let airTempC = await this.getStateAsync(`${vin}.control.clima.set.airTemp`);
-                        let airTempF = (airTempC.val * 9/5) + 32;
-                        let defrost = await this.getStateAsync(`${vin}.control.clima.set.defrost`);
-                        let heating = await this.getStateAsync(`${vin}.control.clima.set.heating`);
-    
-                        try {
-                            response = await vehicle.start({
-                                airCtrl: airCtrl.val,
-                                igniOnDuration: 10,
-                                airTempvalue: airTempF,
-                                defrost: defrost.val,
-                                heating1: heating.val,
-                            });
-                            this.log.info(response);
-                        } catch (err) {
-                            this.log.error(JSON.stringify(err));
-                        }
-                        break;
-                    case 'stop':
-                        this.log.info('Stop clima for vehicle');
-                        response = await vehicle.stop();
-                        this.log.debug(JSON.stringify(response));
-                        break;
-                    case 'force_refresh_from_server':
-                        this.log.info('Forcing refresh from Server');
-                        await this.readStatusVin(vehicle,false);
-                        break;
-                    case 'force_refresh_from_car':
-                        this.log.info('Forcing refresh from Car');
-                        await this.readStatusVin(vehicle,true);
-                        break;
-                    case 'force_refresh':
-                        this.log.info('Forcing refresh');
-                        await this.readStatusVin(vehicle, force_update_obj.val);
-                        break;
-                    case 'force_update':                    
-                        if (force_update_obj.val) {
-                            this.log.info('Update method for ' + vin + ' changed to "directly from the car"');
+            switch (tmpControl) {
+               case 'force_checkDriveInfo':
+                    this.log.info('force checkDriveInfo ');
+                    this.driveHistory(vehicle);                    
+                    break;
+                case 'lock':
+                    this.log.info('Starting lock for vehicle');
+                    response = await vehicle.lock();
+                    this.log.info(response);
+                    break;
+                case 'unlock':
+                    this.log.info('Starting unlock for vehicle');
+                    response = await vehicle.unlock();
+                    this.log.info(response);
+                    break;
+                case 'start':
+                    this.log.info('Starting clima for vehicle');
+
+                    let airCtrl = await this.getStateAsync(`${vin}.control.clima.set.airCtrl`);
+                    let airTempC = await this.getStateAsync(`${vin}.control.clima.set.airTemp`);
+                    let airTempF = (airTempC.val * 9/5) + 32;
+                    let defrost = await this.getStateAsync(`${vin}.control.clima.set.defrost`);
+                    let heating = await this.getStateAsync(`${vin}.control.clima.set.heating`);
+
+                    try {
+                        response = await vehicle.start({
+                            airCtrl: airCtrl.val,
+                            igniOnDuration: 10,
+                            airTempvalue: airTempF,
+                            defrost: defrost.val,
+                            heating1: heating.val,
+                        });
+                        this.log.info(response);
+                    } catch (err) {
+                        this.log.error(JSON.stringify(err));
+                    }
+                    break;
+                case 'stop':
+                    this.log.info('Stop clima for vehicle');
+                    response = await vehicle.stop();
+                    this.log.debug(JSON.stringify(response));
+                    break;
+                case 'force_refresh_from_server':
+                    this.log.info('Forcing refresh from Server');
+                    await this.readStatusVin(vehicle,false);
+                    break;
+                case 'force_refresh_from_car':
+                    this.log.info('Forcing refresh from Car');
+                    await this.readStatusVin(vehicle,true);
+                    break;
+                case 'force_refresh':
+                    this.log.info('Forcing refresh');
+                    await this.readStatusVin(vehicle, force_update_obj.val);
+                    break;
+                case 'force_update':                    
+                    if (force_update_obj.val) {
+                        this.log.info('Update method for ' + vin + ' changed to "directly from the car"');
+                    } else {
+                        this.log.info('Update method for ' + vin + ' changed to "from the server"');
+                    }
+                    break;
+                case 'charge':
+                    this.log.info('Start charging');
+                    response = await vehicle.startCharge();
+                    break;
+                case 'charge_stop':
+                    this.log.info('Stop charging');
+                    response = await vehicle.stopCharge();
+                    break;
+                case 'battery':
+                    if (!state.ack) {
+                        if (!POSSIBLE_CHARGE_LIMIT_VALUES.includes(state.val)) {
+                            this.log.error(`Charge target values are limited to ${POSSIBLE_CHARGE_LIMIT_VALUES.join(', ')}`);
                         } else {
-                            this.log.info('Update method for ' + vin + ' changed to "from the server"');
-                        }
-                        break;
-                    case 'charge':
-                        this.log.info('Start charging');
-                        response = await vehicle.startCharge();
-                        break;
-                    case 'charge_stop':
-                        this.log.info('Stop charging');
-                        response = await vehicle.stopCharge();
-                        break;
-                    case 'battery':
-                        if (!state.ack) {
-                            if (!POSSIBLE_CHARGE_LIMIT_VALUES.includes(state.val)) {
-                                this.log.error(`Charge target values are limited to ${POSSIBLE_CHARGE_LIMIT_VALUES.join(', ')}`);
+                            this.log.info('Set new charging options');
+                            const charge_option = { fast: fast_charging, slow: slow_charging };
+                            if (tmpControl[4] == 'charge_limit_fast') {
+                                //set fast charging
+                                this.log.debug('Set fast charging');
+                                charge_option.fast = state.val;
                             } else {
-                                this.log.info('Set new charging options');
-                                const charge_option = { fast: fast_charging, slow: slow_charging };
-                                if (tmpControl[4] == 'charge_limit_fast') {
-                                    //set fast charging
-                                    this.log.debug('Set fast charging');
-                                    charge_option.fast = state.val;
-                                } else {
-                                    //set slow charging
-                                    this.log.debug('Set slow charging');
-                                    charge_option.slow = state.val;
-                                }
-                                response = await vehicle.setChargeTargets(charge_option);
-                                this.log.debug(JSON.stringify(response));
+                                //set slow charging
+                                this.log.debug('Set slow charging');
+                                charge_option.slow = state.val;
                             }
+                            response = await vehicle.setChargeTargets(charge_option);
+                            this.log.debug(JSON.stringify(response));
                         }
-                        break;
-                    default:
-                        this.log.error('No command for Control found for: ' + id);
-                }
-            } catch (error) {            
-                  this.log.error('Error : Car is not available or Server is down ');
+                    }
+                    break;
+                default:
+                    this.log.error('No command for Control found for: ' + id);
             }
         }
     }
@@ -235,7 +232,7 @@ class Bluelink extends utils.Adapter {
                         try {                                            
                             await this.driveHistory(vehicle); 
                             adapterIntervals.evHistoryInterval = setInterval(() => {
-                                this.receiveEVInformation(vehicle,manu);
+                                this.receiveEVInformation(vehicle);
                             }, 60 * 60 * 1000); // check einmal die stunde nur intern
                         } catch (error) {
                             this.log.error('Error in receiveEVInformation');                            
@@ -395,7 +392,7 @@ class Bluelink extends utils.Adapter {
             const driveHistory = await vehicle.driveHistory();
             const vin = vehicle.vehicleConfig.vin;
         
-            if (driveHistory != undefined) {
+            if (driveHistory != undefined && driveHistory != null) {
                 this.log.debug('driveHistory-Data: ' + JSON.stringify(driveHistory));
                 await this.setObjectNotExistsAsync(vin + '.driveHistory', {
                     type: 'channel',
