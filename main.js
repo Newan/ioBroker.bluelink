@@ -88,6 +88,7 @@ class Bluelink extends utils.Adapter {
             switch (tmpControl) {
                case 'force_checkDriveInfo':
                     this.log.info('force checkDriveInfo ');
+                    await this.readStatusVin(vehicle, force_update_obj.val);
                     this.driveHistory(vehicle);                    
                     break;
                 case 'lock':
