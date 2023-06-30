@@ -205,7 +205,11 @@ class Bluelink extends utils.Adapter {
                 this.log.info(vehicles.length + ' Vehicles found');
                 this.log.debug(JSON.stringify(vehicles, this.getCircularReplacer()));
 
-                this.vehicles = vehicles;             
+                this.vehicles = vehicles;          
+
+          //start time cycle
+                await this.readStatus();
+                
                 for (const vehicle of vehicles) {
                     const vin = vehicle.vehicleConfig.vin;
                     this.vehiclesDict[vin] = vehicle;
@@ -241,10 +245,7 @@ class Bluelink extends utils.Adapter {
                     await this.setStateAsync(`${vin}.error_counter`, 0, true);
                 }
                 this.countError = 0;
-                
-                //start time cycle
-                await this.readStatus();
-
+  
                 //clean legacy states
                 this.cleanObjects();
             });
