@@ -117,6 +117,7 @@ class Bluelink extends utils.Adapter {
                                 defrost: defrost.val,
                                 heating1: heating.val,
                             });
+                            this.log.info(response);
                         } catch (err) {
                             this.log.error(JSON.stringify(err));
                         }
