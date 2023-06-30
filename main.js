@@ -229,7 +229,7 @@ class Bluelink extends utils.Adapter {
                     await this.json2iob.parse(`${vin}.general`, vehicle.vehicleConfig);
                     if (this.config.evHistory) {
                         try {                                            
-                            await this.receiveEVInformation(vehicle);
+                            await this.driveHistory(vehicle); 
                             adapterIntervals.evHistoryInterval = setInterval(() => {
                                 this.receiveEVInformation(vehicle,manu);
                             }, 60 * 60 * 1000); // check einmal die stunde nur intern
