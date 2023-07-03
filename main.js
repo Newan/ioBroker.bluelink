@@ -389,11 +389,15 @@ class Bluelink extends utils.Adapter {
     }
     
     async driveHistory(vehicle) {
+      
         try {            
+            
             const driveHistory = await vehicle.driveHistory();
             const vin = vehicle.vehicleConfig.vin;
         
-            if (driveHistory != undefined && driveHistory != null) {
+            if (driveHistory == undefined || driveHistory == null) {
+                this.log.debug('no driveHistory-Data available ');
+            } else {
                 this.log.debug('driveHistory-Data: ' + JSON.stringify(driveHistory));
                 await this.setObjectNotExistsAsync(vin + '.driveHistory', {
                     type: 'channel',
