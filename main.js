@@ -161,25 +161,27 @@ class Bluelink extends utils.Adapter {
                     response = await vehicle.stopCharge();
                     break;
                 
-				case 'charge_limit_fast':				
-				case 'charge_limit_slow':
+		case 'charge_limit_fast':				
+		case 'charge_limit_slow':
                     if (!state.ack) {
                         if (!POSSIBLE_CHARGE_LIMIT_VALUES.includes(state.val)) {
                             this.log.error(`Charge target values are limited to ${POSSIBLE_CHARGE_LIMIT_VALUES.join(', ')}`);
                         } else {
                             
                             const charge_option = { fast: fast_charging, slow: slow_charging };
-                            if (tmpControl == 'charge_limit_fast') {
-								this.log.info('Set new charging options charge_limit_fast');
+                            if (tmpControl == 'charge_limit_fast') {								
+				this.log.info('Set new charging options charge_limit_fast');
                                 //set fast charging
-                                
+                                let charge_limit_slow = await this.getStateAsync(`${vin}.control.charge_limit_slow`);
                                 charge_option.fast = state.val;
+				charge_option.slow = charge_limit_slow.val;
                             } 
-							if (tmpControl == 'charge_limit_slow') {
-								this.log.info('Set new charging options charge_limit_slow');
+			    if (tmpControl == 'charge_limit_slow') {
+				this.log.info('Set new charging options charge_limit_slow');
                                 //set slow charging
-                                
+                                let charge_limit_fast = await this.getStateAsync(`${vin}.control.charge_limit_fast`);
                                 charge_option.slow = state.val;
+				charge_option.fast = charge_limit_fast.val;
                             }
                             response = await vehicle.setChargeTargets(charge_option);
                             this.log.debug(JSON.stringify(response));
