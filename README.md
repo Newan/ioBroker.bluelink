@@ -26,6 +26,11 @@ Login Infos : https://developers.kia.com/web/v1/kia/specification/account/accoun
   Placeholder for the next version (at the beginning of the line):
   ### **WORK IN PROGRESS**
 -->
+
+### 2.3.3 
+* (arteck) new control true 
+
+  
 ### 2.3.2 (2023-04-12)
 * (arteck) force update only selected vin
 * (arteck) add buttons for force_refresh_from_server and force_refresh_from_car
