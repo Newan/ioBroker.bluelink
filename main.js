@@ -119,7 +119,7 @@ class Bluelink extends utils.Adapter {
                         response = await vehicle.start({
 			    airCtrl: airCtrl.val,
                             igniOnDuration: 10,
-                            airTempvalue: airTempF,
+                            temperature: airTempF,
                             defrost: defrost.val,
                             heating1: heating.val,
                         });
