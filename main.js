@@ -108,7 +108,8 @@ class Bluelink extends utils.Adapter {
                     break;
                 case 'start':
                     this.log.info('Starting clima for vehicle');
-
+			    
+	            let airCtrl = await this.getStateAsync(`${vin}.control.clima.set.airCtrl`);
                     let airTempC = await this.getStateAsync(`${vin}.control.clima.set.airTemp`);
                     let airTempF = (airTempC.val * 9/5) + 32;
                     let defrost = await this.getStateAsync(`${vin}.control.clima.set.defrost`);
@@ -116,6 +117,7 @@ class Bluelink extends utils.Adapter {
 
                     try {
                         response = await vehicle.start({
+			    airCtrl: airCtrl.val,
                             igniOnDuration: 10,
                             airTempvalue: airTempF,
                             defrost: defrost.val,
@@ -977,6 +979,18 @@ class Bluelink extends utils.Adapter {
         });
 
         await this.setObjectNotExistsAsync(vin + '.vehicleStatus.airCtrlOn', {
+            type: 'state',
+            common: {
+                name: 'Vehicle air control',
+                type: 'boolean',
+                role: 'indicator',
+                read: true,
+                write: false,
+            },
+            native: {},
+        });
+	    
+	await this.setObjectNotExistsAsync(vin + '.vehicleStatus.airCtrlOn', {
             type: 'state',
             common: {
                 name: 'Vehicle air control',
