@@ -841,7 +841,7 @@ class Bluelink extends utils.Adapter {
             common: {
                 name: 'true = car, false = server',
                 type: 'boolean',
-                role: 'button',
+                role: 'state',
                 read: true,
                 write: true,
                 def: true,
