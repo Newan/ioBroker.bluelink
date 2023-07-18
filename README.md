@@ -29,7 +29,7 @@ Login Infos : https://developers.kia.com/web/v1/kia/specification/account/accoun
 
 ### 2.3.3 
 * (arteck) new control true 
-
+* (arteck) charge_limit_fast and charge_limit_slow is now in control folder
   
 ### 2.3.2 (2023-04-12)
 * (arteck) force update only selected vin
