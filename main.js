@@ -81,7 +81,7 @@ class Bluelink extends utils.Adapter {
 
             const vin = id.split('.')[2];
             const vehicle = this.vehiclesDict[vin];
-            const tmpControl = id.split('.')[4];
+            const tmpControl = id.split('.')[5];
             let response;
             let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
     
