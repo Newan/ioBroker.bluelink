@@ -791,6 +791,19 @@ class Bluelink extends utils.Adapter {
             },
             native: {},
         });
+	    
+	await this.setObjectNotExistsAsync(vin + '.control.clima.set.airTemp', {
+            type: 'state',
+            common: {
+                name: 'set Vehicle air tempereature',
+                type: 'number',
+                role: 'indicator',
+                read: true,
+                write: true,
+		def: 18,
+            },
+            native: {},
+        });
 /*
         await this.setObjectNotExistsAsync(vin + '.control.clima.set.airCtrl', {
             type: 'state',
