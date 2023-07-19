@@ -23,14 +23,18 @@ Login Infos : https://developers.kia.com/web/v1/kia/specification/account/accoun
 ## Changelog
 
 <!--
-  Placeholder for the next version (at the beginning of the line):
-  ### **WORK IN PROGRESS**
--->
+    Placeholder for the next version (at the beginning of the line):
 
-### 2.3.3 
-* (arteck) new control true 
+    https://github.com/AlCalzone/release-script#usage
+    npm run release minor -- --all 0.9.8 -> 0.10.0
+    npm run release patch -- --all 0.9.8 -> 0.9.9
+    npm run release prerelease beta -- --all v0.2.1 -> v0.2.2-beta.0
+    Placeholder for the next version (at the beginning of the line):
+    ### **WORK IN PROGRESS**
+-->
+### 2.3.3 (2023-07-19)
 * (arteck) charge_limit_fast and charge_limit_slow is now in control folder
-  
+
 ### 2.3.2 (2023-04-12)
 * (arteck) force update only selected vin
 * (arteck) add buttons for force_refresh_from_server and force_refresh_from_car
