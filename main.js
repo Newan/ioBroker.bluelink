@@ -201,7 +201,7 @@ class Bluelink extends utils.Adapter {
     async login() {
         try {
             this.log.info('Login to api');
-            const tmpConfig = {
+            const loginOptions = {
                 username: this.config.username,
                 password: this.config.client_secret,
                 pin: this.config.client_secret_pin,
@@ -210,7 +210,7 @@ class Bluelink extends utils.Adapter {
                 language:  this.config.language,
             };
 
-            client = new bluelinky(tmpConfig);
+            client = new bluelinky(loginOptions);
 
             client.on('ready', async (vehicles) => {
                 this.setState('info.connection', true, true);
