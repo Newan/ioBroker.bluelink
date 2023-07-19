@@ -17,6 +17,18 @@ const todayDriveEmpty = '{"period":0,"rawDate":"20230608","date":"2023-06-07T00:
 
 const POSSIBLE_CHARGE_LIMIT_VALUES = [50, 60, 70, 80, 90, 100];
 
+
+/* seat states from bluelinky
+1: Unknown
+2: Off
+3: Low Cool
+4: Medium Cool
+5: Full Cool
+6: Low Heat
+7: Medium Heat
+8: High Heat
+*/
+
 class Bluelink extends utils.Adapter {
     constructor(options) {
         super({
