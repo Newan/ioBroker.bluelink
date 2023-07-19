@@ -111,12 +111,12 @@ class Bluelink extends utils.Adapter {
                 case 'lock':
                     this.log.info('Starting lock for vehicle');
                     response = await vehicle.lock();
-                    this.log.info(response);
+                    this.log.debug(JSON.stringify(response));
                     break;
                 case 'unlock':
                     this.log.info('Starting unlock for vehicle');
                     response = await vehicle.unlock();
-                    this.log.info(response);
+                    this.log.debug(JSON.stringify(response));
                     break;
                 case 'start':
                     this.log.info('Starting clima for vehicle');
@@ -136,7 +136,7 @@ class Bluelink extends utils.Adapter {
                             	heatedFeatures: heating.val,
 				unit: 'C',
                         });
-                        this.log.info(JSON.stringify(response));
+                        this.log.debug(JSON.stringify(response));
                     } catch (err) {
                         this.log.error(JSON.stringify(err));
                     }
@@ -168,10 +168,12 @@ class Bluelink extends utils.Adapter {
                 case 'charge':
                     this.log.info('Start charging');
                     response = await vehicle.startCharge();
+		    this.log.debug(JSON.stringify(response));
                     break;
                 case 'charge_stop':
                     this.log.info('Stop charging');
                     response = await vehicle.stopCharge();
+		    this.log.debug(JSON.stringify(response));
                     break;
                 
 		case 'charge_limit_fast':				
