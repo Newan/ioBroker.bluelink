@@ -32,6 +32,11 @@ Login Infos : https://developers.kia.com/web/v1/kia/specification/account/accoun
     Placeholder for the next version (at the beginning of the line):
     ### **WORK IN PROGRESS**
 -->
+
+
+### 2.3.4
+* (arteck) clima control is redesigned
+
 ### 2.3.3 (2023-07-19)
 * (arteck) charge_limit_fast and charge_limit_slow is now in control folder
 
