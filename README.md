@@ -20,8 +20,6 @@ Discussion: https://forum.iobroker.net/topic/43592/adapter-hyundai-bluelink-oder
 
 Login Infos : https://developers.kia.com/web/v1/kia/specification/account/account_authorize
 
-## Changelog
-
 <!--
     Placeholder for the next version (at the beginning of the line):
 
@@ -34,7 +32,8 @@ Login Infos : https://developers.kia.com/web/v1/kia/specification/account/accoun
 -->
 
 
-### 2.3.4
+## Changelog
+### 2.3.4 (2023-07-19)
 * (arteck) clima control is redesigned
 
 ### 2.3.3 (2023-07-19)
