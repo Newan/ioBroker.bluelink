@@ -99,7 +99,6 @@ class Bluelink extends utils.Adapter {
 		tmpControl = id.split('.')[4];
             }
 
-		let response;
             let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
     	
             switch (tmpControl) {
@@ -110,12 +109,12 @@ class Bluelink extends utils.Adapter {
                     break;
                 case 'lock':
                     this.log.info('Starting lock for vehicle');
-                    response = await vehicle.lock();
+                    const response = await vehicle.lock();
                     this.log.debug(JSON.stringify(response));
                     break;
                 case 'unlock':
                     this.log.info('Starting unlock for vehicle');
-                    response = await vehicle.unlock();
+                    const response = await vehicle.unlock();
                     this.log.debug(JSON.stringify(response));
                     break;
                 case 'start':
@@ -128,22 +127,25 @@ class Bluelink extends utils.Adapter {
                     let heating = await this.getStateAsync(`${vin}.control.clima.set.heating`);
 
                     try {
-                        response = await vehicle.start({
-			//	airCtrl: airCtrl.val,
-                            	igniOnDuration: 10,
-                            	temperature: airTempC,
-                            	defrost: defrost.val,
-                            	heatedFeatures: heating.val,
-				unit: 'C',
-                        });
-                        this.log.debug(JSON.stringify(response));
+			const response = await vehicle.start({
+				airCtrl: true,
+				hvacType: 0,
+				igniOnDuration: 10,
+				temperature: airTempC.val,
+				defrost: defrost.val,
+				heating1: heating.val,
+				username: this.config.username,
+				vin: vin,
+			});
+			    
+                       this.log.debug(JSON.stringify(response));
                     } catch (err) {
                         this.log.error(JSON.stringify(err));
                     }
                     break;
                 case 'stop':
                     this.log.info('Stop clima for vehicle');
-                    response = await vehicle.stop();
+                    const response = await vehicle.stop();
                     this.log.debug(JSON.stringify(response));
                     break;
                 case 'force_refresh_from_server':
@@ -167,12 +169,12 @@ class Bluelink extends utils.Adapter {
                     break;
                 case 'charge':
                     this.log.info('Start charging');
-                    response = await vehicle.startCharge();
+                    const response = await vehicle.startCharge();
 		    this.log.debug(JSON.stringify(response));
                     break;
                 case 'charge_stop':
                     this.log.info('Stop charging');
-                    response = await vehicle.stopCharge();
+                    const response = await vehicle.stopCharge();
 		    this.log.debug(JSON.stringify(response));
                     break;
                 
@@ -198,13 +200,13 @@ class Bluelink extends utils.Adapter {
                                 charge_option.slow = state.val;
 				charge_option.fast = charge_limit_fast.val;
                             }
-                            response = await vehicle.setChargeTargets(charge_option);
+                            const response = await vehicle.setChargeTargets(charge_option);
                             this.log.debug(JSON.stringify(response));
                         }
                     }
                     break;
                 default:
-                    this.log.error('No command for Control found for: ' + id);
+                    this.log.error('No command for Control found for: ' + vin + ' ' + tmpControl);
             }
         }
     }
