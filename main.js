@@ -984,19 +984,7 @@ class Bluelink extends utils.Adapter {
                 write: false,
             },
             native: {},
-        });
-
-        await this.setObjectNotExistsAsync(vin + '.vehicleStatus.airCtrlOn', {
-            type: 'state',
-            common: {
-                name: 'Vehicle air control',
-                type: 'boolean',
-                role: 'indicator',
-                read: true,
-                write: false,
-            },
-            native: {},
-        });
+        });       
 	    
 	await this.setObjectNotExistsAsync(vin + '.vehicleStatus.airCtrlOn', {
             type: 'state',
