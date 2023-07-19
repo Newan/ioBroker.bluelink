@@ -122,6 +122,7 @@ class Bluelink extends utils.Adapter {
                             	temperature: airTempC,
                             	defrost: defrost.val,
                             	heatedFeatures: heating.val,
+				unit: 'C',
                         });
                         this.log.info(JSON.stringify(response));
                     } catch (err) {
