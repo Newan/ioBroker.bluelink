@@ -142,7 +142,7 @@ class Bluelink extends utils.Adapter {
 				    
 	                       this.log.debug(JSON.stringify(response));
 	                    } catch (err) {
-	                        this.log.error(JSON.stringify(err));
+	                        this.log.error(err);
 	                    }
 	                    break;
 	                case 'stop':
@@ -211,7 +211,7 @@ class Bluelink extends utils.Adapter {
 	                    this.log.error('No command for Control found');
 	            }
 	    } catch(err) {
-	    	this.log.error('Error ' + err);
+	    	this.log.error('Error onStateChange ' + err);
 	    }    
         }
     }
