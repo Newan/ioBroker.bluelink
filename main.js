@@ -1136,6 +1136,7 @@ class Bluelink extends utils.Adapter {
                 role: 'indicator',
                 read: true,
                 write: true,
+		def: 100,
             },
             native: {},
         });
@@ -1149,6 +1150,7 @@ class Bluelink extends utils.Adapter {
                 role: 'indicator',
                 read: true,
                 write: true,
+		def: 100,
             },
             native: {},
         });
@@ -1162,6 +1164,7 @@ class Bluelink extends utils.Adapter {
                 role: 'indicator',
                 read: true,
                 write: false,
+
             },
             native: {},
         });
