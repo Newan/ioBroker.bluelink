@@ -269,7 +269,11 @@ class Bluelink extends utils.Adapter {
                             adapterIntervals.evHistoryInterval = setInterval(() => {
                                 this.receiveEVInformation(vehicle);
                             }, 60 * 60 * 1000); // check einmal die stunde nur intern
-                            await this.driveHistory(vehicle);
+				
+			    if (await vehicle.driveHistory() != undefined) {
+                               await this.driveHistory(vehicle);
+			    }
+				
                         } catch (error) {
                             this.log.error('Error in receiveEVInformation');                            
                         }
