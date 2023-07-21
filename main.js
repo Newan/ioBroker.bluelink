@@ -55,7 +55,7 @@ class Bluelink extends utils.Adapter {
         this.setState('info.connection', false, true);
         let loginGo = true;
 
-        this.config.motor == 'GAS')
+        if (this.config.motor == 'GAS')
         {
             this.config.evHistory = false;
             this.config.request = 1;
