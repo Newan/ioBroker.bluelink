@@ -53,7 +53,14 @@ class Bluelink extends utils.Adapter {
     async onReady() {
         //first check account settings
         this.setState('info.connection', false, true);
-        
+        let loginGo = true;
+
+        this.config.motor == 'GAS')
+        {
+            this.config.evHistory = false;
+            this.config.request = 1;
+        }
+
         if (this.config.request < 1 || this.config.request > max_request) {
             this.log.warn('Request is invalid got to default ' + request_count);
         } else {
@@ -61,9 +68,15 @@ class Bluelink extends utils.Adapter {
         }
 
         if (this.config.username == '') {
-            this.log.error('No Username set');
-        } else {
-            //Start logic with login
+            this.log.error('Check Settings. No Username set');
+            loginGo = false;
+        }
+        if (this.config.motor == '') {
+            this.log.error('Check Settings. Enginetype is not defined ');
+            loginGo = false;
+        }
+
+        if (loginGo) {
             await this.login();
         }
     }
@@ -91,20 +104,19 @@ class Bluelink extends utils.Adapter {
             this.log.debug('New Event for state: ' + JSON.stringify(state));
             this.log.debug('ID: ' + JSON.stringify(id));
 
-	    let response = '';
+	        let response = '';
             const vin = id.split('.')[2];
             const vehicle = this.vehiclesDict[vin];
             let tmpControl = id.split('.')[5];
 
             if (tmpControl == undefined) {  // wenn undefined nimm ebene höher
-		tmpControl = id.split('.')[4]; 
+		        tmpControl = id.split('.')[4];
             }
 
             let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
-	    try {
-		
+	        try {
 	            switch (tmpControl) {
-	               case 'force_checkDriveInfo':
+	                case 'force_checkDriveInfo':
 	                    this.log.info('force checkDriveInfo ');
 	                    await this.readStatusVin(vehicle, force_update_obj.val);
 	                    this.driveHistory(vehicle);                    
@@ -121,24 +133,20 @@ class Bluelink extends utils.Adapter {
 	                    break;
 	                case 'start':
 	                    this.log.info('Starting clima for vehicle');
-				    
-		     //       let airCtrl = await this.getStateAsync(`${vin}.control.clima.set.airCtrl`);
 	                    let airTempC = await this.getStateAsync(`${vin}.control.clima.set.airTemp`);
-	               //     let airTempF = (airTempC.val * 9/5) + 32;
 	                    let defrost = await this.getStateAsync(`${vin}.control.clima.set.defrost`);
 	                    let heating = await this.getStateAsync(`${vin}.control.clima.set.heating`);
-	
 	                    try {
-				response = await vehicle.start({
-					airCtrl: true,
-					hvacType: 0,
-					igniOnDuration: 10,
-					temperature: airTempC.val,
-					defrost: defrost.val,
-					heating1: heating.val,
-					username: this.config.username,
-					vin: vin,
-				});
+                            response = await vehicle.start({
+                                airCtrl: true,
+                                hvacType: 0,
+                                igniOnDuration: 10,
+                                temperature: airTempC.val,
+                                defrost: defrost.val,
+                                heating1: heating.val,
+                                username: this.config.username,
+                                vin: vin,
+        				    });
 				    
 	                       this.log.debug(JSON.stringify(response));
 	                    } catch (err) {
@@ -162,57 +170,61 @@ class Bluelink extends utils.Adapter {
 	                    this.log.info('Forcing refresh');
 	                    await this.readStatusVin(vehicle, force_update_obj.val);
 	                    break;
-	                case 'force_update':                    
+	                case 'force_update':
 	                    if (force_update_obj.val) {
 	                        this.log.info('Update method for ' + vin + ' changed to "directly from the car"');
 	                    } else {
 	                        this.log.info('Update method for ' + vin + ' changed to "from the server"');
 	                    }
 	                    break;
+                    case 'force_login':
+                        clearTimeout(adapterIntervals.readAllStates);
+                        clearInterval(adapterIntervals.evHistoryInterval);
+                        this.login();
+                        break;
+
 	                case 'charge':
 	                    this.log.info('Start charging');
 	                    response = await vehicle.startCharge();
-			    this.log.debug(JSON.stringify(response));
-	                    break;
-	                case 'charge_stop':
+			            this.log.debug(JSON.stringify(response));
+	                    break;case 'charge_stop':
 	                    this.log.info('Stop charging');
 	                    response = await vehicle.stopCharge();
-			    this.log.debug(JSON.stringify(response));
+			            this.log.debug(JSON.stringify(response));
 	                    break;
-	                
-			case 'charge_limit_fast':				
-			case 'charge_limit_slow':
+
+                    case 'charge_limit_fast':
+			        case 'charge_limit_slow':
 	                    if (!state.ack) {
 	                        if (!POSSIBLE_CHARGE_LIMIT_VALUES.includes(state.val)) {
 	                            this.log.error(`Charge target values are limited to ${POSSIBLE_CHARGE_LIMIT_VALUES.join(', ')}`);
 	                        } else {
-	                            
 	                            const charge_option = { fast: fast_charging, slow: slow_charging };
-	                            if (tmpControl == 'charge_limit_fast') {								
-					this.log.info('Set new charging options charge_limit_fast');
+	                            if (tmpControl == 'charge_limit_fast') {
+					                this.log.info('Set new charging options charge_limit_fast');
 	                                //set fast charging
 	                                let charge_limit_slow = await this.getStateAsync(`${vin}.control.charge_limit_slow`);
 	                                charge_option.fast = state.val;
-					charge_option.slow = charge_limit_slow.val;
+                					charge_option.slow = charge_limit_slow.val;
 	                            } 
-				    if (tmpControl == 'charge_limit_slow') {
-					this.log.info('Set new charging options charge_limit_slow');
+				                if (tmpControl == 'charge_limit_slow') {
+					                this.log.info('Set new charging options charge_limit_slow');
 	                                //set slow charging
 	                                let charge_limit_fast = await this.getStateAsync(`${vin}.control.charge_limit_fast`);
 	                                charge_option.slow = state.val;
-					charge_option.fast = charge_limit_fast.val;
+                					charge_option.fast = charge_limit_fast.val;
 	                            }
 	                            response = await vehicle.setChargeTargets(charge_option);
 	                            this.log.debug(JSON.stringify(response));
 	                        }
 	                    }
 	                    break;
-	                default:
+                    default:
 	                    this.log.error('No command for Control found');
 	            }
-	    } catch(err) {
-	    	this.log.error('Error onStateChange ' + err);
-	    }    
+	        } catch(err) {
+	    	    this.log.error('Error onStateChange ' + err);
+	        }
         }
     }
 
@@ -222,6 +234,7 @@ class Bluelink extends utils.Adapter {
     async login() {
         try {
             this.log.info('Login to api');
+
             const loginOptions = {
                 username: this.config.username,
                 password: this.config.client_secret,
@@ -239,8 +252,8 @@ class Bluelink extends utils.Adapter {
                 this.log.info(vehicles.length + ' Vehicles found');
                 this.log.debug(JSON.stringify(vehicles, this.getCircularReplacer()));
 
-                this.vehicles = vehicles;                   
-                
+                this.vehicles = vehicles;
+
                 for (const vehicle of vehicles) {
                     const vin = vehicle.vehicleConfig.vin;
                     this.vehiclesDict[vin] = vehicle;
@@ -263,15 +276,16 @@ class Bluelink extends utils.Adapter {
                         native: {},
                     });
                     await this.json2iob.parse(`${vin}.general`, vehicle.vehicleConfig);
-                    if (this.config.evHistory) {
-                        try {                                            
-                            
+
+                    if (this.config.evHistory && this.config.motor != 'GAS') {
+                        try {
+                            await this.driveHistory(vehicle);
+
                             adapterIntervals.evHistoryInterval = setInterval(() => {
                                 this.receiveEVInformation(vehicle);
                             }, 60 * 60 * 1000); // check einmal die stunde nur intern
-                            await this.driveHistory(vehicle);
                         } catch (error) {
-                            this.log.error('Error in receiveEVInformation');                            
+                            this.log.error('Error in receiveEVInformation');
                         }
                     }
                     await this.setStateAsync(`${vin}.error_counter`, 0, true);
@@ -329,7 +343,6 @@ class Bluelink extends utils.Adapter {
         }
         adapterIntervals.readAllStates = setTimeout(this.readStatus.bind(this), ((24 * 60) / request_count) * 60000);
     }
-
 
     // force_update = true Daten vom Auto
     // force_update = false vom server
@@ -423,15 +436,12 @@ class Bluelink extends utils.Adapter {
     }
     
     async driveHistory(vehicle) {
-      
-        try {            
-            
+        try {
             const driveHistory = await vehicle.driveHistory();
+
             const vin = vehicle.vehicleConfig.vin;
         
-            if (driveHistory == undefined || driveHistory == null) {
-                this.log.debug('no driveHistory-Data available ');
-            } else {
+            if (driveHistory.cumulated[0].regen != undefined) {
                 this.log.debug('driveHistory-Data: ' + JSON.stringify(driveHistory));
                 await this.setObjectNotExistsAsync(vin + '.driveHistory', {
                     type: 'channel',
@@ -518,11 +528,6 @@ class Bluelink extends utils.Adapter {
         //chassis/doors
         this.checkDoor(vin, newStatus.chassis.openDoors);
 
-        //chassis/tirePressure
-        //   if (newStatus.chassis.tirePressureWarningLamp != undefined) {
-        //
-        //   }
-
         //climate
         await this.setStateAsync(vin + '.vehicleStatus.airCtrlOn', { val: newStatus.climate.active, ack: true });
         await this.setStateAsync(vin + '.vehicleStatus.airTemp', { val: newStatus.climate.temperatureSetpoint, ack: true });
@@ -546,7 +551,9 @@ class Bluelink extends utils.Adapter {
         //Charge
 
         //Bei Kia sind die Werte in einer targetSOClist
-        if (newStatus.vehicleStatus.evStatus != undefined) {
+        if (this.config.motor == 'GAS') {
+            await this.setStateAsync(vin + '.vehicleStatus.dte', {val: newStatus.vehicleStatus.dte.value, ack: true});
+        } else {
             if (newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist != undefined) {
                 if (newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].plugType == 1) {
                     //Slow  = 1  -> Index 0 ist slow
@@ -573,8 +580,6 @@ class Bluelink extends utils.Adapter {
                     });
                     fast_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
                 }
-            } else {
-                //Bei Hyundai sieht es anders aus:
             }
 
             //Nur für Elektro Fahrzeuge - Battery
@@ -605,9 +610,6 @@ class Bluelink extends utils.Adapter {
             });
             this.log.debug('Folgende Ladezeiten Moeglichkeiten wurden gefunden:');
             this.log.debug(JSON.stringify(newStatus.vehicleStatus.evStatus.remainTime2));
-        } else {
-            //Kein Elektromodell, Diesel etc
-            await this.setStateAsync(vin + '.vehicleStatus.dte', { val: newStatus.vehicleStatus.dte.value, ack: true });
         }
 
         // nur für Kia
@@ -641,7 +643,7 @@ class Bluelink extends utils.Adapter {
         await this.setStateAsync(vin + '.vehicleStatus.trunkOpen', { val: newStatus.vehicleStatus.trunkOpen, ack: true });
         await this.setStateAsync(vin + '.vehicleStatus.hoodOpen', { val: newStatus.vehicleStatus.hoodOpen, ack: true });
 
-        this.checkDoor(vin, newStatus.vehicleStatus.doorOpen);
+        this. checkDoor(vin, newStatus.vehicleStatus.doorOpen);
 
         //status parameter
         await this.setStateAsync(vin + '.vehicleStatus.airCtrlOn', { val: newStatus.vehicleStatus.airCtrlOn, ack: true });
@@ -691,7 +693,7 @@ class Bluelink extends utils.Adapter {
          await this.setObjectNotExistsAsync(vin + '.control.force_checkDriveInfo', {
             type: 'state',
             common: {
-                name: 'force load Drive Infos',
+                name: 'Force load Drive Infos',
                 type: 'boolean',
                 role: 'button',
                 read: true,
@@ -753,84 +755,72 @@ class Bluelink extends utils.Adapter {
         });
         this.subscribeStates(vin + '.control.unlock');
 
-        await this.setObjectNotExistsAsync(vin + '.control.clima.start', {
-            type: 'state',
-            common: {
-                name: 'Start clima for the vehicle',
-                type: 'boolean',
-                role: 'button',
-                read: true,
-                write: true,
-            },
-            native: {},
-        });
-        this.subscribeStates(vin + '.control.clima.start');
+        if (this.config.motor == 'EV') {
+            await this.setObjectNotExistsAsync(vin + '.control.clima.start', {
+                type: 'state',
+                common: {
+                    name: 'Start clima for the vehicle',
+                    type: 'boolean',
+                    role: 'button',
+                    read: true,
+                    write: true,
+                },
+                native: {},
+            });
+            this.subscribeStates(vin + '.control.clima.start');
 
-        await this.setObjectNotExistsAsync(vin + '.control.clima.set.defrost', {
-            type: 'state',
-            common: {
-                name: 'set defrost function for clima',
-                type: 'boolean',
-                role: 'state',
-                read: true,
-                write: true,
-                def: false,
-            },
-            native: {},
-        });
+            await this.setObjectNotExistsAsync(vin + '.control.clima.set.defrost', {
+                type: 'state',
+                common: {
+                    name: 'set defrost function for clima',
+                    type: 'boolean',
+                    role: 'state',
+                    read: true,
+                    write: true,
+                    def: false,
+                },
+                native: {},
+            });
 
-        await this.setObjectNotExistsAsync(vin + '.control.clima.set.heating', {
-            type: 'state',
-            common: {
-                name: 'set heating  1 or 0',
-                type: 'number',
-                role: 'state',
-                read: true,
-                write: true,
-                def: 0,
-            },
-            native: {},
-        });
-	    
-	await this.setObjectNotExistsAsync(vin + '.control.clima.set.airTemp', {
-            type: 'state',
-            common: {
-                name: 'set Vehicle air tempereature',
-                type: 'number',
-                role: 'indicator',
-                read: true,
-                write: true,
-		def: 18,
-            },
-            native: {},
-        });
-/*
-        await this.setObjectNotExistsAsync(vin + '.control.clima.set.airCtrl', {
-            type: 'state',
-            common: {
-                name: 'set airCtrl function for clima',
-                type: 'boolean',
-                role: 'state',
-                read: true,
-                write: true,
-                def: false,
-            },
-            native: {},
-        });
-*/
-        await this.setObjectNotExistsAsync(vin + '.control.clima.stop', {
-            type: 'state',
-            common: {
-                name: 'Stop clima for the vehicle',
-                type: 'boolean',
-                role: 'button',
-                read: true,
-                write: true,
-            },
-            native: {},
-        });
-        this.subscribeStates(vin + '.control.clima.stop');
+            await this.setObjectNotExistsAsync(vin + '.control.clima.set.heating', {
+                type: 'state',
+                common: {
+                    name: 'set heating  1 or 0',
+                    type: 'number',
+                    role: 'state',
+                    read: true,
+                    write: true,
+                    def: 0,
+                },
+                native: {},
+            });
 
+            await this.setObjectNotExistsAsync(vin + '.control.clima.set.airTemp', {
+                type: 'state',
+                common: {
+                    name: 'set Vehicle air tempereature',
+                    type: 'number',
+                    role: 'indicator',
+                    read: true,
+                    write: true,
+                    def: 18,
+                },
+                native: {},
+            });
+
+            await this.setObjectNotExistsAsync(vin + '.control.clima.stop', {
+                type: 'state',
+                common: {
+                    name: 'Stop clima for the vehicle',
+                    type: 'boolean',
+                    role: 'button',
+                    read: true,
+                    write: true,
+                },
+                native: {},
+            });
+            this.subscribeStates(vin + '.control.clima.stop');
+        }
         await this.setObjectNotExistsAsync(vin + '.control.force_refresh_from_car', {
             type: 'state',
             common: {
@@ -884,10 +874,24 @@ class Bluelink extends utils.Adapter {
         });
         this.subscribeStates(vin + '.control.force_update');
 
+        await this.setObjectNotExistsAsync(vin + '.control.force_login', {
+            type: 'state',
+            common: {
+                name: 'Force login',
+                type: 'boolean',
+                role: 'button',
+                read: true,
+                write: true,
+                def: true,
+            },
+            native: {},
+        });
+        this.subscribeStates(vin + '.control.force_login');
+
         await this.setObjectNotExistsAsync(vin + '.control.batteryControlState12V', {
             type: 'state',
             common: {
-                name: 'set battery monitoring',
+                name: 'Set battery monitoring',
                 type: 'number',
                 role: 'state',
                 read: true,
