@@ -698,6 +698,7 @@ class Bluelink extends utils.Adapter {
                 role: 'button',
                 read: true,
                 write: true,
+		def: true,
             },
             native: {},
         });
@@ -711,6 +712,7 @@ class Bluelink extends utils.Adapter {
                 role: 'button',
                 read: true,
                 write: true,
+		def: true,
             },
             native: {},
         });
@@ -724,6 +726,7 @@ class Bluelink extends utils.Adapter {
                 role: 'button',
                 read: true,
                 write: true,
+		def: true,
             },
             native: {},
         });
@@ -737,6 +740,7 @@ class Bluelink extends utils.Adapter {
                 role: 'button',
                 read: true,
                 write: true,
+		def: true,
             },
             native: {},
         });
@@ -750,6 +754,7 @@ class Bluelink extends utils.Adapter {
                 role: 'button',
                 read: true,
                 write: true,
+		def: true,
             },
             native: {},
         });
@@ -764,6 +769,7 @@ class Bluelink extends utils.Adapter {
                     role: 'button',
                     read: true,
                     write: true,
+		   def: true,
                 },
                 native: {},
             });
@@ -816,6 +822,7 @@ class Bluelink extends utils.Adapter {
                     role: 'button',
                     read: true,
                     write: true,
+		    def: true,
                 },
                 native: {},
             });
@@ -829,6 +836,7 @@ class Bluelink extends utils.Adapter {
                 role: 'button',
                 read: true,
                 write: true,
+		def: true,
             },
             native: {},
         });
@@ -842,6 +850,7 @@ class Bluelink extends utils.Adapter {
                 role: 'button',
                 read: true,
                 write: true,
+		def: true,
             },
             native: {},
         });
@@ -855,6 +864,7 @@ class Bluelink extends utils.Adapter {
                 role: 'button',
                 read: true,
                 write: true,
+		def: true,
             },
             native: {},
         });
@@ -946,7 +956,7 @@ class Bluelink extends utils.Adapter {
                 type: 'boolean',
                 role: 'indicator',
                 read: true,
-                write: false,
+                write: false,		
             },
             native: {},
         });
