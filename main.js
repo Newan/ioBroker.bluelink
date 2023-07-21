@@ -689,21 +689,7 @@ class Bluelink extends utils.Adapter {
      * Functions to create the ioBroker objects
      */
 
-    async setControlObjects(vin) {
-         await this.setObjectNotExistsAsync(vin + '.control.force_checkDriveInfo', {
-            type: 'state',
-            common: {
-                name: 'Force load Drive Infos',
-                type: 'boolean',
-                role: 'button',
-                read: true,
-                write: true,
-		def: true,
-            },
-            native: {},
-        });
-        this.subscribeStates(vin + '.control.force_checkDriveInfo');
-        
+    async setControlObjects(vin) {         
         await this.setObjectNotExistsAsync(vin + '.control.charge', {
             type: 'state',
             common: {
@@ -761,6 +747,19 @@ class Bluelink extends utils.Adapter {
         this.subscribeStates(vin + '.control.unlock');
 
         if (this.config.motor == 'EV') {
+		await this.setObjectNotExistsAsync(vin + '.control.force_checkDriveInfo', {
+	            type: 'state',
+	            common: {
+	                name: 'Force load Drive Infos',
+	                type: 'boolean',
+	                role: 'button',
+	                read: true,
+	                write: true,
+			def: true,
+	            },
+	            native: {},
+	        });
+	        this.subscribeStates(vin + '.control.force_checkDriveInfo');
             await this.setObjectNotExistsAsync(vin + '.control.clima.start', {
                 type: 'state',
                 common: {
