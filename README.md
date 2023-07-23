@@ -33,6 +33,11 @@ Login Infos : https://developers.kia.com/web/v1/kia/specification/account/accoun
 
 
 ## Changelog
+
+### 2.3.5 
+* (arteck) add force_login button
+* (arteck) corr history bug
+
 ### 2.3.4 (2023-07-19)
 * (arteck) clima control is redesigned
 
