@@ -428,10 +428,11 @@ class Bluelink extends utils.Adapter {
     }
 
     async receiveEVInformation(vehicle) {
-        let tickHour = new Date().getHours(); // um 23 uhr daten festschreiben
+        const tickHour = new Date().getHours(); // um 23 uhr daten festschreiben
 
         if (tickHour == 23) {
-            this.driveHistory(vehicle);    
+		this.log.info('DriveHistory Update for ' + vehicle.vehicleConfig.vin);
+            	this.driveHistory(vehicle);    
         } 
     }
     
