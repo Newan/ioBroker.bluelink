@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "2.3.5",
+    "version": "2.3.6",
     "news": {
+      "2.3.6": {
+        "en": "corr crash",
+        "de": "korsabsturz",
+        "ru": "корр аварии",
+        "pt": "quebra de corrimento",
+        "nl": "vertaling:",
+        "fr": "corr crash",
+        "it": "crash del corpo",
+        "es": "colisión",
+        "pl": "cor crash",
+        "uk": "збій",
+        "zh-cn": "意外事故"
+      },
       "2.3.2": {
         "en": "force update only selected vin\n add buttons for force_refresh_from_server and force_refresh_from_car"
       },
@@ -20,57 +33,6 @@
       },
       "2.2.2": {
         "en": "Update dependencies"
-      },
-      "2.2.1": {
-        "en": "Testrelease for 503 error"
-      },
-      "2.2.0": {
-        "en": "Adding refresh stop if 12V battery is under 50%.",
-        "de": "Aktualisierungsstopp hinzufügen, wenn die 12V-Batterie unter 50% ist.",
-        "ru": "Добавление остановки обновления, если батарея 12 В менее 50%.",
-        "pt": "Adicionando parada de atualização se a bateria de 12 V estiver abaixo de 50%.",
-        "nl": "Verversingsstop toevoegen als de 12V-batterij minder dan 50% is.",
-        "fr": "Ajout d'un arrêt de rafraîchissement si la batterie 12V est inférieure à 50%.",
-        "it": "Aggiunta dell'arresto di aggiornamento se la batteria da 12 V è inferiore al 50%.",
-        "es": "Agregar parada de actualización si la batería de 12 V está por debajo del 50%.",
-        "pl": "Dodanie zatrzymania odświeżania, jeśli poziom naładowania akumulatora 12 V jest niższy niż 50%.",
-        "zh-cn": "如果 12V 电池电量低于 50%，则添加刷新停止。"
-      },
-      "2.1.2": {
-        "en": "Update lib bluelinky",
-        "de": "Lib bluelinky aktualisiert",
-        "ru": "Обновить lib bluelinky",
-        "pt": "Atualizar lib bluelinky",
-        "nl": "Update lib bluelinky",
-        "fr": "Mettre à jour la bibliothèque bluelinky",
-        "it": "Aggiorna lib bluelinky",
-        "es": "Actualizar lib bluelinky",
-        "pl": "Zaktualizuj bibliotekę bluelinky",
-        "zh-cn": "更新库 bluelinky"
-      },
-      "2.1.0": {
-        "en": "Add Datapoints for doors etc",
-        "de": "Datenpunkte für Türen usw. hinzugefügt",
-        "ru": "Добавить точки данных для дверей и т. Д.",
-        "pt": "Adicionar pontos de dados para portas, etc.",
-        "nl": "Voeg datapunten toe voor deuren etc",
-        "fr": "Ajouter des points de données pour les portes, etc.",
-        "it": "Aggiungi punti dati per porte ecc",
-        "es": "Agregue puntos de datos para puertas, etc.",
-        "pl": "Dodaj punkty danych dla drzwi itp.",
-        "zh-cn": "为门等添加数据点"
-      },
-      "1.0.0": {
-        "en": "First stable version",
-        "de": "Erste stabile Version",
-        "ru": "Первая стабильная версия",
-        "pt": "Primeira versão estável",
-        "nl": "Eerste stabiele versie",
-        "fr": "Première version stable",
-        "it": "Prima versione stabile",
-        "es": "Primera versión estable",
-        "pl": "Pierwsza stabilna wersja",
-        "zh-cn": "第一个稳定版本"
       }
     },
     "title": "Hyundai (Bluelink) / Kia (UVO)",
@@ -146,7 +108,7 @@
     "errorCounter": 5,
     "language": "DE"
   },
- "objects": [],
+  "objects": [],
   "instanceObjects": [
     {
       "_id": "info",
