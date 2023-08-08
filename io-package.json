@@ -38,6 +38,7 @@
     "title": "Hyundai (Bluelink) / Kia (UVO)",
     "titleLang": {
       "en": "Controll Hyundai (Bluelink) / Kia (UVO) vehicles",
+      "uk": "Controll Hyundai (Bluelink) / Kia (UVO) vehicles",
       "de": "Steuern Sie Fahrzeuge von Hyundai (Bluelink) / Kia (UVO)",
       "ru": "Контрольные автомобили Hyundai (Bluelink) / Kia (UVO)",
       "pt": "Controlar veículos Hyundai (Bluelink) / Kia (UVO)",
@@ -50,6 +51,7 @@
     },
     "desc": {
       "en": "Adapter to control Hyundai or Kia vehicles",
+      "uk": "Adapter to control Hyundai or Kia vehicles",
       "de": "Adapter zur Steuerung von Hyundai- oder Kia-Fahrzeugen",
       "ru": "Адаптер для управления автомобилями Hyundai или Kia",
       "pt": "Adaptador para controlar veículos Hyundai ou Kia",
