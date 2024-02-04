@@ -1,11 +1,24 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "2.3.6",
+    "version": "2.3.7",
     "news": {
+      "2.3.7": {
+        "en": "set default force_update to server",
+        "de": "set default force_update to server",
+        "ru": "настройка параметра force_update_",
+        "pt": "set default force_update to server",
+        "nl": "set default force_update to server",
+        "fr": "définir force_update par défaut au serveur",
+        "it": "set default force_update al server",
+        "es": "set default force_update to server",
+        "pl": "ustaw domyślny force _ update do serwera",
+        "uk": "встановити значення за замовчуванням_update на сервер",
+        "zh-cn": "设置默认强制值_ 更新到服务器"
+      },
       "2.3.6": {
         "en": "corr crash",
-        "uk": "corr crash",
+        "uk": "збій",
         "de": "korrektur crash",
         "ru": "корр аварии",
         "pt": "quebra de corrimento",
@@ -14,7 +27,6 @@
         "it": "crash del corpo",
         "es": "colisión",
         "pl": "cor crash",
-        "uk": "збій",
         "zh-cn": "意外事故"
       },
       "2.3.2": {
@@ -31,9 +43,6 @@
       },
       "2.2.6": {
         "en": "fix / extend clima & errorcounter"
-      },
-      "2.2.2": {
-        "en": "Update dependencies"
       }
     },
     "title": "Hyundai (Bluelink) / Kia (UVO)",

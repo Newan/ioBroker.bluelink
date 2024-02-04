@@ -35,6 +35,9 @@ Adapter to control Hyundai or Kia vehicle
 
 
 ## Changelog
+### 2.3.7 (2024-02-04)
+* (arteck) set default force_update to server
+
 ### 2.3.6 (2023-08-05)
 * (arteck) corr crash
 
@@ -116,7 +119,7 @@ Adapter to control Hyundai or Kia vehicle
 ## License
 MIT License
 
-Copyright (c) 2023 Newan <info@newan.de>
+Copyright (c) 2024 Newan <info@newan.de>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
