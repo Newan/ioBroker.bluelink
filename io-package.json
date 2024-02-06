@@ -93,8 +93,7 @@
     "type": "vehicle",
     "compact": true,
     "connectionType": "cloud",
-    "dataSource": "poll",
-    "materialize": true,
+    "dataSource": "poll",    
     "dependencies": [
       {
         "js-controller": ">=3.1.0"
@@ -119,6 +118,10 @@
     "protectAgainstDeepDischarge": true,
     "errorCounter": 5,
     "language": "DE"
+  },
+  "adminUI": {
+      "config": "materialize",
+      "tab": "materialize"
   },
   "objects": [],
   "instanceObjects": [
