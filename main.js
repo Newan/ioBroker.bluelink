@@ -532,7 +532,15 @@ class Bluelink extends utils.Adapter {
         //climate
         await this.setStateAsync(vin + '.vehicleStatus.airCtrlOn', { val: newStatus.climate.active, ack: true });
         await this.setStateAsync(vin + '.vehicleStatus.airTemp', { val: newStatus.climate.temperatureSetpoint, ack: true });
-        await this.setStateAsync(vin + '.vehicleStatus.steerWheelHeat', { val: newStatus.climate.steeringwheelHeat, ack: true });
+
+
+	let steerWheelHeat = newStatus.climate.steeringwheelHeat;
+	    
+	if (typeof steerWheelHeat == 'number') {
+		steerWheelHeat = steerWheelHeat == 0 ? false : true;
+	}
+	    
+        await this.setStateAsync(vin + '.vehicleStatus.steerWheelHeat', { val: steerWheelHeat, ack: true });
         //await this.setStateAsync(vin + '.vehicleStatus.sideBackWindowHeat', { val: newStatus.climate.sideBackWindowHeat, ack: true });
 
         //Engine
@@ -651,8 +659,14 @@ class Bluelink extends utils.Adapter {
         await this.setStateAsync(vin + '.vehicleStatus.smartKeyBatteryWarning', { val: newStatus.vehicleStatus.smartKeyBatteryWarning, ack: true });
         await this.setStateAsync(vin + '.vehicleStatus.washerFluidStatus', { val: newStatus.vehicleStatus.washerFluidStatus, ack: true });
         await this.setStateAsync(vin + '.vehicleStatus.breakOilStatus', { val: newStatus.vehicleStatus.breakOilStatus, ack: true });
-        await this.setStateAsync(vin + '.vehicleStatus.steerWheelHeat', { val: newStatus.vehicleStatus.steerWheelHeat, ack: true });
-        await this.setStateAsync(vin + '.vehicleStatus.sideBackWindowHeat', { val: newStatus.vehicleStatus.sideBackWindowHeat, ack: true });
+
+	let steerWheelHeat = newStatus.vehicleStatus.steerWheelHeat;
+	    
+	if (typeof steerWheelHeat == 'number') {
+		steerWheelHeat = steerWheelHeat == 0 ? false : true;
+	}
+        await this.setStateAsync(vin + '.vehicleStatus.steerWheelHeat', { val: steerWheelHeat, ack: true });    
+	await this.setStateAsync(vin + '.vehicleStatus.sideBackWindowHeat', { val: newStatus.vehicleStatus.sideBackWindowHeat, ack: true });
     }
 
     async checkDoor(vin, doors) {
