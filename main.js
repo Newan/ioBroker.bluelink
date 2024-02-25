@@ -1098,7 +1098,7 @@ class Bluelink extends utils.Adapter {
             type: 'state',
             common: {
                 name: 'Steer wheel heat',
-                type: 'number',
+                type: 'boolean',
                 role: 'indicator',
                 read: true,
                 write: false,
