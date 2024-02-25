@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "2.3.7",
+    "version": "2.3.8",
     "news": {
+      "2.3.8": {
+        "en": "corr steerWheelHeat",
+        "de": "korr Steer Radauftrieb",
+        "ru": "угловое WheelHeat",
+        "pt": "direção de cor Heat de roda",
+        "nl": "corrostuur WheelHeat",
+        "fr": "tête de corbeille Chauffe-roue",
+        "it": "sterzo Rivestimento della ruota",
+        "es": "corr steer WheelHeat",
+        "pl": "korrsteel Koła Ciepło",
+        "uk": "стюардеси Колеса",
+        "zh-cn": "旋转方向盘 轮热"
+      },
       "2.3.7": {
         "en": "set default force_update to server",
         "de": "set default force_update to server",
@@ -40,9 +53,6 @@
       },
       "2.2.7": {
         "en": "see readme"
-      },
-      "2.2.6": {
-        "en": "fix / extend clima & errorcounter"
       }
     },
     "title": "Hyundai (Bluelink) / Kia (UVO)",
@@ -93,7 +103,7 @@
     "type": "vehicle",
     "compact": true,
     "connectionType": "cloud",
-    "dataSource": "poll",    
+    "dataSource": "poll",
     "dependencies": [
       {
         "js-controller": ">=3.1.0"
@@ -120,8 +130,8 @@
     "language": "DE"
   },
   "adminUI": {
-      "config": "materialize",
-      "tab": "materialize"
+    "config": "materialize",
+    "tab": "materialize"
   },
   "objects": [],
   "instanceObjects": [
