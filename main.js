@@ -1,7 +1,7 @@
 'use strict';
 
 const utils = require('@iobroker/adapter-core');
-const bluelinky = require('bluelinky');
+const { BlueLinky } = require('bluelinky');
 const Json2iob = require('./lib/json2iob');
 
 const adapterIntervals = {}; //halten von allen Intervallen
@@ -244,7 +244,7 @@ class Bluelink extends utils.Adapter {
                 language:  this.config.language,
             };
 
-            client = new bluelinky(loginOptions);
+            client = new BlueLinky(loginOptions);
 
             client.on('ready', async (vehicles) => {
                 this.setState('info.connection', true, true);
