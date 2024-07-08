@@ -129,10 +129,7 @@
     "errorCounter": 5,
     "language": "DE"
   },
-  "adminUI": {
-    "config": "materialize",
-    "tab": "materialize"
-  },
+  "materialize": true,
   "objects": [],
   "instanceObjects": [
     {
