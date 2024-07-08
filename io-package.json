@@ -108,7 +108,11 @@
       {
         "js-controller": ">=5.0.0"
       }
-    ]
+    ],
+    "adminUI": {
+    "config": "materialize",
+    "tab": "materialize"
+    },
   },
   "protectedNative": [
     "client_secret",
@@ -128,11 +132,6 @@
     "protectAgainstDeepDischarge": true,
     "errorCounter": 5,
     "language": "DE"
-  },
-  "materialize": true,
-  "adminUI": {
-    "config": "materialize",
-    "tab": "materialize"
   },
   "objects": [],
   "instanceObjects": [
