@@ -82,6 +82,10 @@
       "pl": "Adapter do sterowania pojazdami Hyundai lub Kia",
       "zh-cn": "控制现代或起亚汽车的适配器"
     },
+    "adminUI": {
+    "config": "materialize",
+    "tab": "materialize"
+    },
     "authors": [
       "Newan <info@newan.de>",
       "TA2k <tombox2020@gmail.de>"
@@ -108,12 +112,9 @@
       {
         "js-controller": ">=5.0.0"
       }
-    ],
-    "adminUI": {
-    "config": "materialize",
-    "tab": "materialize"
-    },
+    ]
   },
+  
   "protectedNative": [
     "client_secret",
     "client_secret_pin"
