@@ -130,6 +130,10 @@
     "language": "DE"
   },
   "materialize": true,
+  "adminUI": {
+    "config": "materialize",
+    "tab": "materialize"
+  },
   "objects": [],
   "instanceObjects": [
     {
