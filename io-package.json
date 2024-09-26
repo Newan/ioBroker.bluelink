@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "2.3.8",
+    "version": "2.3.9",
     "news": {
+      "2.3.9": {
+        "en": "add ccs2 car status",
+        "de": "ccs2 autostatus hinzufügen",
+        "ru": "добавить статус автомобиля ccs2",
+        "pt": "adicionar status do carro ccs2",
+        "nl": "ccs2 autostatus toevoegen",
+        "fr": "ajouter ccs2 statut de voiture",
+        "it": "aggiungere ccs2 auto stato",
+        "es": "añadir ccs2 estado del coche",
+        "pl": "dodaj status samochodu ccs2",
+        "uk": "додати стан автомобіля ccs2",
+        "zh-cn": "添加 ccs2 车位"
+      },
       "2.3.8": {
         "en": "corr steerWheelHeat",
         "de": "korr Steer Radauftrieb",
@@ -50,9 +63,6 @@
       },
       "2.2.8": {
         "en": "force update"
-      },
-      "2.2.7": {
-        "en": "see readme"
       }
     },
     "title": "Hyundai (Bluelink) / Kia (UVO)",
@@ -83,8 +93,8 @@
       "zh-cn": "控制现代或起亚汽车的适配器"
     },
     "adminUI": {
-    "config": "materialize",
-    "tab": "materialize"
+      "config": "materialize",
+      "tab": "materialize"
     },
     "authors": [
       "Newan <info@newan.de>",
@@ -114,7 +124,6 @@
       }
     ]
   },
-  
   "protectedNative": [
     "client_secret",
     "client_secret_pin"

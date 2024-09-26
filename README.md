@@ -35,6 +35,9 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 
 ## Changelog
+### 2.3.9 (2024-09-26)
+* (arteck) add ccs2 car status
+
 ### 2.3.8 (2024-02-25)
 * (arteck) corr steerWheelHeat
 
