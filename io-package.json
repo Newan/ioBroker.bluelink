@@ -111,7 +111,7 @@
     ],
     "license": "MIT",
     "platform": "Javascript/Node.js",
-    "main": "main.js",
+ 
     "icon": "bluelink.png",
     "enabled": true,
     "extIcon": "https://raw.githubusercontent.com/Newan/ioBroker.bluelink/master/admin/bluelink.png",
