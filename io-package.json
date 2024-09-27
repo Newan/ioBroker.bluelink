@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "2.3.10",
+    "version": "2.3.11",
     "news": {
+      "2.3.11": {
+        "en": "redesign",
+        "de": "neugestaltung",
+        "ru": "редизайн",
+        "pt": "rede de rede",
+        "nl": "herontwerp",
+        "fr": "remaniement",
+        "it": "riprogettare",
+        "es": "rediseño",
+        "pl": "przeprojektowanie",
+        "uk": "редизайн",
+        "zh-cn": "重新设计"
+      },
       "2.3.10": {
         "en": "add address as text using openstreetmap",
         "de": "adresse als text hinzufügen mit opentreetmap",
@@ -70,9 +83,6 @@
       },
       "2.3.2": {
         "en": "force update only selected vin\n add buttons for force_refresh_from_server and force_refresh_from_car"
-      },
-      "2.3.1": {
-        "en": "see Readme"
       }
     },
     "title": "Hyundai (Bluelink) / Kia (UVO)",
