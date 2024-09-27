@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "news": {
+      "3.0.1": {
+        "en": "activate jsonconfig",
+        "de": "jsonconfig aktivieren",
+        "ru": "активировать jsonconfig",
+        "pt": "ativar o jsonconfig",
+        "nl": "jsonconfig activeren",
+        "fr": "activer jsonconfig",
+        "it": "attivare jsonconfig",
+        "es": "activar jsonconfig",
+        "pl": "aktywacja jsonconfig",
+        "uk": "активувати jsonconfig",
+        "zh-cn": "激活 json配置"
+      },
       "3.0.0": {
         "en": "new structure jsonconfig",
         "de": "neue struktur jsonconfig",
@@ -54,45 +67,6 @@
         "pl": "dodaj status samochodu ccs2",
         "uk": "додати стан автомобіля ccs2",
         "zh-cn": "添加 ccs2 车位"
-      },
-      "2.3.8": {
-        "en": "corr steerWheelHeat",
-        "de": "korr Steer Radauftrieb",
-        "ru": "угловое WheelHeat",
-        "pt": "direção de cor Heat de roda",
-        "nl": "corrostuur WheelHeat",
-        "fr": "tête de corbeille Chauffe-roue",
-        "it": "sterzo Rivestimento della ruota",
-        "es": "corr steer WheelHeat",
-        "pl": "korrsteel Koła Ciepło",
-        "uk": "стюардеси Колеса",
-        "zh-cn": "旋转方向盘 轮热"
-      },
-      "2.3.7": {
-        "en": "set default force_update to server",
-        "de": "set default force_update to server",
-        "ru": "настройка параметра force_update_",
-        "pt": "set default force_update to server",
-        "nl": "set default force_update to server",
-        "fr": "définir force_update par défaut au serveur",
-        "it": "set default force_update al server",
-        "es": "set default force_update to server",
-        "pl": "ustaw domyślny force _ update do serwera",
-        "uk": "встановити значення за замовчуванням_update на сервер",
-        "zh-cn": "设置默认强制值_ 更新到服务器"
-      },
-      "2.3.6": {
-        "en": "corr crash",
-        "uk": "збій",
-        "de": "korrektur crash",
-        "ru": "корр аварии",
-        "pt": "quebra de corrimento",
-        "nl": "vertaling:",
-        "fr": "corr crash",
-        "it": "crash del corpo",
-        "es": "colisión",
-        "pl": "cor crash",
-        "zh-cn": "意外事故"
       }
     },
     "title": "Hyundai (Bluelink) / Kia (UVO)",
@@ -123,7 +97,7 @@
       "zh-cn": "控制现代或起亚汽车的适配器"
     },
     "adminUI": {
-      "config": "materialize",
+      "config": "json",
       "tab": "materialize"
     },
     "authors": [
