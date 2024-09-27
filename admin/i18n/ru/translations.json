@@ -1,0 +1,17 @@
+{
+  "bluelink adapter settings": "Настройки адаптера для bluelink",
+  "Username": "Имя пользователя",
+  "Password": "Пароль",
+  "Pin": "Персональный идентификационный номер (PIN-код)",
+  "VIN": "идентификационный номер автомобиля (VIN)",
+  "Brand": "марка",
+  "Request max 400": "Запрос в день",
+  "Api settings": "Настройки API",
+  "Account settings": "Настройки учетной записи",
+  "Donate": "Пожертвовать",
+  "Receive Daily drive History (EV cars only, needs 3 request per day)": "Получать ежедневную историю вождения (только для электромобилей, требуется 3 запроса в день)",
+  "Stop refresh if 12V battery is under 10.5 V to protect against irreversible damage": "Остановите обновление, если напряжение батареи 12 В ниже 10,5 В, для защиты от необратимого повреждения",
+  "ErrorConter": "Ошибка Counter для перезагрузки адаптера после неудачного подключения",
+  "App Lang": "Language",
+  "Resolve the address from coordinates using openstreetmap": "Удалить адрес из координат с помощью opentreetmap"
+}

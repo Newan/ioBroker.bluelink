@@ -1,0 +1,17 @@
+{
+  "bluelink adapter settings": "Paramètres d'adaptateur pour bluelink",
+  "Username": "Nom d'utilisateur",
+  "Password": "Mot de passe",
+  "Pin": "Numéro d'identification personnel (pin)",
+  "VIN": "numéro d'identification du véhicule (VIN)",
+  "Brand": "marque",
+  "Request max 400": "Demande par jour max 400",
+  "Api settings": "Paramètres de l'API",
+  "Account settings": "Paramètres du compte",
+  "Donate": "Faire un don",
+  "Receive Daily drive History (EV cars only, needs 3 request per day)": "Recevez l'historique de conduite quotidien (voitures EV uniquement, nécessite 3 demandes par jour)",
+  "Stop refresh if 12V battery is under 10.5 V to protect against irreversible damage": "Arrêtez le rafraîchissement si la batterie 12V est inférieure à 10,5 V pour éviter tout dommage irréversible.",
+  "ErrorConter": "Compteur d'erreur pour redémarrer l'adaptateur après connexion à défaut",
+  "App Lang": "Language",
+  "Resolve the address from coordinates using openstreetmap": "Résoudre l'adresse des coordonnées en utilisant openstreetmap"
+}

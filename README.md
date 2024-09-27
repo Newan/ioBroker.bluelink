@@ -35,6 +35,9 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 
 ## Changelog
+### 3.0.0 (2024-09-27)
+* (arteck) new structure jsonconfig
+
 ### 2.3.11 (2024-09-27)
 * (arteck) redesign
 

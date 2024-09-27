@@ -1,0 +1,17 @@
+{
+  "bluelink adapter settings": "Adapterinstellingen voor bluelink",
+  "Username": "Gebruikersnaam",
+  "Password": "Wachtwoord",
+  "Pin": "Persoonlijk identificatienummer (pincode)",
+  "VIN": "voertuigidentificatienummer (VIN)",
+  "Brand": "merk",
+  "Request max 400": "Aanvraag per dag max 400",
+  "Api settings": "API-instellingen",
+  "Account settings": "Account instellingen",
+  "Donate": "Doneer",
+  "Receive Daily drive History (EV cars only, needs 3 request per day)": "Dagelijkse rijgeschiedenis ontvangen (alleen EV-auto's, heeft 3 verzoeken per dag nodig)",
+  "Stop refresh if 12V battery is under 10.5 V to protect against irreversible damage": "Stop verversen als 12V batterij onder 10,5 V is om te beschermen tegen onomkeerbare schade",
+  "ErrorConter": "Vertaling:",
+  "App Lang": "Language",
+  "Resolve the address from coordinates using openstreetmap": "Oplossen van het adres van coördinaten via openstreetmap"
+}

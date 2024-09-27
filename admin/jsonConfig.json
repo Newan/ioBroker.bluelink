@@ -1,0 +1,153 @@
+{
+    "type": "panel",
+    "i18n": true,
+    "items": {
+        "Account settings": {
+            "type": "header",
+            "text": "Account settings",
+            "size": 2,
+            "newLine": true
+        },
+        "brand": {
+            "newLine": true,
+            "type": "select",
+            "label": "Brand",
+            "sm": 12,
+            "md": 4,
+            "lg": 3,
+            "options": [
+                {
+                    "label": "Kia",
+                    "value": "kia"
+                },
+                {
+                    "label": "Hyundai",
+                    "value": "hyundai"
+                }
+            ]
+        },
+        "motor": {
+            "type": "select",
+            "label": "Motor",
+            "sm": 12,
+            "md": 4,
+            "lg": 3,
+            "options": [
+                {
+                    "label": "EV",
+                    "value": "EV"
+                },
+                {
+                    "label": "PHEV/MHEV",
+                    "value": "HEV"
+                },
+                {
+                    "label": "Diesel/Benzin",
+                    "value": "GAS"
+                }
+            ]
+        },
+
+        "language": {
+            "newLine": true,
+            "type": "select",
+            "label": "App Lang",
+            "sm": 12,
+            "md": 4,
+            "lg": 3,
+            "options": [
+                {
+                    "label": "DE",
+                    "value": "de"
+                },
+                {
+                    "label": "EN",
+                    "value": "en"
+                },
+                {
+                    "label": "NL",
+                    "value": "nl"
+                },
+                {
+                    "label": "IT",
+                    "value": "it"
+                },
+                {
+                    "label": "ES",
+                    "value": "es"
+                },
+                {
+                    "label": "PL",
+                    "value": "pl"
+                }
+            ]
+        },
+        "username": {
+            "type": "text",
+            "label": "Username",
+            "sm": 12,
+            "md": 4,
+            "lg": 3
+        },
+        "client_secret": {
+            "newLine": true,
+            "type": "password",
+            "label": "Password",
+            "repeat": true,
+            "sm": 12,
+            "md": 8,
+            "lg": 6
+        },
+        "client_secret_pin": {
+            "type": "password",
+            "label": "Pin",
+            "sm": 12,
+            "md": 8,
+            "lg": 4
+        },
+        "Api settings": {
+            "type": "header",
+            "text": "Api settings",
+            "size": 2,
+            "newLine": true
+        },
+        "evHistory": {
+            "type": "checkbox",
+            "label": "Receive Daily drive History (EV cars only, needs 3 request per day)",
+            "newLine": true,
+            "sm": 12,
+            "md": 8,
+            "lg": 4
+        },
+        "protectAgainstDeepDischarge": {
+            "type": "checkbox",
+            "label": "Stop refresh if 12V battery is under 10.5 V to protect against irreversible damage",
+            "sm": 12,
+            "md": 8,
+            "lg": 4
+        },
+        "request": {
+            "type": "text",
+            "label": "Request max 400",
+            "newLine": true,
+            "sm": 12,
+            "md": 4,
+            "lg": 3
+        },
+        "errorCounter": {
+            "type": "text",
+            "label": "errorCounter",
+            "sm": 12,
+            "md": 4,
+            "lg": 3
+        },
+        "resAddress": {
+            "type": "checkbox",
+            "label": "Resolve the address from coordinates using openstreetmap",
+            "newLine": true,
+            "sm": 12,
+            "md": 8,
+            "lg": 4
+        }
+    }
+}

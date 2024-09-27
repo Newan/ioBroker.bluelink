@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "2.3.11",
+    "version": "3.0.0",
     "news": {
+      "3.0.0": {
+        "en": "new structure jsonconfig",
+        "de": "neue struktur jsonconfig",
+        "ru": "новая структура jsonconfig",
+        "pt": "nova estrutura jsonconfig",
+        "nl": "nieuwe structuur jsonconfig",
+        "fr": "nouvelle structure jsonconfig",
+        "it": "nuova struttura jsonconfig",
+        "es": "nueva estructura jsonconfig",
+        "pl": "nowa struktura jsonconfig",
+        "uk": "нова структура jsonconfig",
+        "zh-cn": "新结构json配置"
+      },
       "2.3.11": {
         "en": "redesign",
         "de": "neugestaltung",
@@ -80,9 +93,6 @@
         "es": "colisión",
         "pl": "cor crash",
         "zh-cn": "意外事故"
-      },
-      "2.3.2": {
-        "en": "force update only selected vin\n add buttons for force_refresh_from_server and force_refresh_from_car"
       }
     },
     "title": "Hyundai (Bluelink) / Kia (UVO)",

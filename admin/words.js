@@ -1,7 +1,4 @@
-/*global systemDictionary:true */
-'use strict';
-
-systemDictionary = {
+{
     'bluelink adapter settings': {
         'en': 'Adapter settings for bluelink',
         'de': 'Adaptereinstellungen für bluelink',
@@ -185,9 +182,9 @@ systemDictionary = {
       },
     'Resolve the address from coordinates using openstreetmap':{
         "en": "Resolve the address from coordinates using openstreetmap",
-        "de": "Lösen Sie die Adresse auf mithilfe der opentreetmap",
-        "ru": "Удалить адрес из координат с помощью opentreetmap",
-        "pt": "Resolver o endereço das coordenadas usando o opentreetmap",
+        "de": "Lösen Sie die Adresse auf mithilfe der openstreetmap",
+        "ru": "Удалить адрес из координат с помощью openstreetmap",
+        "pt": "Resolver o endereço das coordenadas usando o openstreetmap",
         "nl": "Oplossen van het adres van coördinaten via openstreetmap",
         "fr": "Résoudre l'adresse des coordonnées en utilisant openstreetmap",
         "it": "Risolvere l'indirizzo dalle coordinate utilizzando openstreetmap",
