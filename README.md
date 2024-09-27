@@ -35,6 +35,9 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 
 ## Changelog
+### 2.3.10 (2024-09-27)
+* (arteck) add address as text using openstreetmap
+
 ### 2.3.9 (2024-09-26)
 * (arteck) add ccs2 car status
 

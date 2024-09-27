@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "2.3.9",
+    "version": "2.3.10",
     "news": {
+      "2.3.10": {
+        "en": "add address as text using openstreetmap",
+        "de": "adresse als text hinzufügen mit opentreetmap",
+        "ru": "добавить адрес как текст с помощью opentreetmap",
+        "pt": "adicionar endereço como texto usando o opentreetmap",
+        "nl": "adres toevoegen als tekst met openstreetmap",
+        "fr": "ajouter l'adresse comme texte en utilisant openstreetmap",
+        "it": "aggiungere l'indirizzo come testo usando openstreetmap",
+        "es": "añadir dirección como texto usando openstreetmap",
+        "pl": "dodaj adres jako tekst używając openstreetmap",
+        "uk": "додати адресу як текст за допомогою openstreetmap",
+        "zh-cn": "使用 opentreetmap 添加地址为文本"
+      },
       "2.3.9": {
         "en": "add ccs2 car status",
         "de": "ccs2 autostatus hinzufügen",
@@ -60,9 +73,6 @@
       },
       "2.3.1": {
         "en": "see Readme"
-      },
-      "2.2.8": {
-        "en": "force update"
       }
     },
     "title": "Hyundai (Bluelink) / Kia (UVO)",
@@ -141,7 +151,8 @@
     "evHistory": true,
     "protectAgainstDeepDischarge": true,
     "errorCounter": 5,
-    "language": "DE"
+    "language": "DE",
+    "resAddress": false
   },
   "objects": [],
   "instanceObjects": [

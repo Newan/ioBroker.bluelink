@@ -182,5 +182,18 @@ systemDictionary = {
         'es': 'Language',
         'pl': 'Language',
         'zh-cn': 'Language'
-      }
+      },
+    'Resolve the address from coordinates using openstreetmap':{
+        "en": "Resolve the address from coordinates using openstreetmap",
+        "de": "Lösen Sie die Adresse auf mithilfe der opentreetmap",
+        "ru": "Удалить адрес из координат с помощью opentreetmap",
+        "pt": "Resolver o endereço das coordenadas usando o opentreetmap",
+        "nl": "Oplossen van het adres van coördinaten via openstreetmap",
+        "fr": "Résoudre l'adresse des coordonnées en utilisant openstreetmap",
+        "it": "Risolvere l'indirizzo dalle coordinate utilizzando openstreetmap",
+        "es": "Resolver la dirección desde coordenadas usando openstreetmap",
+        "pl": "Rozwiąż adres ze współrzędnych używając mapy openstreetmap",
+        "uk": "Вирішити адресу з координат за допомогою openstreetmap",
+        "zh-cn": "使用 Opentreetmap 从坐标解析地址"
+    }
 };
