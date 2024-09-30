@@ -583,7 +583,7 @@ class Bluelink extends utils.Adapter {
                     ack: true
                 });
             } else {
-                if (newStatus.vehicleStatus.hasOwnProperty('evStatus')) {
+                if (newStatus.vehicleStatus.evStatus.reservChargeInfos.hasOwnProperty('targetSOClist[0]')) {
                     if (newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].plugType == 1) {
                         //Slow  = 1  -> Index 0 ist slow
                         slow_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
