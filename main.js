@@ -662,10 +662,12 @@ class Bluelink extends utils.Adapter {
                     ack: true
                 });
 
-                await this.setStateAsync(vin + '.vehicleStatus.battery.soc', {
-                    val: newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.BatteryRemain.Ratio,
-                    ack: true
-                });
+		if (newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.hasOwnProperty('BatteryRemain')) {
+	                await this.setStateAsync(vin + '.vehicleStatus.battery.soc', {
+	                    val: newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.BatteryRemain.Ratio,
+	                    ack: true
+	                });
+		}
 
                 // hier nachschauen welcher DP
         /*        await this.setStateAsync(vin + '.vehicleStatus.battery.charge', {
@@ -684,17 +686,19 @@ class Bluelink extends utils.Adapter {
                 await this.setStateAsync(vin + '.odometer.value', {val: newStatus.ccs2Status.state.Vehicle.Drivetrain.Odometer, ack: true});
 
                 //fast  = 0  -> Index 0 ist fast
-                slow_charging = newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.TargetSoC.Standard;
-                await this.setStateAsync(vin + '.control.charge_limit_slow', {
-                    val: slow_charging,
-                    ack: true,
-                });
-
-                fast_charging = newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.TargetSoC.Quick;
-                await this.setStateAsync(vin + '.control.charge_limit_fast', {
-                    val: fast_charging,
-                    ack: true,
-                });
+		if (newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.TargetSoC.hasOwnProperty('Standard')) {    
+	                slow_charging = newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.TargetSoC.Standard;
+	                await this.setStateAsync(vin + '.control.charge_limit_slow', {
+	                    val: slow_charging,
+	                    ack: true,
+	                });
+	
+	                fast_charging = newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.TargetSoC.Quick;
+	                await this.setStateAsync(vin + '.control.charge_limit_fast', {
+	                    val: fast_charging,
+	                    ack: true,
+	                });
+		}
             } else {
                 if (newStatus.vehicleStatus.hasOwnProperty('battery')) {
                     await this.setStateAsync(vin + '.vehicleStatus.battery.soc-12V', {
