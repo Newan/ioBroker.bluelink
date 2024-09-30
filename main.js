@@ -686,7 +686,7 @@ class Bluelink extends utils.Adapter {
                 await this.setStateAsync(vin + '.odometer.value', {val: newStatus.ccs2Status.state.Vehicle.Drivetrain.Odometer, ack: true});
 
                 //fast  = 0  -> Index 0 ist fast
-		if (newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.TargetSoC.hasOwnProperty('Standard')) {    
+		if (newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.hasOwnProperty('TargetSoC')) {    
 	                slow_charging = newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.TargetSoC.Standard;
 	                await this.setStateAsync(vin + '.control.charge_limit_slow', {
 	                    val: slow_charging,
