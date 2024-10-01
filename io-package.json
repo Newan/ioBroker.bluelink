@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.0.1",
+    "version": "3.0.2",
     "news": {
+      "3.0.2": {
+        "en": "corr for hev",
+        "de": "korr für hev",
+        "ru": "для гев",
+        "pt": "corante para hev",
+        "nl": "corr voor hev",
+        "fr": "pour hev",
+        "it": "corr per hev",
+        "es": "corr para hev",
+        "pl": "corr for hev",
+        "uk": "корр для геїв",
+        "zh-cn": "为hv而战"
+      },
       "3.0.1": {
         "en": "activate jsonconfig",
         "de": "jsonconfig aktivieren",
@@ -111,7 +124,6 @@
     ],
     "license": "MIT",
     "platform": "Javascript/Node.js",
- 
     "icon": "bluelink.png",
     "enabled": true,
     "extIcon": "https://raw.githubusercontent.com/Newan/ioBroker.bluelink/master/admin/bluelink.png",
