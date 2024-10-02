@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.0.2",
+    "version": "3.0.3",
     "news": {
+      "3.0.3": {
+        "en": "add city to position text",
+        "de": "stadt hinzufügen zum positionstext",
+        "ru": "добавить город в положение текст",
+        "pt": "adicionar cidade ao texto de posição",
+        "nl": "stad toevoegen aan positietekst",
+        "fr": "ajouter la ville au texte de position",
+        "it": "aggiungere la città al testo di posizione",
+        "es": "añadir ciudad a texto de posición",
+        "pl": "dodaj tekst miasta do pozycji",
+        "uk": "додати місто в позицію текст",
+        "zh-cn": "在位置文本中添加城市"
+      },
       "3.0.2": {
         "en": "corr for hev",
         "de": "korr für hev",
