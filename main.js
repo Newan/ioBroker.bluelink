@@ -584,34 +584,36 @@ class Bluelink extends utils.Adapter {
                 });
             } else {
                 if (newStatus.vehicleStatus.hasOwnProperty('evStatus')) {
-                    if (newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].plugType == 1) {
-                        //Slow  = 1  -> Index 0 ist slow
-                        slow_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
-                        await this.setStateAsync(vin + '.control.charge_limit_slow', {
-                            val: slow_charging,
-                            ack: true,
-                        });
-
-                        fast_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel;
-                        await this.setStateAsync(vin + '.control.charge_limit_fast', {
-                            val: fast_charging,
-                            ack: true,
-                        });
-                    } else {
-                        //fast  = 0  -> Index 0 ist fast
-                        slow_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel;
-                        await this.setStateAsync(vin + '.control.charge_limit_slow', {
-                            val: slow_charging,
-                            ack: true,
-                        });
-
-                        fast_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
-                        await this.setStateAsync(vin + '.control.charge_limit_fast', {
-                            val: fast_charging,
-                            ack: true,
-                        });
-                    }
-
+		    if (newStatus.vehicleStatus.evStatus.reservChargeInfos.hasOwnProperty(targetSOClist[0])) {		
+	                    if (newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].plugType == 1) {
+	                        //Slow  = 1  -> Index 0 ist slow
+	                        slow_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
+	                        await this.setStateAsync(vin + '.control.charge_limit_slow', {
+	                            val: slow_charging,
+	                            ack: true,
+	                        });
+	
+	                        fast_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel;
+	                        await this.setStateAsync(vin + '.control.charge_limit_fast', {
+	                            val: fast_charging,
+	                            ack: true,
+	                        });
+		    	    
+	                    } else {
+	                        //fast  = 0  -> Index 0 ist fast
+	                        slow_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel;
+	                        await this.setStateAsync(vin + '.control.charge_limit_slow', {
+	                            val: slow_charging,
+	                            ack: true,
+	                        });
+	
+	                        fast_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
+	                        await this.setStateAsync(vin + '.control.charge_limit_fast', {
+	                            val: fast_charging,
+	                            ack: true,
+	                        });
+	                    }
+		    }
 
                     //Nur für Elektro Fahrzeuge - Battery
                     await this.setStateAsync(vin + '.vehicleStatus.dte', {
@@ -662,7 +664,7 @@ class Bluelink extends utils.Adapter {
                     ack: true
                 });
 
-                if (newStatus.ccs2Status.state.VehiclehasOwnProperty('Vehicle') && newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.hasOwnProperty('BatteryRemain')) {
+                if (newStatus.ccs2Status.state.Vehicle.hasOwnProperty('Vehicle') && newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.hasOwnProperty('BatteryRemain')) {
                     await this.setStateAsync(vin + '.vehicleStatus.battery.soc', {
                         val: newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.BatteryRemain.Ratio,
                         ack: true
