@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.0.3",
+    "version": "3.0.4",
     "news": {
+      "3.0.4": {
+        "en": "typo",
+        "de": "typo",
+        "ru": "typo",
+        "pt": "tipo:",
+        "nl": "type",
+        "fr": "typo",
+        "it": "tipo",
+        "es": "typo",
+        "pl": "typo",
+        "uk": "типи",
+        "zh-cn": "类型"
+      },
       "3.0.3": {
         "en": "add city to position text",
         "de": "stadt hinzufügen zum positionstext",
@@ -80,19 +93,6 @@
         "pl": "dodaj adres jako tekst używając openstreetmap",
         "uk": "додати адресу як текст за допомогою openstreetmap",
         "zh-cn": "使用 opentreetmap 添加地址为文本"
-      },
-      "2.3.9": {
-        "en": "add ccs2 car status",
-        "de": "ccs2 autostatus hinzufügen",
-        "ru": "добавить статус автомобиля ccs2",
-        "pt": "adicionar status do carro ccs2",
-        "nl": "ccs2 autostatus toevoegen",
-        "fr": "ajouter ccs2 statut de voiture",
-        "it": "aggiungere ccs2 auto stato",
-        "es": "añadir ccs2 estado del coche",
-        "pl": "dodaj status samochodu ccs2",
-        "uk": "додати стан автомобіля ccs2",
-        "zh-cn": "添加 ccs2 车位"
       }
     },
     "title": "Hyundai (Bluelink) / Kia (UVO)",

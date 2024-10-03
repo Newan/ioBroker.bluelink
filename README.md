@@ -36,6 +36,9 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 
 ## Changelog
+### 3.0.4 (2024-10-03)
+* (arteck) typo
+
 ### 3.0.3 (2024-10-02)
 * (arteck) add city to position text
 
