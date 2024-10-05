@@ -1,16 +1,4 @@
-{
-    'bluelink adapter settings': {
-        'en': 'Adapter settings for bluelink',
-        'de': 'Adaptereinstellungen für bluelink',
-        'ru': 'Настройки адаптера для bluelink',
-        'pt': 'Configurações do adaptador para bluelink',
-        'nl': 'Adapterinstellingen voor bluelink',
-        'fr': "Paramètres d'adaptateur pour bluelink",
-        'it': "Impostazioni dell'adattatore per bluelink",
-        'es': 'Ajustes del adaptador para bluelink',
-        'pl': 'Ustawienia adaptera dla bluelink',
-        'zh-cn': 'bluelink的适配器设置'
-    },
+{   
     'Username': {
         'en': 'Username',
         'de': 'Nutzername',
@@ -22,6 +10,18 @@
         'es': 'Nombre de usuario',
         'pl': 'Nazwa Użytkownika',
         'zh-cn': '用户名'
+    },
+    'bluelink adapter settings': {
+        'en': 'Adapter settings for bluelink',
+        'de': 'Adaptereinstellungen für bluelink',
+        'ru': 'Настройки адаптера для bluelink',
+        'pt': 'Configurações do adaptador para bluelink',
+        'nl': 'Adapterinstellingen voor bluelink',
+        'fr': "Paramètres d'adaptateur pour bluelink",
+        'it': "Impostazioni dell'adattatore per bluelink",
+        'es': 'Ajustes del adaptador para bluelink',
+        'pl': 'Ustawienia adaptera dla bluelink',
+        'zh-cn': 'bluelink的适配器设置'
     },
     'Password': {
         'en': 'Password',

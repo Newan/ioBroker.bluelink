@@ -47,7 +47,7 @@ class Bluelink extends utils.Adapter {
 
         this.json2iob = new Json2iob(this);
         adapterIntervals.evHistoryInterval = null;
-        this.countError = 0;        
+        this.countError = 0;
     }
 
     async onReady() {
@@ -113,13 +113,13 @@ class Bluelink extends utils.Adapter {
 		        tmpControl = id.split('.')[4];
             }
 
-            let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
+            const force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
 	        try {
 	            switch (tmpControl) {
 	                case 'force_checkDriveInfo':
 	                    this.log.info('force checkDriveInfo ');
 	                    await this.readStatusVin(vehicle, force_update_obj.val);
-	                    this.driveHistory(vehicle);                    
+	                    this.driveHistory(vehicle);
 	                    break;
 	                case 'lock':
 	                    this.log.info('Starting lock for vehicle');
@@ -133,9 +133,9 @@ class Bluelink extends utils.Adapter {
 	                    break;
 	                case 'start':
 	                    this.log.info('Starting clima for vehicle');
-	                    let airTempC = await this.getStateAsync(`${vin}.control.clima.set.airTemp`);
-	                    let defrost = await this.getStateAsync(`${vin}.control.clima.set.defrost`);
-	                    let heating = await this.getStateAsync(`${vin}.control.clima.set.heating`);
+	                    const airTempC = await this.getStateAsync(`${vin}.control.clima.set.airTemp`);
+	                    const defrost = await this.getStateAsync(`${vin}.control.clima.set.defrost`);
+	                    const heating = await this.getStateAsync(`${vin}.control.clima.set.heating`);
 	                    try {
                             response = await vehicle.start({
                                 airCtrl: true,
@@ -146,8 +146,8 @@ class Bluelink extends utils.Adapter {
                                 heating1: heating.val,
                                 username: this.config.username,
                                 vin: vin,
-        				    });
-				    
+                            });
+
 	                       this.log.debug(JSON.stringify(response));
 	                    } catch (err) {
 	                        this.log.error(err);
@@ -203,14 +203,14 @@ class Bluelink extends utils.Adapter {
 	                            if (tmpControl == 'charge_limit_fast') {
 					                this.log.info('Set new charging options charge_limit_fast');
 	                                //set fast charging
-	                                let charge_limit_slow = await this.getStateAsync(`${vin}.control.charge_limit_slow`);
+	                                const charge_limit_slow = await this.getStateAsync(`${vin}.control.charge_limit_slow`);
 	                                charge_option.fast = state.val;
                 					charge_option.slow = charge_limit_slow.val;
-	                            } 
+	                            }
 				                if (tmpControl == 'charge_limit_slow') {
 					                this.log.info('Set new charging options charge_limit_slow');
 	                                //set slow charging
-	                                let charge_limit_fast = await this.getStateAsync(`${vin}.control.charge_limit_fast`);
+	                                const charge_limit_fast = await this.getStateAsync(`${vin}.control.charge_limit_fast`);
 	                                charge_option.slow = state.val;
                 					charge_option.fast = charge_limit_fast.val;
 	                            }
@@ -300,7 +300,7 @@ class Bluelink extends utils.Adapter {
                 this.log.error('Server is not available or login credentials are wrong');
                 this.log.error('next auto login attempt in 1 hour or restart adapter manual');
 
-                let requestTimeout = setTimeout(async () => {
+                const requestTimeout = setTimeout(async () => {
                     this.login();
                 }, 1000 * 60 * 60);  // warte 1 stunde
             });
@@ -318,19 +318,19 @@ class Bluelink extends utils.Adapter {
     async readStatus(force = false) {
         //read new verhicle status
         for (const vehicle of this.vehicles) {
-          const vin = vehicle.vehicleConfig.vin;
-          let force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
-          this.log.debug('Read new status from api for ' + vin);
-          let batteryControlState12V = await this.getStateAsync(`${vin}.control.batteryControlState12V`);
+            const vin = vehicle.vehicleConfig.vin;
+            const force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
+            this.log.debug('Read new status from api for ' + vin);
+            const batteryControlState12V = await this.getStateAsync(`${vin}.control.batteryControlState12V`);
 
-          if (this.batteryState12V[vin] && this.batteryState12V[vin] < batteryControlState12V.val && force_update_obj.val) {
-              this.log.warn('12V Battery state is low: ' + this.batteryState12V[vin] + '%. Recharge to prevent damage!');
-              if (this.config.protectAgainstDeepDischarge && !force) {
-                  this.log.warn('Auto Refresh is disabled, only use force refresh to reenable refresh if you are willing to risk your battery');
-                  continue;
-              }
-          }                      
-          await this.readStatusVin(vehicle,force_update_obj.val);
+            if (this.batteryState12V[vin] && this.batteryState12V[vin] < batteryControlState12V.val && force_update_obj.val) {
+                this.log.warn('12V Battery state is low: ' + this.batteryState12V[vin] + '%. Recharge to prevent damage!');
+                if (this.config.protectAgainstDeepDischarge && !force) {
+                    this.log.warn('Auto Refresh is disabled, only use force refresh to reenable refresh if you are willing to risk your battery');
+                    continue;
+                }
+            }
+            await this.readStatusVin(vehicle,force_update_obj.val);
         }
 
         //set ne cycle
@@ -344,76 +344,76 @@ class Bluelink extends utils.Adapter {
     // force_update = false vom server
 
     async readStatusVin(vehicle, force_update) {
-      const vin = vehicle.vehicleConfig.vin;
-      try {
-          let newStatus;
+        const vin = vehicle.vehicleConfig.vin;
+        try {
+            let newStatus;
 
-          if(force_update) {
-              this.log.info('Read new update for ' + vin + ' directly from the car');
-          } else {
-              this.log.info('Read new update for ' + vin + ' from the server');
-          }
+            if(force_update) {
+                this.log.info('Read new update for ' + vin + ' directly from the car');
+            } else {
+                this.log.info('Read new update for ' + vin + ' from the server');
+            }
 
-          try {
+            try {
 
-              newStatus = await vehicle.fullStatus({
-                  refresh: force_update,
-                  parsed: true,
-              });
+                newStatus = await vehicle.fullStatus({
+                    refresh: force_update,
+                    parsed: true,
+                });
 
-              //set all values
-              this.log.debug('Set new full status for ' + vin);
-              this.log.debug('RAW ' + JSON.stringify(newStatus));
+                //set all values
+                this.log.debug('Set new full status for ' + vin);
+                this.log.debug('RAW ' + JSON.stringify(newStatus));
 
-              // raw data
-              await this.json2iob.parse(vin + '.vehicleStatusRaw', newStatus);
-              await this.setNewFullStatus(newStatus, vin);
+                // raw data
+                await this.json2iob.parse(vin + '.vehicleStatusRaw', newStatus);
+                await this.setNewFullStatus(newStatus, vin);
 
-          } catch (error) {
-              if (typeof error === 'string') {
-                  this.log.error('Error on API-Request GetFullStatus');
-                  this.log.error(error);
-              } else {
-                  //if(error.source.statusCode == 503) {
-                  this.log.info('Error on API-Full-Status - Fallback GetStatusFromCar');
+            } catch (error) {
+                if (typeof error === 'string') {
+                    this.log.error('Error on API-Request GetFullStatus');
+                    this.log.error(error);
+                } else {
+                    //if(error.source.statusCode == 503) {
+                    this.log.info('Error on API-Full-Status - Fallback GetStatusFromCar');
 
-                  //Abfrage Full hat nicht geklappt. Haben wir einen Fallback?
-                  newStatus = await vehicle.status({
-                      refresh: force_update,
-                      parsed: true,
-                  });
-                  this.log.debug('Set new GetNormalStatus for ' + vin);
-                  this.log.debug(JSON.stringify(newStatus));
+                    //Abfrage Full hat nicht geklappt. Haben wir einen Fallback?
+                    newStatus = await vehicle.status({
+                        refresh: force_update,
+                        parsed: true,
+                    });
+                    this.log.debug('Set new GetNormalStatus for ' + vin);
+                    this.log.debug(JSON.stringify(newStatus));
 
-                  await this.json2iob.parse(vin + '.vehicleStatusRaw', newStatus);
-                  await this.setShortStatus(newStatus, vin);
-              }
-          }
+                    await this.json2iob.parse(vin + '.vehicleStatusRaw', newStatus);
+                    await this.setShortStatus(newStatus, vin);
+                }
+            }
 
-          //Abfrage war erfolgreich, lösche ErrorCounter
-          this.countError = 0;
-          await this.setStateAsync(`${vin}.error_counter`, this.countError, true);
-          this.log.info('Update for ' + vin + ' successfull');
-          // last update
-          await this.setStateAsync(`${vin}.lastInfoUpdate`, Number(Date.now()), true);
+            //Abfrage war erfolgreich, lösche ErrorCounter
+            this.countError = 0;
+            await this.setStateAsync(`${vin}.error_counter`, this.countError, true);
+            this.log.info('Update for ' + vin + ' successfull');
+            // last update
+            await this.setStateAsync(`${vin}.lastInfoUpdate`, Number(Date.now()), true);
 
-      } catch (error) {
-          this.countError += 1;  // add 1
+        } catch (error) {
+            this.countError += 1;  // add 1
 
-          this.log.error('Error on API-Request Status, ErrorCount:' + this.countError);
-          if (typeof error === 'string') {
-              this.log.error(error);
-          } else if (error instanceof Error) {
-              this.log.error(error.message);
-          }
-      }
+            this.log.error('Error on API-Request Status, ErrorCount:' + this.countError);
+            if (typeof error === 'string') {
+                this.log.error(error);
+            } else if (error instanceof Error) {
+                this.log.error(error.message);
+            }
+        }
 
-      await this.setStateAsync(`${vin}.error_counter`, this.countError, true);
+        await this.setStateAsync(`${vin}.error_counter`, this.countError, true);
 
-      if (this.countError > this.config.errorCounter) {
-          //Error counter over x erros, restart Adapter to fix te API Token
-          this.restart();
-      }
+        if (this.countError > this.config.errorCounter) {
+            //Error counter over x erros, restart Adapter to fix te API Token
+            this.restart();
+        }
     }
 
     async receiveEVInformation(vehicle) {
@@ -422,15 +422,15 @@ class Bluelink extends utils.Adapter {
         if (tickHour == 23) {
 		    this.log.info('DriveHistory Update for ' + vehicle.vehicleConfig.vin);
             this.driveHistory(vehicle);
-        } 
+        }
     }
-    
+
     async driveHistory(vehicle) {
         try {
             const driveHistory = await vehicle.driveHistory();
 
             const vin = vehicle.vehicleConfig.vin;
-        
+
             if (driveHistory.hasOwnProperty('cumulated[0]')) {
                 this.log.debug('driveHistory-Data: ' + JSON.stringify(driveHistory));
                 await this.setObjectNotExistsAsync(vin + '.driveHistory', {
@@ -440,11 +440,11 @@ class Bluelink extends utils.Adapter {
                     },
                     native: {},
                 });
-                
+
                 await this.json2iob.parse(vin + '.driveHistory', driveHistory, { preferedArrayName: 'rawDate' });
-                
+
                 this.todayOnly(vin, driveHistory);
-                
+
                 const monthlyReport = await vehicle.monthlyReport();
                 await this.setObjectNotExistsAsync(vin + '.monthlyReport', {
                     type: 'channel',
@@ -473,13 +473,13 @@ class Bluelink extends utils.Adapter {
             }
         }
     }
-    
+
     async todayOnly(vin, driveHistory) {
-        let onlyHistory = driveHistory.history;
+        const onlyHistory = driveHistory.history;
         const today = this.getToday();
 
         for (const lpEntry in onlyHistory) {
-            let res =  onlyHistory[lpEntry];
+            const res =  onlyHistory[lpEntry];
             this.log.debug('check Today ' + today + ' ' + res.rawDate);
             if (today == res.rawDate) {          // suche heutiges Datum
                 await this.setObjectNotExistsAsync(vin + '.driveHistory.today', {
@@ -495,9 +495,9 @@ class Bluelink extends utils.Adapter {
             }
         }
     }
-    
+
     getToday() {
-        var today = new Date();
+        const today = new Date();
         const yyyy = today.getFullYear();
         let mm = today.getMonth() + 1;
         let dd = today.getDate();
@@ -507,7 +507,7 @@ class Bluelink extends utils.Adapter {
 
         return yyyy + '' + mm + '' + dd;
     }
-    
+
     //short status
     async setShortStatus(newStatus, vin) {
         try {
@@ -569,7 +569,7 @@ class Bluelink extends utils.Adapter {
                 ack: true
             });
 
-            if (newStatus.vehicleStatus.hasOwnProperty("airTemp")) {
+            if (newStatus.vehicleStatus.hasOwnProperty('airTemp')) {
                 await this.setStateAsync(vin + '.vehicleStatus.airTemp', {
                     val: this.getCelsiusFromTempcode(newStatus.vehicleStatus.airTemp.value),
                     ack: true
@@ -584,7 +584,7 @@ class Bluelink extends utils.Adapter {
                 });
             } else {
                 if (newStatus.vehicleStatus.hasOwnProperty('evStatus')) {
-		                if (newStatus.vehicleStatus.evStatus.reservChargeInfos.hasOwnProperty('targetSOClist[0]')) {		
+		                if (newStatus.vehicleStatus.evStatus.reservChargeInfos.hasOwnProperty('targetSOClist[0]')) {
 	                    if (newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].plugType == 1) {
 	                        //Slow  = 1  -> Index 0 ist slow
 	                        slow_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
@@ -592,13 +592,13 @@ class Bluelink extends utils.Adapter {
 	                            val: slow_charging,
 	                            ack: true,
 	                        });
-	
+
 	                        fast_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel;
 	                        await this.setStateAsync(vin + '.control.charge_limit_fast', {
 	                            val: fast_charging,
 	                            ack: true,
 	                        });
-		    	    
+
 	                    } else {
 	                        //fast  = 0  -> Index 0 ist fast
 	                        slow_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel;
@@ -606,7 +606,7 @@ class Bluelink extends utils.Adapter {
 	                            val: slow_charging,
 	                            ack: true,
 	                        });
-	
+
 	                        fast_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
 	                        await this.setStateAsync(vin + '.control.charge_limit_fast', {
 	                            val: fast_charging,
@@ -672,7 +672,7 @@ class Bluelink extends utils.Adapter {
                 }
 
                 // hier nachschauen welcher DP
-        /*        await this.setStateAsync(vin + '.vehicleStatus.battery.charge', {
+                /*        await this.setStateAsync(vin + '.vehicleStatus.battery.charge', {
                     val: newStatus.vehicleStatus.?????,
                     ack: true
                 });
@@ -689,17 +689,17 @@ class Bluelink extends utils.Adapter {
 
                 //fast  = 0  -> Index 0 ist fast
                 if (newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.hasOwnProperty('TargetSoC')) {
-                            slow_charging = newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.TargetSoC.Standard;
-                            await this.setStateAsync(vin + '.control.charge_limit_slow', {
-                                val: slow_charging,
-                                ack: true,
-                            });
+                    slow_charging = newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.TargetSoC.Standard;
+                    await this.setStateAsync(vin + '.control.charge_limit_slow', {
+                        val: slow_charging,
+                        ack: true,
+                    });
 
-                            fast_charging = newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.TargetSoC.Quick;
-                            await this.setStateAsync(vin + '.control.charge_limit_fast', {
-                                val: fast_charging,
-                                ack: true,
-                            });
+                    fast_charging = newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.TargetSoC.Quick;
+                    await this.setStateAsync(vin + '.control.charge_limit_fast', {
+                        val: fast_charging,
+                        ack: true,
+                    });
                 }
             } else {
                 if (newStatus.vehicleStatus.hasOwnProperty('battery')) {

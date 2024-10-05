@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.0.4",
+    "version": "3.1.0",
     "news": {
+      "3.1.0": {
+        "en": "SOC corr \ndependency update",
+        "de": "SOC corr\naktualisierung der abhängigkeit",
+        "ru": "SOC corr\nобновление",
+        "pt": "Corantes SOC\natualização de dependência",
+        "nl": "SOC corr\nafhankelijkheidsupdate",
+        "fr": "SOC corr\nmise à jour de la dépendance",
+        "it": "Corpo SOC\naggiornamento della dipendenza",
+        "es": "SOC corr\nactualización de la dependencia",
+        "pl": "SOC corr\naktualizacja zależności",
+        "uk": "СОК кор\nоновлення залежності",
+        "zh-cn": "SOC 缩写\n依赖性更新"
+      },
       "3.0.4": {
         "en": "typo",
         "de": "typo",
@@ -80,19 +93,6 @@
         "pl": "przeprojektowanie",
         "uk": "редизайн",
         "zh-cn": "重新设计"
-      },
-      "2.3.10": {
-        "en": "add address as text using openstreetmap",
-        "de": "adresse als text hinzufügen mit opentreetmap",
-        "ru": "добавить адрес как текст с помощью opentreetmap",
-        "pt": "adicionar endereço como texto usando o opentreetmap",
-        "nl": "adres toevoegen als tekst met openstreetmap",
-        "fr": "ajouter l'adresse comme texte en utilisant openstreetmap",
-        "it": "aggiungere l'indirizzo come testo usando openstreetmap",
-        "es": "añadir dirección como texto usando openstreetmap",
-        "pl": "dodaj adres jako tekst używając openstreetmap",
-        "uk": "додати адресу як текст за допомогою openstreetmap",
-        "zh-cn": "使用 opentreetmap 添加地址为文本"
       }
     },
     "title": "Hyundai (Bluelink) / Kia (UVO)",
