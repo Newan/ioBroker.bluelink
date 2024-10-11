@@ -15,20 +15,7 @@
         "pl": "SOC corr\naktualizacja zależności",
         "uk": "СОК кор\nоновлення залежності",
         "zh-cn": "SOC 缩写\n依赖性更新"
-      },
-      "3.0.4": {
-        "en": "typo",
-        "de": "typo",
-        "ru": "typo",
-        "pt": "tipo:",
-        "nl": "type",
-        "fr": "typo",
-        "it": "tipo",
-        "es": "typo",
-        "pl": "typo",
-        "uk": "типи",
-        "zh-cn": "类型"
-      },
+      },  
       "3.0.3": {
         "en": "add city to position text",
         "de": "stadt hinzufügen zum positionstext",
@@ -41,20 +28,7 @@
         "pl": "dodaj tekst miasta do pozycji",
         "uk": "додати місто в позицію текст",
         "zh-cn": "在位置文本中添加城市"
-      },
-      "3.0.2": {
-        "en": "corr for hev",
-        "de": "korr für hev",
-        "ru": "для гев",
-        "pt": "corante para hev",
-        "nl": "corr voor hev",
-        "fr": "pour hev",
-        "it": "corr per hev",
-        "es": "corr para hev",
-        "pl": "corr for hev",
-        "uk": "корр для геїв",
-        "zh-cn": "为hv而战"
-      },
+      },  
       "3.0.1": {
         "en": "activate jsonconfig",
         "de": "jsonconfig aktivieren",
@@ -67,32 +41,6 @@
         "pl": "aktywacja jsonconfig",
         "uk": "активувати jsonconfig",
         "zh-cn": "激活 json配置"
-      },
-      "3.0.0": {
-        "en": "new structure jsonconfig",
-        "de": "neue struktur jsonconfig",
-        "ru": "новая структура jsonconfig",
-        "pt": "nova estrutura jsonconfig",
-        "nl": "nieuwe structuur jsonconfig",
-        "fr": "nouvelle structure jsonconfig",
-        "it": "nuova struttura jsonconfig",
-        "es": "nueva estructura jsonconfig",
-        "pl": "nowa struktura jsonconfig",
-        "uk": "нова структура jsonconfig",
-        "zh-cn": "新结构json配置"
-      },
-      "2.3.11": {
-        "en": "redesign",
-        "de": "neugestaltung",
-        "ru": "редизайн",
-        "pt": "rede de rede",
-        "nl": "herontwerp",
-        "fr": "remaniement",
-        "it": "riprogettare",
-        "es": "rediseño",
-        "pl": "przeprojektowanie",
-        "uk": "редизайн",
-        "zh-cn": "重新设计"
       }
     },
     "title": "Hyundai (Bluelink) / Kia (UVO)",
