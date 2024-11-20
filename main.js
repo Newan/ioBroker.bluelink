@@ -324,7 +324,7 @@ class Bluelink extends utils.Adapter {
             const batteryControlState12V = await this.getStateAsync(`${vin}.control.batteryControlState12V`);
 
             if (this.batteryState12V[vin] && this.batteryState12V[vin] < batteryControlState12V.val && force_update_obj.val) {
-                this.log.warn('12V Battery state is low: ' + this.batteryState12V[vin] + '%. Recharge to prevent damage!');
+                this.log.warn('Vin' + vin + ' 12V Battery state is low: ' + vin + ' ' + this.batteryState12V[vin] + '%. Recharge to prevent damage!');
                 if (this.config.protectAgainstDeepDischarge && !force) {
                     this.log.warn('Auto Refresh is disabled, only use force refresh to reenable refresh if you are willing to risk your battery');
                     continue;
