@@ -660,7 +660,7 @@ class Bluelink extends utils.Adapter {
             if (newStatus.hasOwnProperty('ccs2Status')) {
 
 		 this.log.debug('ccs2Status: ' + JSON.stringify(newStatus.ccs2Status));
-		    
+
                 // Battery
                 await this.setStateAsync(vin + '.vehicleStatus.battery.soc-12V', {
                     val: newStatus.ccs2Status.state.Vehicle.Electronics.Battery.Level,
