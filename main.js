@@ -463,10 +463,7 @@ class Bluelink extends utils.Adapter {
                     await this.json2iob.parse(vin + '.monthlyReport', monthlyReport);
                 }
             }
-      //      const tripInfo = await vehicle.tripInfo({ year: new Date().getFullYear(), month: new Date().getMonth(), day: new Date().getDay()});
-
-
-            let tripInfo = await vehicle.tripInfo({ year: 2024, month: 11, day: 1});
+            let tripInfo = await vehicle.tripInfo({ year: new Date().getFullYear(), month: new Date().getMonth(), day: new Date().getDay()});
 
             tripInfo = tripInfo.map(entry => {
                 const { trips, ...rest } = entry; // Destrukturieren, um den `trips`-Knoten zu entfernen
