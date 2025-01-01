@@ -36,6 +36,9 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (arteck) trip corr for ev cars 
+
 ### 3.1.0 (2024-10-05)
 * (arteck) SOC corr 
 * (arteck) dependency update

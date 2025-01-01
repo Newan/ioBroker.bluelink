@@ -2,6 +2,7 @@
 
 const utils = require('@iobroker/adapter-core');
 const { BlueLinky } = require('bluelinky');
+
 const Json2iob = require('./lib/json2iob');
 const tools = require('./lib/tools');
 const Create_tools = require('./lib/create_tools').Create_tools;
@@ -182,7 +183,6 @@ class Bluelink extends utils.Adapter {
                         clearInterval(adapterIntervals.evHistoryInterval);
                         this.login();
                         break;
-
 	                case 'charge':
 	                    this.log.info('Start charging');
 	                    response = await vehicle.startCharge();
@@ -273,12 +273,15 @@ class Bluelink extends utils.Adapter {
 
                     await this.json2iob.parse(`${vin}.general`, vehicle.vehicleConfig);
 
+                    //read all infos
+                    await this.readStatus();
+
                     if (this.config.evHistory && this.config.motor != 'GAS') {
                         try {
                             await this.driveHistory(vehicle);
 
                             adapterIntervals.evHistoryInterval = setInterval(() => {
-                                this.receiveEVInformation(vehicle);
+                                this.receiveEVInformation(vehicle, false);
                             }, 60 * 60 * 1000); // check einmal die stunde nur intern
                         } catch (error) {
                             this.log.error('Error in receiveEVInformation');
@@ -288,8 +291,6 @@ class Bluelink extends utils.Adapter {
                 }
                 this.countError = 0;
 
-                //read all infos
-                await this.readStatus();
                 //clean legacy states
                 this.cleanObjects();
             });
@@ -416,10 +417,10 @@ class Bluelink extends utils.Adapter {
         }
     }
 
-    async receiveEVInformation(vehicle) {
+    async receiveEVInformation(vehicle, manu) {
         const tickHour = new Date().getHours(); // um 23 uhr daten festschreiben
 
-        if (tickHour == 23) {
+        if (tickHour == 23 && !manu) {
 		    this.log.info('DriveHistory Update for ' + vehicle.vehicleConfig.vin);
             this.driveHistory(vehicle);
         }
@@ -427,34 +428,55 @@ class Bluelink extends utils.Adapter {
 
     async driveHistory(vehicle) {
         try {
-            const driveHistory = await vehicle.driveHistory();
-
             const vin = vehicle.vehicleConfig.vin;
 
-            if (driveHistory.hasOwnProperty('cumulated[0]')) {
-                this.log.debug('driveHistory-Data: ' + JSON.stringify(driveHistory));
-                await this.setObjectNotExistsAsync(vin + '.driveHistory', {
-                    type: 'channel',
-                    common: {
-                        name: 'drive history',
-                    },
-                    native: {},
-                });
+            const driveHistory = await vehicle.driveHistory();
 
-                await this.json2iob.parse(vin + '.driveHistory', driveHistory, { preferedArrayName: 'rawDate' });
+            if (driveHistory.hasOwnProperty('history')) {
+                if (driveHistory.history.length > 0) {
+                    this.log.debug('driveHistory-Data: ' + JSON.stringify(driveHistory));
+                    await this.setObjectNotExistsAsync(vin + '.driveHistory', {
+                        type: 'channel',
+                        common: {
+                            name: 'drive history',
+                        },
+                        native: {},
+                    });
 
-                this.todayOnly(vin, driveHistory);
+                    await this.json2iob.parse(vin + '.driveHistory', driveHistory, {preferedArrayName: 'rawDate'});
 
-                const monthlyReport = await vehicle.monthlyReport();
-                await this.setObjectNotExistsAsync(vin + '.monthlyReport', {
-                    type: 'channel',
-                    common: {
-                        name: 'monthly report',
-                    },
-                    native: {},
-                });
-                await this.json2iob.parse(vin + '.monthlyReport', monthlyReport);
-                const tripInfo = await vehicle.tripInfo({ year: new Date().getFullYear(), month: new Date().getMonth() + 1 });
+                    this.todayOnly(vin, driveHistory);
+                }
+            }
+
+            const monthlyReport = await vehicle.monthlyReport({ year: new Date().getFullYear(), month: new Date().getMonth() });
+
+            if (monthlyReport.hasOwnProperty('start')) {
+                if (monthlyReport.start != undefined) {
+                    await this.setObjectNotExistsAsync(vin + '.monthlyReport', {
+                        type: 'channel',
+                        common: {
+                            name: 'monthly report',
+                        },
+                        native: {},
+                    });
+                    await this.json2iob.parse(vin + '.monthlyReport', monthlyReport);
+                }
+            }
+      //      const tripInfo = await vehicle.tripInfo({ year: new Date().getFullYear(), month: new Date().getMonth(), day: new Date().getDay()});
+
+
+            let tripInfo = await vehicle.tripInfo({ year: 2024, month: 11, day: 1});
+
+            tripInfo = tripInfo.map(entry => {
+                const { trips, ...rest } = entry; // Destrukturieren, um den `trips`-Knoten zu entfernen
+                return {
+                    time: 'today',  // Neues Element einfügen an erster stelle
+                    ...rest         // Restliche Eigenschaften hinzufügen
+                };
+            });
+
+            if (tripInfo.length > 0) {
                 await this.setObjectNotExistsAsync(vin + '.tripInfo', {
                     type: 'channel',
                     common: {
@@ -462,6 +484,7 @@ class Bluelink extends utils.Adapter {
                     },
                     native: {},
                 });
+
                 await this.json2iob.parse(vin + '.tripInfo', tripInfo);
             }
         } catch (error) {
@@ -659,7 +682,7 @@ class Bluelink extends utils.Adapter {
 
             if (newStatus.hasOwnProperty('ccs2Status')) {
 
-		 this.log.debug('ccs2Status: ' + JSON.stringify(newStatus.ccs2Status));
+		        this.log.debug('ccs2Status: ' + JSON.stringify(newStatus.ccs2Status));
 
                 // Battery
                 await this.setStateAsync(vin + '.vehicleStatus.battery.soc-12V', {
