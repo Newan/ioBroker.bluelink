@@ -679,7 +679,7 @@ class Bluelink extends utils.Adapter {
 
             if (newStatus.hasOwnProperty('ccs2Status')) {
 
-		        this.log.debug('ccs2Status: ' + JSON.stringify(newStatus.ccs2Status));
+		this.log.debug('ccs2Status: ' + JSON.stringify(newStatus.ccs2Status));
 
                 // Battery
                 await this.setStateAsync(vin + '.vehicleStatus.battery.soc-12V', {
@@ -693,13 +693,12 @@ class Bluelink extends utils.Adapter {
                         ack: true
                     });
                 }
-
-                // hier nachschauen welcher DP
-                /*        await this.setStateAsync(vin + '.vehicleStatus.battery.charge', {
-                    val: newStatus.vehicleStatus.?????,
+                
+                await this.setStateAsync(vin + '.vehicleStatus.battery.charge', {
+                    val: newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.ConnectorFastening.State == 1 ? 'plugged' : 'unplugged',
                     ack: true
                 });
-        */
+        
                 //Location
                 const latitude  =   newStatus.ccs2Status.state.Vehicle.Location.GeoCoord.Latitude;
                 const longitude =   newStatus.ccs2Status.state.Vehicle.Location.GeoCoord.Longitude;
