@@ -678,8 +678,7 @@ class Bluelink extends utils.Adapter {
             }
 
             if (newStatus.hasOwnProperty('ccs2Status')) {
-
-		this.log.debug('ccs2Status: ' + JSON.stringify(newStatus.ccs2Status));
+		            this.log.debug('ccs2Status: ' + JSON.stringify(newStatus.ccs2Status));
 
                 // Battery
                 await this.setStateAsync(vin + '.vehicleStatus.battery.soc-12V', {
@@ -695,7 +694,7 @@ class Bluelink extends utils.Adapter {
                 }
                 
                 await this.setStateAsync(vin + '.vehicleStatus.battery.charge', {
-                    val: newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.ConnectorFastening.State == 1 ? 'plugged' : 'unplugged',
+                    val: newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.ConnectorFastening.State == 1 ? true : false,
                     ack: true
                 });
         
