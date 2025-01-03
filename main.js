@@ -661,6 +661,8 @@ class Bluelink extends utils.Adapter {
                         val: newStatus.vehicleStatus.evStatus.batteryCharge,
                         ack: true
                     });
+
+
                     await this.setStateAsync(vin + '.vehicleStatus.battery.plugin', {
                         val: newStatus.vehicleStatus.evStatus.batteryPlugin,
                         ack: true
@@ -697,7 +699,17 @@ class Bluelink extends utils.Adapter {
                     val: newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.ConnectorFastening.State == 1 ? true : false,
                     ack: true
                 });
-        
+
+                await this.setStateAsync(vin + '.vehicleStatus.battery.minutes_to_charged', {
+                    val: newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.Charging.RemainTime,
+                    ack: true,
+                });
+
+                await this.setStateAsync(vin + '.vehicleStatus.battery.soh', {
+                    val: newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.SoH.Ratio,
+                    ack: true,
+                });
+
                 //Location
                 const latitude  =   newStatus.ccs2Status.state.Vehicle.Location.GeoCoord.Latitude;
                 const longitude =   newStatus.ccs2Status.state.Vehicle.Location.GeoCoord.Longitude;
