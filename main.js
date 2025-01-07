@@ -32,6 +32,27 @@ let create_tools;
 8: High Heat
 */
 
+
+/*
+Checks for errors in the API response.
+    If an error is found, an exception is raised.
+    retCode known values:
+    - S: success
+    - F: failure
+resCode / resMsg known values:
+    - 0000: no error
+- 4002:  "Invalid request body - invalid deviceId",
+    relogin will resolve but a bandaid.
+- 4004: "Duplicate request"
+- 4081: "Request timeout"
+- 5031: "Unavailable remote control - Service Temporary Unavailable"
+- 5091: "Exceeds number of requests"
+- 5921: "No Data Found v2 - No Data Found v2"
+- 9999: "Undefined Error - Response timeout"
+:param response: the API's JSON response
+*/
+
+
 class Bluelink extends utils.Adapter {
     constructor(options) {
         super({
@@ -432,6 +453,8 @@ class Bluelink extends utils.Adapter {
 
             const driveHistory = await vehicle.driveHistory();
 
+            this.log.debug('driveHistory ' + JSON.stringify(driveHistory));
+
             if (driveHistory.hasOwnProperty('history')) {
                 if (driveHistory.history.length > 0) {
                     this.log.debug('driveHistory-Data: ' + JSON.stringify(driveHistory));
@@ -449,7 +472,8 @@ class Bluelink extends utils.Adapter {
                 }
             }
 
-            const monthlyReport = await vehicle.monthlyReport({ year: new Date().getFullYear(), month: new Date().getMonth() });
+            const monthlyReport = await vehicle.monthlyReport();  // die funktion liefert immer 1 monat ab heuitgen datum zurück, warum auch immer
+            this.log.debug('monthlyReport ' + JSON.stringify(monthlyReport));
 
             if (monthlyReport.hasOwnProperty('start')) {
                 if (monthlyReport.start != undefined) {
@@ -463,26 +487,35 @@ class Bluelink extends utils.Adapter {
                     await this.json2iob.parse(vin + '.monthlyReport', monthlyReport);
                 }
             }
-            let tripInfo = await vehicle.tripInfo({ year: new Date().getFullYear(), month: new Date().getMonth(), day: new Date().getDay()});
 
-            tripInfo = tripInfo.map(entry => {
-                const { trips, ...rest } = entry; // Destrukturieren, um den `trips`-Knoten zu entfernen
-                return {
-                    time: 'today',  // Neues Element einfügen an erster stelle
-                    ...rest         // Restliche Eigenschaften hinzufügen
-                };
-            });
-
-            if (tripInfo.length > 0) {
-                await this.setObjectNotExistsAsync(vin + '.tripInfo', {
-                    type: 'channel',
-                    common: {
-                        name: 'trip information',
-                    },
-                    native: {},
+            if (this.config.motor == 'EV') {
+                let tripInfo = await vehicle.tripInfo({
+                    year: new Date().getFullYear(),
+                    month: new Date().getMonth(),
+                    day: new Date().getDay()
                 });
 
-                await this.json2iob.parse(vin + '.tripInfo', tripInfo);
+                this.log.debug('tripInfo ' + JSON.stringify(tripInfo));
+
+                tripInfo = tripInfo.map(entry => {
+                    const {trips, ...rest} = entry; // Destrukturieren, um den `trips`-Knoten zu entfernen
+                    return {
+                        time: 'today',  // Neues Element einfügen an erster stelle
+                        ...rest         // Restliche Eigenschaften hinzufügen
+                    };
+                });
+
+                if (tripInfo.length > 0) {
+                    await this.setObjectNotExistsAsync(vin + '.tripInfo', {
+                        type: 'channel',
+                        common: {
+                            name: 'trip information',
+                        },
+                        native: {},
+                    });
+
+                    await this.json2iob.parse(vin + '.tripInfo', tripInfo);
+                }
             }
         } catch (error) {
             this.log.error('EV History fetching failed');
@@ -694,7 +727,7 @@ class Bluelink extends utils.Adapter {
                         ack: true
                     });
                 }
-                
+
                 await this.setStateAsync(vin + '.vehicleStatus.battery.charge', {
                     val: newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.ConnectorFastening.State == 1 ? true : false,
                     ack: true
@@ -705,11 +738,12 @@ class Bluelink extends utils.Adapter {
                     ack: true,
                 });
 
-                await this.setStateAsync(vin + '.vehicleStatus.battery.soh', {
-                    val: newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.SoH.Ratio,
-                    ack: true,
-                });
-
+                if (newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.hasOwnProperty('SoH')) {
+                    await this.setStateAsync(vin + '.vehicleStatus.battery.soh', {
+                        val: newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.SoH.Ratio,
+                        ack: true,
+                    });
+                }
                 //Location
                 const latitude  =   newStatus.ccs2Status.state.Vehicle.Location.GeoCoord.Latitude;
                 const longitude =   newStatus.ccs2Status.state.Vehicle.Location.GeoCoord.Longitude;
