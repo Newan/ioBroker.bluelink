@@ -384,7 +384,7 @@ class Bluelink extends utils.Adapter {
                 });
 
                 //set all values
-                this.log.debug('Set new full status for ' + vin);
+                this.log.debug('Set fullStatus for ' + vin);
                 this.log.debug('RAW ' + JSON.stringify(newStatus));
 
                 // raw data
@@ -393,18 +393,17 @@ class Bluelink extends utils.Adapter {
 
             } catch (error) {
                 if (typeof error === 'string') {
-                    this.log.error('Error on API-Request GetFullStatus');
+                    this.log.error('Error on API-Request fullStatus');
                     this.log.error(error);
                 } else {
                     //if(error.source.statusCode == 503) {
-                    this.log.info('Error on API-Full-Status - Fallback GetStatusFromCar');
+                    this.log.info('Error on fullStatus - new try with Status Request');
 
-                    //Abfrage Full hat nicht geklappt. Haben wir einen Fallback?
-                    newStatus = await vehicle.status({
+		    newStatus = await vehicle.status({
                         refresh: force_update,
                         parsed: true,
                     });
-                    this.log.debug('Set new GetNormalStatus for ' + vin);
+                    this.log.debug('Set Status for ' + vin);
                     this.log.debug(JSON.stringify(newStatus));
 
                     await this.json2iob.parse(vin + '.vehicleStatusRaw', newStatus);
