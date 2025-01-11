@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.1",
+    "version": "3.1.2",
     "news": {
+      "3.1.2": {
+        "en": "error on create dp fix",
+        "de": "fehler bei dp fix erstellen",
+        "ru": "ошибка при создании исправления dp",
+        "pt": "erro em criar correção dp",
+        "nl": "fout bij aanmaken dp fix",
+        "fr": "erreur lors de la création de la correction dp",
+        "it": "errore di creazione dp fix",
+        "es": "error en crear la solución dp",
+        "pl": "błąd przy tworzeniu poprawki dp",
+        "uk": "помилка на створенні dp виправити",
+        "zh-cn": "创建 dp 修正时出错"
+      },
       "3.1.1": {
         "en": "monthlyReport for phev/hev\ntrip corr for ev cars",
         "de": "monatlichReport für phev/hev\nreise korr für ev autos",
