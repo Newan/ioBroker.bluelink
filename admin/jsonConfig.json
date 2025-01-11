@@ -12,9 +12,11 @@
             "newLine": true,
             "type": "select",
             "label": "Brand",
+            "xs": 12,
             "sm": 12,
             "md": 4,
             "lg": 3,
+            "xl": 3,
             "options": [
                 {
                     "label": "Kia",
@@ -29,9 +31,11 @@
         "motor": {
             "type": "select",
             "label": "Motor",
+            "xs": 12,
             "sm": 12,
             "md": 4,
             "lg": 3,
+            "xl": 3,
             "options": [
                 {
                     "label": "EV",
@@ -52,9 +56,11 @@
             "newLine": true,
             "type": "select",
             "label": "App Lang",
+            "xs": 12,
             "sm": 12,
             "md": 4,
             "lg": 3,
+            "xl": 3,
             "options": [
                 {
                     "label": "DE",
@@ -85,25 +91,31 @@
         "username": {
             "type": "text",
             "label": "Username",
+            "xs": 12,
             "sm": 12,
             "md": 4,
-            "lg": 3
+            "lg": 3,
+            "xl": 3
         },
         "client_secret": {
             "newLine": true,
             "type": "password",
             "label": "Password",
             "repeat": true,
+            "xs": 12,
             "sm": 12,
-            "md": 8,
-            "lg": 6
+            "md": 4,
+            "lg": 3,
+            "xl": 3
         },
         "client_secret_pin": {
             "type": "password",
             "label": "Pin",
+            "xs": 12,
             "sm": 12,
-            "md": 8,
-            "lg": 4
+            "md": 4,
+            "lg": 3,
+            "xl": 3
         },
         "Api settings": {
             "type": "header",
@@ -115,39 +127,49 @@
             "type": "checkbox",
             "label": "Receive Daily drive History (EV cars only, needs 3 request per day)",
             "newLine": true,
+            "xs": 12,
             "sm": 12,
             "md": 8,
-            "lg": 4
+            "lg": 4,
+            "xl": 4
         },
         "protectAgainstDeepDischarge": {
             "type": "checkbox",
             "label": "Stop refresh if 12V battery is under 10.5 V to protect against irreversible damage",
+            "xs": 12,
             "sm": 12,
             "md": 8,
-            "lg": 4
+            "lg": 4,
+            "xl": 4
         },
         "request": {
             "type": "text",
             "label": "Request max 400",
             "newLine": true,
+            "xs": 12,
             "sm": 12,
-            "md": 4,
-            "lg": 3
+            "md": 8,
+            "lg": 3,
+            "xl": 3
         },
         "errorCounter": {
             "type": "text",
             "label": "errorCounter",
+            "xs": 12,
             "sm": 12,
-            "md": 4,
-            "lg": 3
+            "md": 8,
+            "lg": 3,
+            "xl": 3
         },
         "resAddress": {
             "type": "checkbox",
             "label": "Resolve the address from coordinates using openstreetmap",
             "newLine": true,
+            "xs": 12,
             "sm": 12,
             "md": 8,
-            "lg": 4
+            "lg": 4,
+            "xl": 4
         }
     }
 }
