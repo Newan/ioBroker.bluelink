@@ -81,8 +81,7 @@
         "uk": "активувати jsonconfig",
         "zh-cn": "激活 json配置"
       }
-    },
-    "title": "Hyundai (Bluelink) / Kia (UVO)",
+    },  
     "titleLang": {
       "en": "Controll Hyundai (Bluelink) / Kia (UVO) vehicles",
       "uk": "Controll Hyundai (Bluelink) / Kia (UVO) vehicles",
@@ -122,7 +121,10 @@
       "Hyundai",
       "Bluelink"
     ],
-    "license": "MIT",
+    "licenseInformation": {
+      "license": "MIT",
+      "type": "free"
+    },
     "platform": "Javascript/Node.js",
     "icon": "bluelink.png",
     "enabled": true,
@@ -134,9 +136,15 @@
     "compact": true,
     "connectionType": "cloud",
     "dataSource": "poll",
+    "tier": 2,
     "dependencies": [
       {
-        "js-controller": ">=5.0.0"
+        "js-controller": ">=5.0.19"
+      }
+    ],
+    "globalDependencies": [
+      {
+        "admin": ">=6.17.14"
       }
     ]
   },
