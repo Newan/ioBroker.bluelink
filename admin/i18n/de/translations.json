@@ -13,5 +13,7 @@
   "Stop refresh if 12V battery is under 10.5 V to protect against irreversible damage": "Aktualisierung stoppen, wenn die 12-V-Batterie unter 10,5 V fällt, um irreversible Schäden zu vermeiden",
   "ErrorConter": "Error Zähler zum Neustart des Adapters nach Verbindungsproblem",
   "App Lang": "App Sprache",
-  "Resolve the address from coordinates using openstreetmap": "Adresse mit openstreetmap"
+  "Resolve the address from coordinates using openstreetmap": "Adresse mit openstreetmap",
+  "battery brutto capacity in kWh": "battery brutto in kWh",
+  "only for PHEV": "nur für PHEV"
 }
