@@ -40,7 +40,7 @@ module.exports = [
             'no-var': 'error',
             'no-trailing-spaces': 'error',
             'prefer-const': 'warn',
-            'no-prototype-builtins': 'warn',
+            'no-prototype-builtins': 'off',
             'no-case-declarations': 'warn',
             'no-useless-escape': 'warn',
 

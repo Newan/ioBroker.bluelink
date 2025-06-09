@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.3",
+    "version": "3.1.4",
     "news": {
+      "3.1.4": {
+        "en": "fix enModeRange for PHEV",
+        "de": "fix enModeRange für PHEV",
+        "ru": "обсуждение EnModeRange for PHEV",
+        "pt": "corrigir enModeRange para PHEV",
+        "nl": "fix enModeRange voor PHEV",
+        "fr": "réparer enModeRange pour PHEV",
+        "it": "fix enModeRange per PHEV",
+        "es": "fijaciones enModeRange para PHEV",
+        "pl": "fix enModeRange for PHEV",
+        "uk": "фіксувати enModeRange для PHEV",
+        "zh-cn": "修复 PHEV 的 Mode Range"
+      },
       "3.1.3": {
         "en": "fix bug with day and time tag for EV \ndependency update",
         "de": "fehler mit Tag und Zeit Tag für EV beheben\naktualisierung der abhängigkeit",
@@ -81,7 +94,7 @@
         "uk": "активувати jsonconfig",
         "zh-cn": "激活 json配置"
       }
-    },  
+    },
     "titleLang": {
       "en": "Controll Hyundai (Bluelink) / Kia (UVO) vehicles",
       "uk": "Controll Hyundai (Bluelink) / Kia (UVO) vehicles",

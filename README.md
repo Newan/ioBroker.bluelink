@@ -24,6 +24,9 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 
 ## Changelog
+### 3.1.4 (2025-06-09)
+* (arteck) fix enModeRange for PHEV
+
 ### 3.1.3 (2025-05-05)
 * (arteck) fix bug with day and time tag for EV 
 * (arteck) dependency update
