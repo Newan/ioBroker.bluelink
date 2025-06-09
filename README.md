@@ -24,6 +24,9 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 
 ## Changelog
+### 3.1.6 (2025-06-09)
+* (arteck) add DE language
+
 ### 3.1.5 (2025-06-09)
 * (arteck) calculate evModeRange for PHEV
 

@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.5",
+    "version": "3.1.6",
     "news": {
+      "3.1.6": {
+        "en": "add DE language",
+        "de": "dE Sprache hinzufügen",
+        "ru": "добавить язык DE",
+        "pt": "adicionar idioma DE",
+        "nl": "dE-taal toevoegen",
+        "fr": "ajouter la langue DE",
+        "it": "aggiungere la lingua DE",
+        "es": "añadir idioma DE",
+        "pl": "dodaj język DE",
+        "uk": "додати мову DE",
+        "zh-cn": "添加DE 语言"
+      },
       "3.1.5": {
         "en": "calculate evModeRange for PHEV",
         "de": "evModeRange für PHEV berechnen",
@@ -80,19 +93,6 @@
         "pl": "SOC corr\naktualizacja zależności",
         "uk": "СОК кор\nоновлення залежності",
         "zh-cn": "SOC 缩写\n依赖性更新"
-      },
-      "3.0.3": {
-        "en": "add city to position text",
-        "de": "stadt hinzufügen zum positionstext",
-        "ru": "добавить город в положение текст",
-        "pt": "adicionar cidade ao texto de posição",
-        "nl": "stad toevoegen aan positietekst",
-        "fr": "ajouter la ville au texte de position",
-        "it": "aggiungere la città al testo di posizione",
-        "es": "añadir ciudad a texto de posición",
-        "pl": "dodaj tekst miasta do pozycji",
-        "uk": "додати місто в позицію текст",
-        "zh-cn": "在位置文本中添加城市"
       }
     },
     "titleLang": {
