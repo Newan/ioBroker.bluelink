@@ -1,4 +1,18 @@
 {
-  "ErrorConter": "Помилки для перезавантаження адаптера після з'єднання",
-  "Resolve the address from coordinates using openstreetmap": "Вирішити адресу з координат за допомогою openstreetmap"
+  "bluelink adapter settings": "Налаштування адаптера для Bluelink",
+  "Username": "Ім'я користувача",
+  "Password": "Пароль",
+  "Pin": "Особистий ідентифікаційний номер (PIN)",
+  "VIN": "ідентифікаційний номер транспортного засобу (VIN)",
+  "Brand": "Бренд",
+  "Request max 400": "Запити на день макс. 400",
+  "Api settings": "Налаштування API",
+  "Account settings": "Налаштування облікового запису",
+  "Donate": "Пожертвувати",
+  "Receive Daily drive History (EV cars only, needs 3 request per day)": "Отримувати щоденну історію поїздок (тільки для електромобілів, потребує 3 запити на день)",
+  "Stop refresh if 12V battery is under 10.5 V to protect against irreversible damage": "Зупинити оновлення, якщо 12-вольтний акумулятор нижче 10.5 В для захисту від незворотних пошкоджень",
+  "App Lang": "Мова програми",
+  "Resolve the address from coordinates using openstreetmap": "Визначити адресу з координат за допомогою OpenStreetMap",
+  "battery brutto capacity in kWh": "брутто ємність акумулятора в кВт·год",
+  "only for PHEV": "тільки для PHEV",
 }

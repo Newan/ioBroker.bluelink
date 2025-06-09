@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.4",
+    "version": "3.1.5",
     "news": {
+      "3.1.5": {
+        "en": "calculate evModeRange for PHEV",
+        "de": "evModeRange für PHEV berechnen",
+        "ru": "расчет evModeRange для PHEV",
+        "pt": "calcular evModeRange para PHEV",
+        "nl": "evModeRange voor PHEV berekenen",
+        "fr": "calculer evModeRange pour PHEV",
+        "it": "calcolare evModeRange per PHEV",
+        "es": "calcular evModeRange para PHEV",
+        "pl": "oblicz evModeRange dla PHEV",
+        "uk": "розрахувати evModeRange для PHEV",
+        "zh-cn": "计算 PHEV 的 evMode 路由"
+      },
       "3.1.4": {
         "en": "fix enModeRange for PHEV",
         "de": "fix enModeRange für PHEV",
@@ -80,19 +93,6 @@
         "pl": "dodaj tekst miasta do pozycji",
         "uk": "додати місто в позицію текст",
         "zh-cn": "在位置文本中添加城市"
-      },
-      "3.0.1": {
-        "en": "activate jsonconfig",
-        "de": "jsonconfig aktivieren",
-        "ru": "активировать jsonconfig",
-        "pt": "ativar o jsonconfig",
-        "nl": "jsonconfig activeren",
-        "fr": "activer jsonconfig",
-        "it": "attivare jsonconfig",
-        "es": "activar jsonconfig",
-        "pl": "aktywacja jsonconfig",
-        "uk": "активувати jsonconfig",
-        "zh-cn": "激活 json配置"
       }
     },
     "titleLang": {
