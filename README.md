@@ -24,9 +24,9 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 
 ## Changelog
-### next
-* (arteck) fix translate for PHEV Range 
-  
+### 3.1.7 (2025-06-10)
+* (arteck) fix translate for PHEV Range
+
 ### 3.1.6 (2025-06-09)
 * (arteck) add DE language
 

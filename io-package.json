@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.6",
+    "version": "3.1.7",
     "news": {
+      "3.1.7": {
+        "en": "fix translate for PHEV Range",
+        "de": "fix übersetzen für PHEV Range",
+        "ru": "перевод для PHEV Range",
+        "pt": "corrigir traduzir para PHEV Range",
+        "nl": "fix vertalen voor PHEV bereik",
+        "fr": "corriger traduire pour la plage PHEV",
+        "it": "correzione traduttore per PHEV Range",
+        "es": "corrección traducida para rango PHEV",
+        "pl": "fix translate for PHEV Range",
+        "uk": "виправити переклад для PHEV діапазону",
+        "zh-cn": "为 PHEV 范围翻译固定"
+      },
       "3.1.6": {
         "en": "add DE language",
         "de": "dE Sprache hinzufügen",
@@ -80,19 +93,6 @@
         "pl": "miesięczne sprawozdanie za fev / hev\ntrip corr dla ev samochodów",
         "uk": "місяцьРепортаж для phev/hev\nавтомобільний корр для автомобілів ев",
         "zh-cn": "phev/hev月报\nev车的行程"
-      },
-      "3.1.0": {
-        "en": "SOC corr \ndependency update",
-        "de": "SOC corr\naktualisierung der abhängigkeit",
-        "ru": "SOC corr\nобновление",
-        "pt": "Corantes SOC\natualização de dependência",
-        "nl": "SOC corr\nafhankelijkheidsupdate",
-        "fr": "SOC corr\nmise à jour de la dépendance",
-        "it": "Corpo SOC\naggiornamento della dipendenza",
-        "es": "SOC corr\nactualización de la dependencia",
-        "pl": "SOC corr\naktualizacja zależności",
-        "uk": "СОК кор\nоновлення залежності",
-        "zh-cn": "SOC 缩写\n依赖性更新"
       }
     },
     "titleLang": {
