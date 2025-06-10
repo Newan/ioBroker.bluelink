@@ -51,11 +51,12 @@
                 }
             ]
         },
-        "batteryCapacity": {
+        "batteryRange": {
             "type": "number",
             "label": "max km Range",
             "help": "only for PHEV",
-            "disabled": "data.motor === 'EV' || data.motor === 'GAS'",
+            "hidden": "data.motor === 'EV' || data.motor === 'GAS'",
+            "unit": "km",
             "xs": 12,
             "sm": 12,
             "md": 4,

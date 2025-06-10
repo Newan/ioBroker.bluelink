@@ -14,6 +14,6 @@
   "ErrorConter": "Счетчик ошибок для перезапуска адаптера после сбоя соединения",
   "App Lang": "Язык приложения",
   "Resolve the address from coordinates using openstreetmap": "Разрешить адрес из координат с помощью OpenStreetMap",
-  "battery brutto capacity in kWh": "Брутто-емкость аккумулятора в кВтч",
+  "max km Range": "Диапазон Макса в км согласно данным",
   "only for PHEV": "только для PHEV"
 }

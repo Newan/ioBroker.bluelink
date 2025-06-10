@@ -14,6 +14,6 @@
   "ErrorConter": "Error Zähler zum Neustart des Adapters nach Verbindungsproblem",
   "App Lang": "App Sprache",
   "Resolve the address from coordinates using openstreetmap": "Adresse mit openstreetmap",
-  "max km Range": "Reichweite in Km",
+  "max km Range": "max Reichweite in Km laut Datenblatt",
   "only for PHEV": "nur für PHEV"
 }

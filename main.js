@@ -674,8 +674,8 @@ class Bluelink extends utils.Adapter {
                     });
 
                     let evRange = newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.evModeRange.value;
-                    if (evRange < 1 && this.config.batteryCapacity > 0) {
-                        evRange = Math.round(((newStatus.vehicleStatus.evStatus.batteryStatus / 100) * this.config.batteryCapacity)*100)/100;
+                    if (evRange < 1 && this.config.batteryRange > 0) {
+                        evRange = Math.round(((newStatus.vehicleStatus.evStatus.batteryStatus / 100) * this.config.batteryRange)*100)/100;
 		            }
                     await this.setStateAsync(vin + '.vehicleStatus.evModeRange', {
                         val: evRange,

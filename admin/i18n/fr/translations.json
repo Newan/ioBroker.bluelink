@@ -13,6 +13,6 @@
   "Stop refresh if 12V battery is under 10.5 V to protect against irreversible damage": "Arrêter la mise à jour si la batterie 12V est inférieure à 10,5 V pour éviter les dommages irréversibles",
   "App Lang": "Langue de l'application",
   "Resolve the address from coordinates using openstreetmap": "Résoudre l'adresse à partir des coordonnées en utilisant OpenStreetMap",
-  "battery brutto capacity in kWh": "capacité brute de la batterie en kWh",
+  "max km Range": "Gamme maximale en km selon la fiche technique",
   "only for PHEV": "seulement pour PHEV",
 }

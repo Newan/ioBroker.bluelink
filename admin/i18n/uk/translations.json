@@ -13,6 +13,6 @@
   "Stop refresh if 12V battery is under 10.5 V to protect against irreversible damage": "Зупинити оновлення, якщо 12-вольтний акумулятор нижче 10.5 В для захисту від незворотних пошкоджень",
   "App Lang": "Мова програми",
   "Resolve the address from coordinates using openstreetmap": "Визначити адресу з координат за допомогою OpenStreetMap",
-  "battery brutto capacity in kWh": "брутто ємність акумулятора в кВт·год",
+  "max km Range": "Макс діапазону в км за даними",
   "only for PHEV": "тільки для PHEV",
 }

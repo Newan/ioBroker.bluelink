@@ -13,6 +13,6 @@
   "Stop refresh if 12V battery is under 10.5 V to protect against irreversible damage": "Stop het vernieuwen als de 12V-accu onder de 10,5 V komt om onomkeerbare schade te voorkomen",
   "App Lang": "App-taal",
   "Resolve the address from coordinates using openstreetmap": "Los het adres op vanuit coördinaten met behulp van openstreetmap",
-  "battery brutto capacity in kWh": "accu brutto capaciteit in kWh",
+  "max km Range": "Max. bereik in km volgens datablad",
   "only for PHEV": "alleen voor PHEV",
 }

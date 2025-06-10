@@ -14,6 +14,6 @@
   "ErrorConter": "Contador de erros para reiniciar o adaptador após falha de conexão",
   "App Lang": "Idioma do aplicativo",
   "Resolve the address from coordinates using openstreetmap": "Resolver o endereço a partir das coordenadas usando openstreetmap",
-  "battery brutto capacity in kWh": "capacidade bruta da bateria em kWh",
+  "max km Range": "Intervalo máximo em km de acordo com a ficha de dados",
   "only for PHEV": "apenas para PHEV",
 }
