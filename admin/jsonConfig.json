@@ -53,7 +53,7 @@
         },
         "batteryCapacity": {
             "type": "number",
-            "label":"battery brutto capacity in kWh",
+            "label": "max km Range",
             "help": "only for PHEV",
             "disabled": "data.motor === 'EV' || data.motor === 'GAS'",
             "xs": 12,
