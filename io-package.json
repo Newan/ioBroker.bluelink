@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.7",
+    "version": "3.1.8",
     "news": {
+      "3.1.8": {
+        "en": "fix location Tucson",
+        "de": "standort Tucson",
+        "ru": "местонахождение Tucson",
+        "pt": "corrigir localização Tucson",
+        "nl": "fix locatie Tucson",
+        "fr": "fixer l'emplacement Tucson",
+        "it": "posizione corretta Tucson",
+        "es": "ubicación de la solución Tucson",
+        "pl": "fix lokalizacja Tucson",
+        "uk": "кріплення розташування Tucson",
+        "zh-cn": "固定位置图克森"
+      },
       "3.1.7": {
         "en": "fix translate for PHEV Range",
         "de": "fix übersetzen für PHEV Range",
@@ -80,19 +93,6 @@
         "pl": "błąd przy tworzeniu poprawki dp",
         "uk": "помилка на створенні dp виправити",
         "zh-cn": "创建 dp 修正时出错"
-      },
-      "3.1.1": {
-        "en": "monthlyReport for phev/hev\ntrip corr for ev cars",
-        "de": "monatlichReport für phev/hev\nreise korr für ev autos",
-        "ru": "ежемесячноеОтчет за фев/гев\nтуркорд для автомобилей ev",
-        "pt": "mensalRelatório para phev/hev\nviagem corr para ev carros",
-        "nl": "maandelijksMelden voor fev/hev\nreis corr voor ev auto's",
-        "fr": "rapport mensuel pour le phev/hev\ncorr de voyage pour les voitures ev",
-        "it": "relazione mensile per phev/hev\ncorr viaggio per auto ev",
-        "es": "mensualInforme para phev/hev\ntrip corr para coches ev",
-        "pl": "miesięczne sprawozdanie za fev / hev\ntrip corr dla ev samochodów",
-        "uk": "місяцьРепортаж для phev/hev\nавтомобільний корр для автомобілів ев",
-        "zh-cn": "phev/hev月报\nev车的行程"
       }
     },
     "titleLang": {

@@ -716,6 +716,16 @@ class Bluelink extends utils.Adapter {
                 }
             }
 
+            let latitude= 0;
+            let longitude= 0;
+            let speed = 0;
+
+            if (newStatus.hasOwnProperty('vehicleLocation')) {
+                latitude  = newStatus.vehicleLocation.coord.lat;
+                longitude = newStatus.vehicleLocation.coord.lon;
+                speed     = newStatus.vehicleLocation.speed.value;
+            }
+
             if (newStatus.hasOwnProperty('ccs2Status')) {
 		            this.log.debug('ccs2Status: ' + JSON.stringify(newStatus.ccs2Status));
 
@@ -748,12 +758,27 @@ class Bluelink extends utils.Adapter {
                         ack: true,
                     });
                 }
-                //Location
-                const latitude  =   newStatus.ccs2Status.state.Vehicle.Location.GeoCoord.Latitude;
-                const longitude =   newStatus.ccs2Status.state.Vehicle.Location.GeoCoord.Longitude;
-                const speed     =   newStatus.ccs2Status.state.Vehicle.Location.Speed.Value;
 
-                this.locationResolve(vin, latitude, longitude, speed);
+
+                //Location
+
+                const ts = newStatus.ccs2Status.state.Vehicle.Location.TimeStamp;
+
+                const lastUpdate_ccs2 =
+                    ts.Year +
+                    String(ts.Mon).padStart(2, '0') +
+                    String(ts.Day).padStart(2, '0') +
+                    String(ts.Hour).padStart(2, '0') +
+                    String(ts.Min).padStart(2, '0') +
+                    String(ts.Sec).padStart(2, '0');
+
+                const lastUpdate = newStatus.vehicleLocation.time;
+
+                if (lastUpdate_ccs2 > lastUpdate) {
+                    latitude  = newStatus.ccs2Status.state.Vehicle.Location.GeoCoord.Latitude;
+                    longitude = newStatus.ccs2Status.state.Vehicle.Location.GeoCoord.Longitude;
+                    speed     = newStatus.ccs2Status.state.Vehicle.Location.Speed.Value;
+                }
 
                 //Odometer
                 await this.setStateAsync(vin + '.odometer.value', {val: newStatus.ccs2Status.state.Vehicle.Drivetrain.Odometer, ack: true});
@@ -784,21 +809,15 @@ class Bluelink extends utils.Adapter {
                     });
                 }
 
-                //Location
-                if (newStatus.hasOwnProperty('vehicleLocation')) {
-
-                    const latitude  =   newStatus.vehicleLocation.coord.lat;
-                    const longitude =   newStatus.vehicleLocation.coord.lon;
-                    const speed     =   newStatus.vehicleLocation.speed.value;
-
-                    this.locationResolve(vin, latitude, longitude, speed);
-                }
-
                 //Odometer
                 if (newStatus.hasOwnProperty('odometer')) {
                     await this.setStateAsync(vin + '.odometer.value', {val: newStatus.odometer.value, ack: true});
                 }
             }
+
+            //Location
+            this.locationResolve(vin, latitude, longitude, speed);
+
 
             //door
             await this.setStateAsync(vin + '.vehicleStatus.doorLock', {
