@@ -741,16 +741,18 @@ class Bluelink extends utils.Adapter {
                         ack: true
                     });
                 }
-
-                await this.setStateAsync(vin + '.vehicleStatus.battery.charge', {
-                    val: newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.ConnectorFastening.State == 1 ? true : false,
-                    ack: true
-                });
-
-                await this.setStateAsync(vin + '.vehicleStatus.battery.minutes_to_charged', {
-                    val: newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.Charging.RemainTime,
-                    ack: true,
-                });
+                if (newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.hasOwnProperty('ConnectorFastening')) {
+	                await this.setStateAsync(vin + '.vehicleStatus.battery.charge', {
+	                    val: newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.ConnectorFastening.State == 1 ? true : false,
+	                    ack: true
+	                });
+		}
+                if (newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.hasOwnProperty('Charging')) {		    
+	                await this.setStateAsync(vin + '.vehicleStatus.battery.minutes_to_charged', {
+	                    val: newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.Charging.RemainTime,
+	                    ack: true,
+	                });
+		}
 
                 if (newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.hasOwnProperty('SoH')) {
                     await this.setStateAsync(vin + '.vehicleStatus.battery.soh', {
