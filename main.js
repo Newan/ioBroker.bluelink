@@ -774,13 +774,15 @@ class Bluelink extends utils.Adapter {
                     String(ts.Min).padStart(2, '0') +
                     String(ts.Sec).padStart(2, '0');
 
-                const lastUpdate = newStatus.vehicleLocation.time;
-
-                if (lastUpdate_ccs2 > lastUpdate) {
-                    latitude  = newStatus.ccs2Status.state.Vehicle.Location.GeoCoord.Latitude;
-                    longitude = newStatus.ccs2Status.state.Vehicle.Location.GeoCoord.Longitude;
-                    speed     = newStatus.ccs2Status.state.Vehicle.Location.Speed.Value;
-                }
+		if (newStatus.vehicleLocation.hasOwnProperty('time')) {		
+	                const lastUpdate = newStatus.vehicleLocation.time;
+	
+	                if (lastUpdate_ccs2 > lastUpdate) {
+	                    latitude  = newStatus.ccs2Status.state.Vehicle.Location.GeoCoord.Latitude;
+	                    longitude = newStatus.ccs2Status.state.Vehicle.Location.GeoCoord.Longitude;
+	                    speed     = newStatus.ccs2Status.state.Vehicle.Location.Speed.Value;
+	                }
+		}
 
                 //Odometer
                 await this.setStateAsync(vin + '.odometer.value', {val: newStatus.ccs2Status.state.Vehicle.Drivetrain.Odometer, ack: true});
