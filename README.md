@@ -24,6 +24,9 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 
 ## Changelog
+### 3.1.9 (2025-06-24)
+* (arteck) fix translate
+
 ### 3.1.8 (2025-06-12)
 * (arteck) fix location Tucson
 

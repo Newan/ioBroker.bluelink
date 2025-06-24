@@ -746,13 +746,13 @@ class Bluelink extends utils.Adapter {
 	                    val: newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.ConnectorFastening.State == 1 ? true : false,
 	                    ack: true
 	                });
-		}
-                if (newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.hasOwnProperty('Charging')) {		    
+                }
+                if (newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.hasOwnProperty('Charging')) {
 	                await this.setStateAsync(vin + '.vehicleStatus.battery.minutes_to_charged', {
 	                    val: newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.Charging.RemainTime,
 	                    ack: true,
 	                });
-		}
+                }
 
                 if (newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.hasOwnProperty('SoH')) {
                     await this.setStateAsync(vin + '.vehicleStatus.battery.soh', {
@@ -774,15 +774,15 @@ class Bluelink extends utils.Adapter {
                     String(ts.Min).padStart(2, '0') +
                     String(ts.Sec).padStart(2, '0');
 
-		if (newStatus.vehicleLocation.hasOwnProperty('time')) {		
+                if (newStatus.vehicleLocation.hasOwnProperty('time')) {
 	                const lastUpdate = newStatus.vehicleLocation.time;
-	
+
 	                if (lastUpdate_ccs2 > lastUpdate) {
 	                    latitude  = newStatus.ccs2Status.state.Vehicle.Location.GeoCoord.Latitude;
 	                    longitude = newStatus.ccs2Status.state.Vehicle.Location.GeoCoord.Longitude;
 	                    speed     = newStatus.ccs2Status.state.Vehicle.Location.Speed.Value;
 	                }
-		}
+                }
 
                 //Odometer
                 await this.setStateAsync(vin + '.odometer.value', {val: newStatus.ccs2Status.state.Vehicle.Drivetrain.Odometer, ack: true});

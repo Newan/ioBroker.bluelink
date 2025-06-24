@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.8",
+    "version": "3.1.9",
     "news": {
+      "3.1.9": {
+        "en": "fix translate",
+        "de": "bersetzung übersetzen",
+        "ru": "переводить",
+        "pt": "corrigir traduzir",
+        "nl": "fix translate",
+        "fr": "corriger traduire",
+        "it": "correzione traduttore",
+        "es": "corrección",
+        "pl": "fix translate",
+        "uk": "фіксувати переклад",
+        "zh-cn": "修补翻译"
+      },
       "3.1.8": {
         "en": "fix location Tucson",
         "de": "standort Tucson",
@@ -80,19 +93,6 @@
         "pl": "naprawić błąd z znacznikiem dnia i czasu dla EV\naktualizacja zależności",
         "uk": "виправити помилки з днем і тегом часу для EV\nоновлення залежності",
         "zh-cn": "用 EV 的日和时间标记修正错误\n依赖性更新"
-      },
-      "3.1.2": {
-        "en": "error on create dp fix",
-        "de": "fehler bei dp fix erstellen",
-        "ru": "ошибка при создании исправления dp",
-        "pt": "erro em criar correção dp",
-        "nl": "fout bij aanmaken dp fix",
-        "fr": "erreur lors de la création de la correction dp",
-        "it": "errore di creazione dp fix",
-        "es": "error en crear la solución dp",
-        "pl": "błąd przy tworzeniu poprawki dp",
-        "uk": "помилка на створенні dp виправити",
-        "zh-cn": "创建 dp 修正时出错"
       }
     },
     "titleLang": {
