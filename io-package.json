@@ -3,6 +3,19 @@
     "name": "bluelink",
     "version": "3.1.9",
     "news": {
+      "3.1.10": {
+        "en": "fix fix BatteryManagement",
+        "de": "Fix Fix Batteriemanagement",
+        "ru": "исправить исправить BatteryManagement",
+        "pt": "consertar consertar Gerenciamento de Bateria",
+        "nl": "Batterijbeheer repareren",
+        "fr": "corriger corriger BatteryManagement",
+        "it": "Correggi la correzione della gestione della batteria",
+        "es": "Arreglar Arreglar Administración de Batería",
+        "pl": "napraw napraw BatteryManagement",
+        "uk": "виправити виправити BatteryManagement",
+        "zh-cn": "修复电池管理"
+      },
       "3.1.9": {
         "en": "fix translate",
         "de": "bersetzung übersetzen",
