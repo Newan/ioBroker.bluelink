@@ -754,7 +754,7 @@ class Bluelink extends utils.Adapter {
 	                });
                 }
 
-                if (newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.hasOwnProperty('SoH')) {
+                if (newStatus.ccs2Status.state.Vehicle.Green.hasOwnProperty('BatteryManagement')) {
                     await this.setStateAsync(vin + '.vehicleStatus.battery.soh', {
                         val: newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.SoH.Ratio,
                         ack: true,
