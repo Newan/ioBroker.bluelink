@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.10",
+    "version": "3.1.11",
     "news": {
+      "3.1.11": {
+        "en": "fix Version number",
+        "de": "fix Versionsnummer",
+        "ru": "исправить номер версии",
+        "pt": "corrigir o número da versão",
+        "nl": "versienummer herstellen",
+        "fr": "correction du numéro de version",
+        "it": "fix Numero di versione",
+        "es": "número de versión",
+        "pl": "fix Numer wersji",
+        "uk": "фіксувати номер версії",
+        "zh-cn": "固定版本编号"
+      },
       "3.1.10": {
         "en": "fix fix BatteryManagement",
         "de": "Fix Fix Batteriemanagement",
@@ -80,32 +93,6 @@
         "pl": "oblicz evModeRange dla PHEV",
         "uk": "розрахувати evModeRange для PHEV",
         "zh-cn": "计算 PHEV 的 evMode 路由"
-      },
-      "3.1.4": {
-        "en": "fix enModeRange for PHEV",
-        "de": "fix enModeRange für PHEV",
-        "ru": "обсуждение EnModeRange for PHEV",
-        "pt": "corrigir enModeRange para PHEV",
-        "nl": "fix enModeRange voor PHEV",
-        "fr": "réparer enModeRange pour PHEV",
-        "it": "fix enModeRange per PHEV",
-        "es": "fijaciones enModeRange para PHEV",
-        "pl": "fix enModeRange for PHEV",
-        "uk": "фіксувати enModeRange для PHEV",
-        "zh-cn": "修复 PHEV 的 Mode Range"
-      },
-      "3.1.3": {
-        "en": "fix bug with day and time tag for EV \ndependency update",
-        "de": "fehler mit Tag und Zeit Tag für EV beheben\naktualisierung der abhängigkeit",
-        "ru": "исправить ошибку с тегом дня и времени для EV\nобновление зависимостей",
-        "pt": "corrigir bug com dia e hora tag para EV\natualização de dependência",
-        "nl": "fix bug met dag- en tijdkaart voor EV\nafhankelijkheidsupdate",
-        "fr": "correction d'un bug avec l'étiquette jour et heure pour EV\nmise à jour de la dépendance",
-        "it": "correggere bug con day and time tag per EV\naggiornamento della dipendenza",
-        "es": "corregir fallo con etiqueta de día y hora para EV\nactualización de la dependencia",
-        "pl": "naprawić błąd z znacznikiem dnia i czasu dla EV\naktualizacja zależności",
-        "uk": "виправити помилки з днем і тегом часу для EV\nоновлення залежності",
-        "zh-cn": "用 EV 的日和时间标记修正错误\n依赖性更新"
       }
     },
     "titleLang": {

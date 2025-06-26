@@ -24,6 +24,9 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 
 ## Changelog
+### 3.1.11 (2025-06-26)
+* (arteck) fix Version number
+
 ### 3.1.10 (2025-06-25)
 * (arteck) fix BatteryManagement
 
