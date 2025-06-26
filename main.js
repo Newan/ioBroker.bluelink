@@ -719,11 +719,13 @@ class Bluelink extends utils.Adapter {
             let latitude= 0;
             let longitude= 0;
             let speed = 0;
+            let lastUpdate = 0;
 
             if (newStatus.hasOwnProperty('vehicleLocation')) {
-                latitude  = newStatus.vehicleLocation.coord.lat;
-                longitude = newStatus.vehicleLocation.coord.lon;
-                speed     = newStatus.vehicleLocation.speed.value;
+                latitude   = newStatus.vehicleLocation.coord.lat;
+                longitude  = newStatus.vehicleLocation.coord.lon;
+                speed      = newStatus.vehicleLocation.speed.value;
+                lastUpdate = newStatus.vehicleLocation.time;
             }
 
             if (newStatus.hasOwnProperty('ccs2Status')) {
@@ -761,21 +763,17 @@ class Bluelink extends utils.Adapter {
                     });
                 }
 
-
                 //Location
+                if (newStatus.ccs2Status.state.Vehicle.hasOwnProperty('Location')) {
+                    const ts = newStatus.ccs2Status.state.Vehicle.Location.TimeStamp;
 
-                const ts = newStatus.ccs2Status.state.Vehicle.Location.TimeStamp;
-
-                const lastUpdate_ccs2 =
-                    ts.Year +
-                    String(ts.Mon).padStart(2, '0') +
-                    String(ts.Day).padStart(2, '0') +
-                    String(ts.Hour).padStart(2, '0') +
-                    String(ts.Min).padStart(2, '0') +
-                    String(ts.Sec).padStart(2, '0');
-
-                if (newStatus.hasOwnProperty('vehicleLocation')) {
-	                const lastUpdate = newStatus.vehicleLocation.time;
+                    const lastUpdate_ccs2 =
+                        ts.Year +
+                        String(ts.Mon).padStart(2, '0') +
+                        String(ts.Day).padStart(2, '0') +
+                        String(ts.Hour).padStart(2, '0') +
+                        String(ts.Min).padStart(2, '0') +
+                        String(ts.Sec).padStart(2, '0');
 
 	                if (lastUpdate_ccs2 > lastUpdate) {
 	                    latitude  = newStatus.ccs2Status.state.Vehicle.Location.GeoCoord.Latitude;

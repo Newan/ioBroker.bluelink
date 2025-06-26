@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.12",
+    "version": "3.1.13",
     "news": {
+      "3.1.13": {
+        "en": "fix location if timestamp in ccs2 is greater than vehicle timestamp",
+        "de": "fix ort, wenn der zeitstempel in ccs2 größer ist als der fahrzeugzeitstempel",
+        "ru": "фиксировать местоположение, если метка времени в ccs2 больше, чем метка времени транспортного средства",
+        "pt": "local de correção se a hora em ccs2 for maior que a hora do veículo",
+        "nl": "fix locatie als tijdstempel in ccs2 is groter dan voertuig tijdstempel",
+        "fr": "fixer l'emplacement si l'horodatage en ccs2 est supérieur à l'horodatage du véhicule",
+        "it": "fissare la posizione se il timestamp in ccs2 è maggiore del timestamp del veicolo",
+        "es": "fijar la ubicación si el horario en ccs2 es mayor que el tiempo del vehículo",
+        "pl": "stałe położenie, jeżeli znacznik czasu w ccs2 jest większy niż znacznik czasu pojazdu",
+        "uk": "фіксувати місце, якщо часовий штамп в ccs2 більше, ніж час",
+        "zh-cn": "如果cc2中的时间戳大于车辆的时间戳,则固定位置"
+      },
       "3.1.12": {
         "en": "fix vehicallocation in ccs2",
         "de": "fix vehicallocation in ccs2",
@@ -80,19 +93,6 @@
         "pl": "fix translate for PHEV Range",
         "uk": "виправити переклад для PHEV діапазону",
         "zh-cn": "为 PHEV 范围翻译固定"
-      },
-      "3.1.6": {
-        "en": "add DE language",
-        "de": "dE Sprache hinzufügen",
-        "ru": "добавить язык DE",
-        "pt": "adicionar idioma DE",
-        "nl": "dE-taal toevoegen",
-        "fr": "ajouter la langue DE",
-        "it": "aggiungere la lingua DE",
-        "es": "añadir idioma DE",
-        "pl": "dodaj język DE",
-        "uk": "додати мову DE",
-        "zh-cn": "添加DE 语言"
       }
     },
     "titleLang": {

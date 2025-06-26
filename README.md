@@ -24,6 +24,9 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 
 ## Changelog
+### 3.1.13 (2025-06-26)
+* (arteck) fix location if timestamp in ccs2 is greater than vehicle timestamp
+
 ### 3.1.12 (2025-06-26)
 * (arteck) fix vehicallocation in ccs2
 
