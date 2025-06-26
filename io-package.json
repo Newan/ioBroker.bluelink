@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.13",
+    "version": "3.1.14",
     "news": {
+      "3.1.14": {
+        "en": "fix SoH value",
+        "de": "soH-Wert",
+        "ru": "установить значение SoH",
+        "pt": "corrigir o valor do SoH",
+        "nl": "fix SoH-waarde",
+        "fr": "correction de la valeur SoH",
+        "it": "correzione del valore SoH",
+        "es": "valor SoH",
+        "pl": "fix wartość SoH",
+        "uk": "виправити значення SoH",
+        "zh-cn": "修复 SoH 值"
+      },
       "3.1.13": {
         "en": "fix location if timestamp in ccs2 is greater than vehicle timestamp",
         "de": "fix ort, wenn der zeitstempel in ccs2 größer ist als der fahrzeugzeitstempel",
@@ -80,19 +93,6 @@
         "pl": "fix lokalizacja Tucson",
         "uk": "кріплення розташування Tucson",
         "zh-cn": "固定位置图克森"
-      },
-      "3.1.7": {
-        "en": "fix translate for PHEV Range",
-        "de": "fix übersetzen für PHEV Range",
-        "ru": "перевод для PHEV Range",
-        "pt": "corrigir traduzir para PHEV Range",
-        "nl": "fix vertalen voor PHEV bereik",
-        "fr": "corriger traduire pour la plage PHEV",
-        "it": "correzione traduttore per PHEV Range",
-        "es": "corrección traducida para rango PHEV",
-        "pl": "fix translate for PHEV Range",
-        "uk": "виправити переклад для PHEV діапазону",
-        "zh-cn": "为 PHEV 范围翻译固定"
       }
     },
     "titleLang": {

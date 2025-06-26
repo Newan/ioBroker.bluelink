@@ -757,10 +757,12 @@ class Bluelink extends utils.Adapter {
                 }
 
                 if (newStatus.ccs2Status.state.Vehicle.Green.hasOwnProperty('BatteryManagement')) {
-                    await this.setStateAsync(vin + '.vehicleStatus.battery.soh', {
-                        val: newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.SoH.Ratio,
-                        ack: true,
-                    });
+                    if (newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.hasOwnProperty('SoH')) {
+                        await this.setStateAsync(vin + '.vehicleStatus.battery.soh', {
+                            val: newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.SoH.Ratio,
+                            ack: true,
+                        });
+                    }
                 }
 
                 //Location
@@ -873,6 +875,7 @@ class Bluelink extends utils.Adapter {
                 this.batteryState12V[vin] = newStatus.vehicleStatus.battery.batSoc;
             }
         } catch (err) {
+            this.log.error(err.message);
             this.log.error(err.stack);
         }
     }
