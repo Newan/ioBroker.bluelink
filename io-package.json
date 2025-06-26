@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.11",
+    "version": "3.1.12",
     "news": {
+      "3.1.12": {
+        "en": "fix vehicallocation in ccs2",
+        "de": "fix vehicallocation in ccs2",
+        "ru": "фиксировать скопление в ccs2",
+        "pt": "corrigir a localização do veículo em ccs2",
+        "nl": "vast te stellen voertuigtoewijzing in ccs2",
+        "fr": "fixer la véhicallocation en ccs2",
+        "it": "correzione della vehicallocation in ccs2",
+        "es": "fijar vehicallocation en ccs2",
+        "pl": "naprawić przydział pojazdów w ccs2",
+        "uk": "фіксувати vehicallocation в ccs2",
+        "zh-cn": "以 ccs2 形式固定 vehical 位置"
+      },
       "3.1.11": {
         "en": "fix Version number",
         "de": "fix Versionsnummer",
@@ -80,19 +93,6 @@
         "pl": "dodaj język DE",
         "uk": "додати мову DE",
         "zh-cn": "添加DE 语言"
-      },
-      "3.1.5": {
-        "en": "calculate evModeRange for PHEV",
-        "de": "evModeRange für PHEV berechnen",
-        "ru": "расчет evModeRange для PHEV",
-        "pt": "calcular evModeRange para PHEV",
-        "nl": "evModeRange voor PHEV berekenen",
-        "fr": "calculer evModeRange pour PHEV",
-        "it": "calcolare evModeRange per PHEV",
-        "es": "calcular evModeRange para PHEV",
-        "pl": "oblicz evModeRange dla PHEV",
-        "uk": "розрахувати evModeRange для PHEV",
-        "zh-cn": "计算 PHEV 的 evMode 路由"
       }
     },
     "titleLang": {

@@ -774,7 +774,7 @@ class Bluelink extends utils.Adapter {
                     String(ts.Min).padStart(2, '0') +
                     String(ts.Sec).padStart(2, '0');
 
-                if (newStatus.vehicleLocation.hasOwnProperty('time')) {
+                if (newStatus.hasOwnProperty('vehicleLocation')) {
 	                const lastUpdate = newStatus.vehicleLocation.time;
 
 	                if (lastUpdate_ccs2 > lastUpdate) {
