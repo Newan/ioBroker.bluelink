@@ -722,10 +722,12 @@ class Bluelink extends utils.Adapter {
             let lastUpdate = 0;
 
             if (newStatus.hasOwnProperty('vehicleLocation')) {
-                latitude   = newStatus.vehicleLocation.coord.lat;
-                longitude  = newStatus.vehicleLocation.coord.lon;
-                speed      = newStatus.vehicleLocation.speed.value;
-                lastUpdate = newStatus.vehicleLocation.time;
+                if (newStatus.vehicleLocation != undefined) {
+                    latitude = newStatus.vehicleLocation.coord.lat;
+                    longitude = newStatus.vehicleLocation.coord.lon;
+                    speed = newStatus.vehicleLocation.speed.value;
+                    lastUpdate = newStatus.vehicleLocation.time;
+                }
             }
 
             if (newStatus.hasOwnProperty('ccs2Status')) {

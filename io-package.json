@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.14",
+    "version": "3.1.15",
     "news": {
+      "3.1.15": {
+        "en": "fix GeoCoord from car",
+        "de": "geoCoord aus dem Auto reparieren",
+        "ru": "починить GeoCoord из автомобиля",
+        "pt": "corrigir GeoCoord do carro",
+        "nl": "fix GeoCoord van auto",
+        "fr": "correction GeoCoord de voiture",
+        "it": "fix GeoCoord da auto",
+        "es": "arreglar GeoCoord del coche",
+        "pl": "naprawić GeoCoord z samochodu",
+        "uk": "виправити GeoCoord від автомобіля",
+        "zh-cn": "从汽车上修补 GeoCoord"
+      },
       "3.1.14": {
         "en": "fix SoH value",
         "de": "soH-Wert",
@@ -80,19 +93,6 @@
         "pl": "fix translate",
         "uk": "фіксувати переклад",
         "zh-cn": "修补翻译"
-      },
-      "3.1.8": {
-        "en": "fix location Tucson",
-        "de": "standort Tucson",
-        "ru": "местонахождение Tucson",
-        "pt": "corrigir localização Tucson",
-        "nl": "fix locatie Tucson",
-        "fr": "fixer l'emplacement Tucson",
-        "it": "posizione corretta Tucson",
-        "es": "ubicación de la solución Tucson",
-        "pl": "fix lokalizacja Tucson",
-        "uk": "кріплення розташування Tucson",
-        "zh-cn": "固定位置图克森"
       }
     },
     "titleLang": {
