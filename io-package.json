@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.15",
+    "version": "3.1.16",
     "news": {
+      "3.1.16": {
+        "en": "fix ratio from car",
+        "de": "fixverhältnis von auto",
+        "ru": "соотношение фиксации от автомобиля",
+        "pt": "razão de correção do carro",
+        "nl": "fix ratio van auto",
+        "fr": "rapport de correction de la voiture",
+        "it": "rapporto di correzione da auto",
+        "es": "relación de fijación del coche",
+        "pl": "współczynnik korygujący z samochodu",
+        "uk": "коефіцієнт фіксації автомобіля",
+        "zh-cn": "汽车固定比率"
+      },
       "3.1.15": {
         "en": "fix GeoCoord from car",
         "de": "geoCoord aus dem Auto reparieren",
@@ -80,19 +93,6 @@
         "pl": "napraw napraw BatteryManagement",
         "uk": "виправити виправити BatteryManagement",
         "zh-cn": "修复电池管理"
-      },
-      "3.1.9": {
-        "en": "fix translate",
-        "de": "bersetzung übersetzen",
-        "ru": "переводить",
-        "pt": "corrigir traduzir",
-        "nl": "fix translate",
-        "fr": "corriger traduire",
-        "it": "correzione traduttore",
-        "es": "corrección",
-        "pl": "fix translate",
-        "uk": "фіксувати переклад",
-        "zh-cn": "修补翻译"
       }
     },
     "titleLang": {

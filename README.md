@@ -24,6 +24,9 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 
 ## Changelog
+### 3.1.16 (2025-07-03)
+* (arteck) fix ratio from car
+
 ### 3.1.15 (2025-06-27)
 * (arteck) fix GeoCoord from car
 
