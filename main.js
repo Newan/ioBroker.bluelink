@@ -876,7 +876,7 @@ class Bluelink extends utils.Adapter {
             // hier 12V merken
             if (newStatus.vehicleStatus. hasOwnProperty('battery')) {
                 this.log.debug('Set ' + newStatus.vehicleStatus.battery.batSoc + ' battery state for ' + vin);
-		await this.setStateAsync(vin + '.vehicleStatus.battery.soc-12V', {
+                await this.setStateAsync(vin + '.vehicleStatus.battery.soc-12V', {
 		    val: newStatus.vehicleStatus.battery.batSoc,
 		    ack: true
                 });

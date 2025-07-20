@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.16",
+    "version": "3.1.17",
     "news": {
+      "3.1.17": {
+        "en": "fix bat-12V",
+        "de": "fix bat-12V",
+        "ru": "обсуждение Bat-12V",
+        "pt": "corrigir o morcego-12V",
+        "nl": "fix bat-12V",
+        "fr": "fixer bat-12V",
+        "it": "fix pipistrello-12V",
+        "es": "fijar el bate-12V",
+        "pl": "fix bat- 12V",
+        "uk": "фіксатор bat-12V",
+        "zh-cn": "固定蝙蝠-12V"
+      },
       "3.1.16": {
         "en": "fix ratio from car",
         "de": "fixverhältnis von auto",
@@ -15,71 +28,6 @@
         "pl": "współczynnik korygujący z samochodu",
         "uk": "коефіцієнт фіксації автомобіля",
         "zh-cn": "汽车固定比率"
-      },
-      "3.1.15": {
-        "en": "fix GeoCoord from car",
-        "de": "geoCoord aus dem Auto reparieren",
-        "ru": "починить GeoCoord из автомобиля",
-        "pt": "corrigir GeoCoord do carro",
-        "nl": "fix GeoCoord van auto",
-        "fr": "correction GeoCoord de voiture",
-        "it": "fix GeoCoord da auto",
-        "es": "arreglar GeoCoord del coche",
-        "pl": "naprawić GeoCoord z samochodu",
-        "uk": "виправити GeoCoord від автомобіля",
-        "zh-cn": "从汽车上修补 GeoCoord"
-      },
-      "3.1.14": {
-        "en": "fix SoH value",
-        "de": "soH-Wert",
-        "ru": "установить значение SoH",
-        "pt": "corrigir o valor do SoH",
-        "nl": "fix SoH-waarde",
-        "fr": "correction de la valeur SoH",
-        "it": "correzione del valore SoH",
-        "es": "valor SoH",
-        "pl": "fix wartość SoH",
-        "uk": "виправити значення SoH",
-        "zh-cn": "修复 SoH 值"
-      },
-      "3.1.13": {
-        "en": "fix location if timestamp in ccs2 is greater than vehicle timestamp",
-        "de": "fix ort, wenn der zeitstempel in ccs2 größer ist als der fahrzeugzeitstempel",
-        "ru": "фиксировать местоположение, если метка времени в ccs2 больше, чем метка времени транспортного средства",
-        "pt": "local de correção se a hora em ccs2 for maior que a hora do veículo",
-        "nl": "fix locatie als tijdstempel in ccs2 is groter dan voertuig tijdstempel",
-        "fr": "fixer l'emplacement si l'horodatage en ccs2 est supérieur à l'horodatage du véhicule",
-        "it": "fissare la posizione se il timestamp in ccs2 è maggiore del timestamp del veicolo",
-        "es": "fijar la ubicación si el horario en ccs2 es mayor que el tiempo del vehículo",
-        "pl": "stałe położenie, jeżeli znacznik czasu w ccs2 jest większy niż znacznik czasu pojazdu",
-        "uk": "фіксувати місце, якщо часовий штамп в ccs2 більше, ніж час",
-        "zh-cn": "如果cc2中的时间戳大于车辆的时间戳,则固定位置"
-      },
-      "3.1.12": {
-        "en": "fix vehicallocation in ccs2",
-        "de": "fix vehicallocation in ccs2",
-        "ru": "фиксировать скопление в ccs2",
-        "pt": "corrigir a localização do veículo em ccs2",
-        "nl": "vast te stellen voertuigtoewijzing in ccs2",
-        "fr": "fixer la véhicallocation en ccs2",
-        "it": "correzione della vehicallocation in ccs2",
-        "es": "fijar vehicallocation en ccs2",
-        "pl": "naprawić przydział pojazdów w ccs2",
-        "uk": "фіксувати vehicallocation в ccs2",
-        "zh-cn": "以 ccs2 形式固定 vehical 位置"
-      },
-      "3.1.11": {
-        "en": "fix Version number",
-        "de": "fix Versionsnummer",
-        "ru": "исправить номер версии",
-        "pt": "corrigir o número da versão",
-        "nl": "versienummer herstellen",
-        "fr": "correction du numéro de version",
-        "it": "fix Numero di versione",
-        "es": "número de versión",
-        "pl": "fix Numer wersji",
-        "uk": "фіксувати номер версії",
-        "zh-cn": "固定版本编号"
       },
       "3.1.10": {
         "en": "fix fix BatteryManagement",
