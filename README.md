@@ -24,6 +24,9 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 
 ## Changelog
+### **WORK IN PROGRESS**
+* (arteck) fix login Kia/Hyundai
+
 ### 3.1.17 (2025-07-20)
 * (arteck) fix bat-12V
 
