@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.18",
+    "version": "3.1.19",
     "news": {
+      "3.1.19": {
+        "en": "dependency update",
+        "de": "aktualisierung der abhängigkeit",
+        "ru": "обновление зависимостей",
+        "pt": "atualização de dependência",
+        "nl": "afhankelijkheidsupdate",
+        "fr": "mise à jour de la dépendance",
+        "it": "aggiornamento della dipendenza",
+        "es": "actualización de la dependencia",
+        "pl": "aktualizacja zależności",
+        "uk": "оновлення залежності",
+        "zh-cn": "依赖性更新"
+      },
       "3.1.18": {
         "en": "fix login Kia/Hyundai",
         "de": "zurück zur Übersicht Kia/Hyundai",

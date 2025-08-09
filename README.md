@@ -24,6 +24,9 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 
 ## Changelog
+### 3.1.19 (2025-08-09)
+* (arteck) dependency update
+
 ### 3.1.18 (2025-08-08)
 * (arteck) fix login Kia/Hyundai
 
