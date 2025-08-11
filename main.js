@@ -11,7 +11,7 @@ const adapterIntervals = {}; //halten von allen Intervallen
 let request_count = 48; // halbstündig sollte als Standardeinstellung reichen (zu häufige Abfragen entleeren die Batterie spürbar)
 const max_request = 400;
 let blueLinkyClient;
-const positionUrlConst = 'https://maps.google.com/maps?z=15&t=m&q=loc:';
+
 
 let slow_charging = 100;
 let fast_charging = 100;
@@ -266,6 +266,7 @@ class Bluelink extends utils.Adapter {
             };
 
             blueLinkyClient = new BlueLinky(loginOptions);
+            create_tools = new Create_tools(this);
 
             blueLinkyClient.on('ready', async (vehicles) => {
                 this.setState('info.connection', true, true);
@@ -285,9 +286,6 @@ class Bluelink extends utils.Adapter {
                         },
                         native: {},
                     });
-
-
-                    create_tools = new Create_tools(this);
 
                     await create_tools.setControlObjects(vin);
                     await create_tools.setStatusObjects(vin);
@@ -309,11 +307,10 @@ class Bluelink extends utils.Adapter {
                         }
                     }
                     await this.setStateAsync(`${vin}.error_counter`, 0, true);
+
+            //      tools.cleanObjects(vin, this);
                 }
                 this.countError = 0;
-
-                //clean legacy states
-                this.cleanObjects();
             });
 
             blueLinkyClient.on('error', async (err) => {
@@ -389,7 +386,17 @@ class Bluelink extends utils.Adapter {
 
                 // raw data
                 await this.json2iob.parse(vin + '.vehicleStatusRaw', newStatus);
-                await this.setNewFullStatus(newStatus, vin);
+
+                if (newStatus.hasOwnProperty('vehicleStatus')) {
+                    await this.setVehicleStatusObjects(vin);
+                    await this.setNewFullStatus(newStatus, vin);
+                } else {
+                    // neue struktur ohne auflösung
+                    await tools.cleanNotAvailableObjects(this);
+                    await tools.setLocation(this, vin, newStatus.Location.GeoCoord.Latitude, newStatus.Location.GeoCoord.Longitude, newStatus.Location.Speed.Value);
+                    //Odometer
+                    await this.setStateAsync(vin + '.odometer.value', {val: newStatus.Drivetrain.Odometer, ack: true});
+                }
 
             } catch (error) {
                 if (typeof error === 'string') {
@@ -399,15 +406,26 @@ class Bluelink extends utils.Adapter {
                     //if(error.source.statusCode == 503) {
                     this.log.info('Error on fullStatus - new try with Status Request');
 
-		    newStatus = await vehicle.status({
+		            newStatus = await vehicle.status({
                         refresh: force_update,
                         parsed: true,
                     });
+
                     this.log.debug('Set Status for ' + vin);
                     this.log.debug(JSON.stringify(newStatus));
 
                     await this.json2iob.parse(vin + '.vehicleStatusRaw', newStatus);
-                    await this.setShortStatus(newStatus, vin);
+
+                    if (newStatus.hasOwnProperty('vehicleStatus')) {
+                        await this.setVehicleStatusObjects(vin);
+                        await this.setShortStatus(newStatus, vin);
+                    } else {
+                        // neue struktur ohne auflösung
+                        await tools.cleanNotAvailableObjects(this);
+                        await tools.setLocation(this, vin, newStatus.Location.GeoCoord.Latitude, newStatus.Location.GeoCoord.Longitude, newStatus.Location.Speed.Value);
+                        //Odometer
+                        await this.setStateAsync(vin + '.odometer.value', {val: newStatus.Drivetrain.Odometer, ack: true});
+                    }
                 }
             }
 
@@ -615,6 +633,9 @@ class Bluelink extends utils.Adapter {
 
     //full status
     async setNewFullStatus(newStatus, vin) {
+
+        let lastUpdate = 0;
+
         try {
             await this.setStateAsync(vin + '.vehicleStatus.airCtrlOn', {
                 val: newStatus.vehicleStatus.airCtrlOn,
@@ -628,6 +649,14 @@ class Bluelink extends utils.Adapter {
                 });
             }
 
+            if (newStatus.hasOwnProperty('vehicleLocation')) {
+                if (newStatus.vehicleLocation != undefined) {
+                    lastUpdate = newStatus.vehicleLocation.time;
+                    tools.setLocation(this, vin, newStatus.vehicleLocation.coord.lat, newStatus.vehicleLocation.coord.lon, newStatus.vehicleLocation.speed.value);
+                }
+            }
+
+
             //Charge
             if (this.config.motor == 'GAS') {
                 await this.setStateAsync(vin + '.vehicleStatus.dte', {
@@ -636,7 +665,8 @@ class Bluelink extends utils.Adapter {
                 });
             } else {
                 if (newStatus.vehicleStatus.hasOwnProperty('evStatus')) {
-		                if (newStatus.vehicleStatus.evStatus.reservChargeInfos.hasOwnProperty('targetSOClist[0]')) {
+
+		            if (newStatus.vehicleStatus.evStatus.reservChargeInfos.hasOwnProperty('targetSOClist[0]')) {
 	                    if (newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].plugType == 1) {
 	                        //Slow  = 1  -> Index 0 ist slow
 	                        slow_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
@@ -665,7 +695,7 @@ class Bluelink extends utils.Adapter {
 	                            ack: true,
 	                        });
 	                    }
-		                }
+		            }
 
                     //Nur für Elektro Fahrzeuge - Battery
                     await this.setStateAsync(vin + '.vehicleStatus.dte', {
@@ -716,22 +746,25 @@ class Bluelink extends utils.Adapter {
                 }
             }
 
-            let latitude= 0;
-            let longitude= 0;
-            let speed = 0;
-            let lastUpdate = 0;
-
-            if (newStatus.hasOwnProperty('vehicleLocation')) {
-                if (newStatus.vehicleLocation != undefined) {
-                    latitude = newStatus.vehicleLocation.coord.lat;
-                    longitude = newStatus.vehicleLocation.coord.lon;
-                    speed = newStatus.vehicleLocation.speed.value;
-                    lastUpdate = newStatus.vehicleLocation.time;
-                }
-            }
 
             if (newStatus.hasOwnProperty('ccs2Status')) {
-		            this.log.debug('ccs2Status: ' + JSON.stringify(newStatus.ccs2Status));
+		        this.log.debug('ccs2Status: ' + JSON.stringify(newStatus.ccs2Status));
+
+                if (newStatus.ccs2Status.state.Vehicle.hasOwnProperty('Location')) {
+                    const ts = newStatus.ccs2Status.state.Vehicle.Location.TimeStamp;
+
+                    const lastUpdate_ccs2 =
+                        ts.Year +
+                        String(ts.Mon).padStart(2, '0') +
+                        String(ts.Day).padStart(2, '0') +
+                        String(ts.Hour).padStart(2, '0') +
+                        String(ts.Min).padStart(2, '0') +
+                        String(ts.Sec).padStart(2, '0');
+
+                    if (lastUpdate_ccs2 > lastUpdate) {
+                        tools.setLocation(adaptr, vin, newStatus.ccs2Status.state.Vehicle.Location.GeoCoord.Latitude, newStatus.ccs2Status.state.Vehicle.Location.GeoCoord.Longitude, newStatus.ccs2Status.state.Vehicle.Location.Speed.Value);
+                    }
+                }
 
                 // Battery
                 await this.setStateAsync(vin + '.vehicleStatus.battery.soc-12V', {
@@ -740,12 +773,12 @@ class Bluelink extends utils.Adapter {
                 });
 
                 if (newStatus.ccs2Status.state.Vehicle.Green.hasOwnProperty('BatteryManagement')) {
-		    if (newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.hasOwnProperty('BatteryRemain')) {
-	                    await this.setStateAsync(vin + '.vehicleStatus.battery.soc', {
-	                        val: newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.BatteryRemain.Ratio,
-	                        ack: true
-	                    });
-		    }
+                    if (newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.hasOwnProperty('BatteryRemain')) {
+                                await this.setStateAsync(vin + '.vehicleStatus.battery.soc', {
+                                    val: newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.BatteryRemain.Ratio,
+                                    ack: true
+                                });
+                    }
                 }
                 if (newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.hasOwnProperty('ConnectorFastening')) {
 	                await this.setStateAsync(vin + '.vehicleStatus.battery.charge', {
@@ -767,25 +800,6 @@ class Bluelink extends utils.Adapter {
                             ack: true,
                         });
                     }
-                }
-
-                //Location
-                if (newStatus.ccs2Status.state.Vehicle.hasOwnProperty('Location')) {
-                    const ts = newStatus.ccs2Status.state.Vehicle.Location.TimeStamp;
-
-                    const lastUpdate_ccs2 =
-                        ts.Year +
-                        String(ts.Mon).padStart(2, '0') +
-                        String(ts.Day).padStart(2, '0') +
-                        String(ts.Hour).padStart(2, '0') +
-                        String(ts.Min).padStart(2, '0') +
-                        String(ts.Sec).padStart(2, '0');
-
-	                if (lastUpdate_ccs2 > lastUpdate) {
-	                    latitude  = newStatus.ccs2Status.state.Vehicle.Location.GeoCoord.Latitude;
-	                    longitude = newStatus.ccs2Status.state.Vehicle.Location.GeoCoord.Longitude;
-	                    speed     = newStatus.ccs2Status.state.Vehicle.Location.Speed.Value;
-	                }
                 }
 
                 //Odometer
@@ -822,10 +836,6 @@ class Bluelink extends utils.Adapter {
                     await this.setStateAsync(vin + '.odometer.value', {val: newStatus.odometer.value, ack: true});
                 }
             }
-
-            //Location
-            this.locationResolve(vin, latitude, longitude, speed);
-
 
             //door
             await this.setStateAsync(vin + '.vehicleStatus.doorLock', {
@@ -919,32 +929,7 @@ class Bluelink extends utils.Adapter {
         }
     }
 
-    async locationResolve(vin, latitude, longitude, speed){
-        const positionUrl = `${positionUrlConst}${latitude}+${longitude}`;
 
-        await this.setStateAsync(vin + '.vehicleLocation.lat', {val: latitude, ack: true});
-        await this.setStateAsync(vin + '.vehicleLocation.lon', {val: longitude, ack: true});
-        if (speed > 250) {
-            speed = 0;
-        }
-        await this.setStateAsync(vin + '.vehicleLocation.speed', {val: speed, ack: true});
-        await this.setStateAsync(vin + '.vehicleLocation.position_url', {val: positionUrl, ack: true});
-
-        const addressText = await tools.getResolveAddress(latitude, longitude);
-
-        await this.setStateAsync(vin + '.vehicleLocation.position_text', {val: addressText, ack: true});
-    }
-
-    async cleanObjects() {
-        const controlState = await this.getObjectAsync('control.charge');
-
-        if (controlState) {
-            await this.delObjectAsync('control', { recursive: true });
-            await this.delObjectAsync('odometer', { recursive: true });
-            await this.delObjectAsync('vehicleLocation', { recursive: true });
-            await this.delObjectAsync('vehicleStatus', { recursive: true });
-        }
-    }
 
     getCircularReplacer() {
         const seen = new WeakSet();
