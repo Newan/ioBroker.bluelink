@@ -393,7 +393,9 @@ class Bluelink extends utils.Adapter {
                 } else {
                     // neue struktur ohne auflösung
                     await tools.cleanNotAvailableObjects(this);
-                    await tools.setLocation(this, vin, newStatus.Location.GeoCoord.Latitude, newStatus.Location.GeoCoord.Longitude, newStatus.Location.Speed.Value);
+					if (newStatus.hasOwnProperty('Location')) {   // beniziner haben anscheinenden keine location
+                    	await tools.setLocation(this, vin, newStatus.Location.GeoCoord.Latitude, newStatus.Location.GeoCoord.Longitude, newStatus.Location.Speed.Value);
+					}
                     //Odometer
                     await this.setStateAsync(vin + '.odometer.value', {val: newStatus.Drivetrain.Odometer, ack: true});
                 }
@@ -422,7 +424,9 @@ class Bluelink extends utils.Adapter {
                     } else {
                         // neue struktur ohne auflösung
                         await tools.cleanNotAvailableObjects(this);
-                        await tools.setLocation(this, vin, newStatus.Location.GeoCoord.Latitude, newStatus.Location.GeoCoord.Longitude, newStatus.Location.Speed.Value);
+						if (newStatus.hasOwnProperty('Location')) {   // beniziner haben anscheinenden keine location
+                        	await tools.setLocation(this, vin, newStatus.Location.GeoCoord.Latitude, newStatus.Location.GeoCoord.Longitude, newStatus.Location.Speed.Value);
+						}
                         //Odometer
                         await this.setStateAsync(vin + '.odometer.value', {val: newStatus.Drivetrain.Odometer, ack: true});
                     }
