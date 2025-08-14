@@ -24,11 +24,10 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 3.1.20 (2025-08-14)
+* (arteck) fix Geo coordinates
 * (arteck) fix Kia Gas
-
-### **WORK IN PROGRESS**
-* (arteck) Warning !!!!  new Structure for some Vehicles. Check you Object.
+* (arteck) Warning !!!!  new Structure for some Vehicles (vehicleStatusRaw only). Check you Objects tree.
 
 ### 3.1.19 (2025-08-09)
 * (arteck) dependency update
