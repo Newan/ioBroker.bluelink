@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.20",
+    "version": "3.1.21",
     "news": {
+      "3.1.21": {
+        "en": "add token process for KIA only. change PSW to TOKEN\nthis is a quick adn dirty solution for now",
+        "de": "fügen Sie nur Token-Prozess für KIA hinzu. PSW to TOKEN ändern\ndies ist eine schnelle adn schmutzige lösung für jetzt",
+        "ru": "добавьте процесс токена только для KIA. Изменить PSW на TOKEN\nэто быстрое и грязное решение на данный момент",
+        "pt": "adicionar processo de token apenas para KIA. mudar PSW para TOKEN\nesta é uma solução rápida e suja por enquanto",
+        "nl": "voeg token proces alleen voor KIA. PSW veranderen naar TOKEN\ndit is een snelle adn vuile oplossing voor nu",
+        "fr": "ajouter le processus de jeton pour KIA seulement. changer PSW en TOKEN\nc'est une solution rapide adn sale pour le moment",
+        "it": "aggiungere il processo di token solo per KIA. cambiare PSW a TOKEN\nquesta è una soluzione rapida adn sporco per ora",
+        "es": "añadir el proceso de token para KIA solamente. cambiar PSW a TOKEN\nesta es una solución rápida de adn sucio por ahora",
+        "pl": "dodaj tylko token process dla KIA. zmienić PSW na TOKEN\nto jest szybkie adn brudne rozwiązanie na razie",
+        "uk": "додати процес токенів для KIA тільки. змінити PSW до TOKEN\nце швидкий жировий розчин для зараз",
+        "zh-cn": "只为投资管理局添加符号进程。 将 PSW 更改为 TOKEN\n今时此刻,这是个快速的肮脏解决方案"
+      },
       "3.1.20": {
         "en": "fix Geo coordinates\nfix Kia Gas\nWarning !!!!  new Structure for some Vehicles (vehicleStatusRaw only). Check you Objects tree.",
         "de": "fixieren Geokoordinaten\nfixieren Kia Gas\nAchtung! neue Struktur für einige Fahrzeuge (nur VehikelStatusRaw). Sieh dir Objekte Baum an.",
@@ -28,7 +41,7 @@
         "pl": "aktualizacja zależności",
         "uk": "оновлення залежності",
         "zh-cn": "依赖性更新"
-      },     
+      },
       "3.1.17": {
         "en": "fix bat-12V",
         "de": "fix bat-12V",

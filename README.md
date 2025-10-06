@@ -24,9 +24,9 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 
 ## Changelog
-
-### **WORK IN PROGRESS**
-* (arteck) add token process
+### 3.1.21 (2025-10-06)
+* (arteck) add token process for KIA only. change PSW to TOKEN
+* (arteck) this is a quick adn dirty solution for now
 
 ### 3.1.20 (2025-08-14)
 * (arteck) fix Geo coordinates

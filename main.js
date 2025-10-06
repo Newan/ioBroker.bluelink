@@ -309,7 +309,7 @@ class Bluelink extends utils.Adapter {
                     }
                     await this.setStateAsync(`${vin}.error_counter`, 0, true);
 
-            //      tools.cleanObjects(vin, this);
+                    //      tools.cleanObjects(vin, this);
                 }
                 this.countError = 0;
             });
@@ -395,9 +395,9 @@ class Bluelink extends utils.Adapter {
                     // neue struktur ohne auflösung
                     await tools.cleanNotAvailableObjects(this);
                     // location sonderlocke
-					if (newStatus.hasOwnProperty('Location')) {   // beniziner haben anscheinenden keine location
+                    if (newStatus.hasOwnProperty('Location')) {   // beniziner haben anscheinenden keine location
                     	await tools.setLocation(this, vin, newStatus.Location.GeoCoord.Latitude, newStatus.Location.GeoCoord.Longitude, newStatus.Location.Speed.Value);
-					}
+                    }
                 }
 
             } catch (error) {
@@ -425,9 +425,9 @@ class Bluelink extends utils.Adapter {
                         // neue struktur ohne auflösung
                         await tools.cleanNotAvailableObjects(this);
                         // location sonderlocke
-						if (newStatus.hasOwnProperty('Location')) {   // beniziner haben anscheinenden keine location
+                        if (newStatus.hasOwnProperty('Location')) {   // beniziner haben anscheinenden keine location
                         	await tools.setLocation(this, vin, newStatus.Location.GeoCoord.Latitude, newStatus.Location.GeoCoord.Longitude, newStatus.Location.Speed.Value);
-						}
+                        }
                     }
                 }
             }
@@ -806,10 +806,10 @@ class Bluelink extends utils.Adapter {
 
                 if (newStatus.ccs2Status.state.Vehicle.Green.hasOwnProperty('BatteryManagement')) {
                     if (newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.hasOwnProperty('BatteryRemain')) {
-                                await this.setStateAsync(vin + '.vehicleStatus.battery.soc', {
-                                    val: newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.BatteryRemain.Ratio,
-                                    ack: true
-                                });
+                        await this.setStateAsync(vin + '.vehicleStatus.battery.soc', {
+                            val: newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.BatteryRemain.Ratio,
+                            ack: true
+                        });
                     }
                 }
                 if (newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.hasOwnProperty('ConnectorFastening')) {
@@ -864,7 +864,7 @@ class Bluelink extends utils.Adapter {
                 }
 
                 //Odometer
-               await this.checkOdometer(vin, newStatus);
+                await this.checkOdometer(vin, newStatus);
             }
 
             //door
