@@ -28,20 +28,7 @@
         "pl": "aktualizacja zależności",
         "uk": "оновлення залежності",
         "zh-cn": "依赖性更新"
-      },
-      "3.1.18": {
-        "en": "fix login Kia/Hyundai",
-        "de": "zurück zur Übersicht Kia/Hyundai",
-        "ru": "исправить логин Kia/Hyundai",
-        "pt": "corrigir login Kia/Hyundai",
-        "nl": "fix login Kia/Hyundai",
-        "fr": "correction de la connexion Kia/Hyundai",
-        "it": "fix login Kia/Hyundai",
-        "es": "corrección de inicio Kia/Hyundai",
-        "pl": "naprawić logowanie Kia / Hyundai",
-        "uk": "фіксувати логін Кя/Гіунда",
-        "zh-cn": "固定登录 基亚/云代"
-      },
+      },     
       "3.1.17": {
         "en": "fix bat-12V",
         "de": "fix bat-12V",
