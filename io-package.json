@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.21",
+    "version": "3.1.22",
     "news": {
+      "3.1.22": {
+        "en": "(arteck) add token process for HYUNDAI only. change PSW to TOKEN",
+        "de": "(arteck) Fügen Sie Token-Verfahren nur für HYUNDAI hinzu. PSW to TOKEN ändern",
+        "ru": "(arteck) - процесс добавления токенов только для HYUNDAI. Изменить PSW на TOKEN",
+        "pt": "(arteck) adicionar processo de token apenas para HYUNDAI. mudar PSW para TOKEN",
+        "nl": "(arteck) alleen voor HYUNDAI tokenproces toevoegen. PSW veranderen naar TOKEN",
+        "fr": "(arteck) ajouter le processus de jeton pour HYUNDAI seulement. changer PSW en TOKEN",
+        "it": "(arteck) aggiungere il processo di token solo per HYUNDAI. cambiare PSW a TOKEN",
+        "es": "(arteck) añadir token process for HYUNDAI only. cambiar PSW a TOKEN",
+        "pl": "(arteck) dodać token procesu tylko dla Hyundai. zmienić PSW na TOKEN",
+        "uk": "(arteck) додають токенний процес тільки для HYUNDAI. змінити PSW до TOKEN",
+        "zh-cn": "(arteck)只为HYUNDAI添加符号过程. 将 PSW 更改为 TOKEN"
+      },
       "3.1.21": {
         "en": "add token process for KIA only. change PSW to TOKEN\nthis is a quick adn dirty solution for now",
         "de": "fügen Sie nur Token-Prozess für KIA hinzu. PSW to TOKEN ändern\ndies ist eine schnelle adn schmutzige lösung für jetzt",
