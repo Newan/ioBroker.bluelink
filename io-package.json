@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.22",
+    "version": "3.1.23",
     "news": {
+      "3.1.23": {
+        "en": "new bluelinky",
+        "de": "neue bluelinky",
+        "ru": "новый bluelinky",
+        "pt": "novo bluelinky",
+        "nl": "nieuwe bluelinky",
+        "fr": "nouveau lien bleu",
+        "it": "nuovo bluelinky",
+        "es": "nuevo bluelinky",
+        "pl": "nowy bluelinky",
+        "uk": "новий синійlinky",
+        "zh-cn": "新蓝领"
+      },
       "3.1.22": {
         "en": "(arteck) add token process for HYUNDAI only. change PSW to TOKEN",
         "de": "(arteck) Fügen Sie Token-Verfahren nur für HYUNDAI hinzu. PSW to TOKEN ändern",
@@ -80,19 +93,6 @@
         "pl": "współczynnik korygujący z samochodu",
         "uk": "коефіцієнт фіксації автомобіля",
         "zh-cn": "汽车固定比率"
-      },
-      "3.1.10": {
-        "en": "fix fix BatteryManagement",
-        "de": "Fix Fix Batteriemanagement",
-        "ru": "исправить исправить BatteryManagement",
-        "pt": "consertar consertar Gerenciamento de Bateria",
-        "nl": "Batterijbeheer repareren",
-        "fr": "corriger corriger BatteryManagement",
-        "it": "Correggi la correzione della gestione della batteria",
-        "es": "Arreglar Arreglar Administración de Batería",
-        "pl": "napraw napraw BatteryManagement",
-        "uk": "виправити виправити BatteryManagement",
-        "zh-cn": "修复电池管理"
       }
     },
     "titleLang": {
