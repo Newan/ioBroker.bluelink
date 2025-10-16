@@ -24,20 +24,13 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 ------------------------------------------------------------------------------------
 ### for KIA is here a workaround (and only for KIA)
+### for HYUNDAI is here a workaround (and only for HYUNDAI)
 
-adapter stop
 
-console : rm -r /opt/iobroker/node_modules/bluelinky/
+https://github.com/Newan/ioBroker.bluelink/tree/master/py
 
-now install the last latetst adapter Version (3.1.21)
 
-next .. we need a refresh token 
 
-https://github.com/Hyundai-Kia-Connect/hyundai_kia_connect_api/wiki/Kia-Europe-Login-Flow
-
-the refresh token is the new password.. It must be entered in the adapter settings.
-
-start the adapter
 
 ------------------------------------------------------------------------------------
 
