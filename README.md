@@ -23,13 +23,9 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 [Wiki](https://github.com/Newan/ioBroker.bluelink/wiki)
 
 ------------------------------------------------------------------------------------
-### for KIA is here a workaround (and only for KIA)
-### for HYUNDAI is here a workaround (and only for HYUNDAI)
-
+### workaround with Token
 
 https://github.com/Newan/ioBroker.bluelink/tree/master/py
-
-
 
 
 ------------------------------------------------------------------------------------
@@ -242,3 +238,4 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 
 SOFTWARE.
+
