@@ -31,7 +31,7 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 ## Changelog
 ### 3.1.22 (2025-10-16)
- (arteck) add token process for HYUNDAI only. change PSW to TOKEN
+* (arteck) add token process for HYUNDAI only. change PSW to TOKEN
 
 ### 3.1.21 (2025-10-06)
 * (arteck) add token process for KIA only. change PSW to TOKEN
@@ -236,5 +236,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 
 SOFTWARE.
+
 
 
