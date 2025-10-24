@@ -61,7 +61,7 @@ def main():
             if tokens is not None:
                 refresh_token = tokens["refresh_token"]
                 access_token = tokens["access_token"]
-                print(f"\n? Your tokens are:\n\n- Refresh Token: {refresh_token}\n- Access Token: {access_token}")
+                print(f"\n? Your KIA tokens are:\n\n- Refresh Token: {refresh_token}\n- Access Token: {access_token}")
         else:
             print(f"\n? Error getting tokens from der API!\n{response.text}")
 
@@ -75,4 +75,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
