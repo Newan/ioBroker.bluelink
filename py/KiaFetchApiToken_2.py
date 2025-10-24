@@ -18,7 +18,7 @@ TOKEN_URL = f"{BASE_URL}token"
 
 def main():
     """
-    Main function to run the Selenium automation.
+    Main function to run the Selenium automation for KIA.
     """
     # Initialize the Chrome WebDriver
     # Make sure you have chromedriver installed and in your PATH,
@@ -75,3 +75,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
