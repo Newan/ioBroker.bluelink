@@ -136,7 +136,7 @@ def _get_tokens(authorization_code: str) -> dict:
 
 
 def main() -> None:
-    print(f"Step 1: Open a new tab in your browser (best is Chrome), press CTRL+SHIFT+I, press CTRL-SHIFT+P, "
+    print(f"KIA Step 1: Open a new tab in your browser (best is Chrome), press CTRL+SHIFT+I, press CTRL-SHIFT+P, "
           f"type 'network conditions', uncheck 'Use browser default' next to 'User agent' "
           f"and set the following user agent:\n")
     print(f"        {user_agent}\n")
@@ -176,3 +176,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
