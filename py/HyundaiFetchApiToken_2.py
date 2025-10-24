@@ -21,7 +21,7 @@ TOKEN_URL = f"{BASE_URL}token"
 
 def main():
     """
-    Main function to run the Selenium automation.
+    Main function to run the Selenium automation for Hyundai.
     """
     # Initialize the Chrome WebDriver
     # Make sure you have chromedriver installed and in your PATH,
@@ -64,7 +64,7 @@ def main():
             if tokens is not None:
                 refresh_token = tokens["refresh_token"]
                 access_token = tokens["access_token"]
-                print(f"\n✅ Your tokens are:\n\n- Refresh Token: {refresh_token}\n- Access Token: {access_token}")
+                print(f"\n✅ Your Hyundai tokens are:\n\n- Refresh Token: {refresh_token}\n- Access Token: {access_token}")
         else:
             print(f"\n❌ Error getting tokens from der API!\n{response.text}")
 
