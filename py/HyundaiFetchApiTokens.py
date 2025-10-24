@@ -77,7 +77,7 @@ def main():
     if len(sys.argv) == 1:
         url = "https://idpconnect-eu.hyundai.com/auth/api/v2/user/oauth2/authorize?ui_locales=fr&scope=openid+profile+email+phone&response_type=code&client_id=6d477c38-3ca4-4cf3-9557-2a1929a94654&redirect_uri=https%3A%2F%2Fprd.eu-ccapi.hyundai.com:8080%2Fapi%2Fv1%2Fuser%2Foauth2%2Fredirect&state=ccsp"
 
-        print(f"Step 1: Open your Browser (best is Chrome), CTRL+SHIFT+I, CTRL-SHIFT+P, type 'network conditions', uncheck 'Use browser default' and set the following user-agent:\n")
+        print(f"Hyundai Step 1: Open your Browser (best is Chrome), CTRL+SHIFT+I, CTRL-SHIFT+P, type 'network conditions', uncheck 'Use browser default' and set the following user-agent:\n")
         print(f"        {user_agent}\n")
         print(f"Step 2: Open this URL:\n")
         print(f"        {url}\n")
@@ -104,7 +104,7 @@ def main():
             print(tokens)
             refresh_token = tokens["refresh_token"]
             access_token = tokens["access_token"]
-            print(f"\n✅ Your tokens are:\n\n- Refresh Token: {refresh_token}\n- Access Token: {access_token}")
+            print(f"\n✅ Your Hyundai tokens are:\n\n- Refresh Token: {refresh_token}\n- Access Token: {access_token}")
 
 if __name__ == "__main__":
     main()
