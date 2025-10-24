@@ -169,11 +169,12 @@ def main() -> None:
     if tokens is not None:
         refresh_token: str = tokens["refresh_token"]
         access_token: str = tokens["access_token"]
-        print(f"\nStep 6: ? Your tokens are:\n\n"
+        print(f"\nStep 6: ? Your KIA tokens are:\n\n"
               f"        - Refresh Token: {refresh_token}\n"
               f"        - Access Token: {access_token}")
 
 
 if __name__ == "__main__":
     main()
+
 
