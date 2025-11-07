@@ -293,9 +293,6 @@ class Bluelink extends utils.Adapter {
 
                     await this.json2iob.parse(`${vin}.general`, vehicle.vehicleConfig);
 
-                    //read all infos
-                    await this.readStatus();
-
                     if (this.config.evHistory && this.config.motor != 'GAS') {
                         try {
                             await this.driveHistory(vehicle);
@@ -308,9 +305,10 @@ class Bluelink extends utils.Adapter {
                         }
                     }
                     await this.setStateAsync(`${vin}.error_counter`, 0, true);
-
-                    //      tools.cleanObjects(vin, this);
                 }
+
+                await this.readStatus();
+
                 this.countError = 0;
             });
 

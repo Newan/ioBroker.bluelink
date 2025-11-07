@@ -32,6 +32,9 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 
 ## Changelog
+### 3.1.24 (2025-11-07)
+* (arteck) fix vehicles > 2 in account
+
 ### 3.1.23 (2025-10-16)
 * (arteck) new bluelinky
 

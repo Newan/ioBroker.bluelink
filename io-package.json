@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.23",
+    "version": "3.1.24",
     "news": {
+      "3.1.24": {
+        "en": "fix vehicles > 2 in account",
+        "de": "feste fahrzeuge > 2 in rechnung gestellt",
+        "ru": "ремонт автомобилей 2 на счету",
+        "pt": "veículos de reparação > 2 na conta",
+        "nl": "vastzetten van voertuigen > 2 in rekening",
+        "fr": "fixer les véhicules > 2 en compte",
+        "it": "veicoli fissi > 2 in conto",
+        "es": "vehículos fijos 2 en cuenta",
+        "pl": "pojazdy naprawcze > 2 na rachunek",
+        "uk": "фіксуючі засоби > 2 в акаунті",
+        "zh-cn": "固定车辆 > 2个账户"
+      },
       "3.1.23": {
         "en": "new bluelinky",
         "de": "neue bluelinky",
@@ -80,19 +93,6 @@
         "pl": "fix bat- 12V",
         "uk": "фіксатор bat-12V",
         "zh-cn": "固定蝙蝠-12V"
-      },
-      "3.1.16": {
-        "en": "fix ratio from car",
-        "de": "fixverhältnis von auto",
-        "ru": "соотношение фиксации от автомобиля",
-        "pt": "razão de correção do carro",
-        "nl": "fix ratio van auto",
-        "fr": "rapport de correction de la voiture",
-        "it": "rapporto di correzione da auto",
-        "es": "relación de fijación del coche",
-        "pl": "współczynnik korygujący z samochodu",
-        "uk": "коефіцієнт фіксації автомобіля",
-        "zh-cn": "汽车固定比率"
       }
     },
     "titleLang": {
