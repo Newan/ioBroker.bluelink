@@ -37,7 +37,7 @@
     "node": ">=20.0.0"
   },
   "dependencies": {
-    "@iobroker/adapter-core": "^3.2.3",
+    "@iobroker/adapter-core": "^3.3.2",
     "bluelinky": "https://github.com/arteck/bluelinky/tarball/48f295d11ea9056b919178282c6bd42d79b87503",
     "axios": "^1.13.1"
   },
