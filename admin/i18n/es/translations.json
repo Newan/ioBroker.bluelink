@@ -1,7 +1,7 @@
 {
   "bluelink adapter settings": "Configuración del adaptador para Bluelink",
   "Username": "Nombre de usuario",
-  "Password": "Contraseña",
+  "Password_Token": "mi token generado",
   "Pin": "Número de identificación personal (PIN)",
   "VIN": "Número de identificación del vehículo (VIN)",
   "Brand": "Marca",
@@ -14,5 +14,6 @@
   "App Lang": "Idioma de la aplicación",
   "Resolve the address from coordinates using openstreetmap": "Resolver la dirección a partir de coordenadas utilizando OpenStreetMap",
   "max km Range": "Rango máximo en km según hoja de datos",
-  "only for PHEV": "solo para PHEV"
+  "only for PHEV": "solo para PHEV",
+  "Token-documentation": "Documentación del token"
 }

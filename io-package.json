@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.24",
+    "version": "3.1.25",
     "news": {
+      "3.1.25": {
+        "en": "Dependencies have been updated\nadds documentation on the token generation process for HYUNDAI and KIA",
+        "de": "Abhängigkeiten wurden aktualisiert\nfügt Dokumentation zum Token-Generierungsprozess für HYUNDAI und KIA hinzu",
+        "ru": "Зависимости были обновлены\nдобавлена документация по процессу генерации токенов для HYUNDAI и KIA",
+        "pt": "As dependências foram atualizadas\nadiciona documentação sobre o processo de geração de fichas para HYUNDAI e KIA",
+        "nl": "Afhankelijkheden zijn bijgewerkt\nvoegt documentatie toe over het tokengeneratieproces voor HYUNDAI en KIA",
+        "fr": "Les dépendances ont été actualisées\najoute de la documentation sur le processus de génération de jetons pour HYUNDAI et KIA",
+        "it": "Le dipendenze sono state aggiornate\naggiunge documentazione sul processo di generazione dei token per HYUNDAI e KIA",
+        "es": "Se han actualizado las dependencias\nañade documentación sobre el proceso de generación de fichas para HYUNDAI y KIA",
+        "pl": "Zaktualizowano zależności\ndodaje dokumentację dotyczącą procesu generowania symboli dla HYUNDAI i KIA",
+        "uk": "Залежність було оновлено\nдодає документацію про процес генерації токенів для HYUNDAI та KIA",
+        "zh-cn": "依赖关系已更新\n为 HYUNDAI 和 KIA 添加关于符号生成过程的文档"
+      },
       "3.1.24": {
         "en": "fix vehicles > 2 in account",
         "de": "feste fahrzeuge > 2 in rechnung gestellt",
@@ -80,19 +93,6 @@
         "pl": "aktualizacja zależności",
         "uk": "оновлення залежності",
         "zh-cn": "依赖性更新"
-      },
-      "3.1.17": {
-        "en": "fix bat-12V",
-        "de": "fix bat-12V",
-        "ru": "обсуждение Bat-12V",
-        "pt": "corrigir o morcego-12V",
-        "nl": "fix bat-12V",
-        "fr": "fixer bat-12V",
-        "it": "fix pipistrello-12V",
-        "es": "fijar el bate-12V",
-        "pl": "fix bat- 12V",
-        "uk": "фіксатор bat-12V",
-        "zh-cn": "固定蝙蝠-12V"
       }
     },
     "titleLang": {
@@ -126,8 +126,7 @@
       "tab": "materialize"
     },
     "authors": [
-      "Newan <info@newan.de>",
-      "TA2k <tombox2020@gmail.de>"
+      "arteck <arteck@outlook.com>"
     ],
     "keywords": [
       "Kia",
@@ -150,14 +149,14 @@
     "connectionType": "cloud",
     "dataSource": "poll",
     "tier": 2,
-    "dependencies": [
-      {
-        "js-controller": ">=5.0.19"
-      }
-    ],
     "globalDependencies": [
       {
-        "admin": ">=7.4.10"
+        "admin": ">=7.6.17"
+      }
+    ],
+    "dependencies": [
+      {
+        "js-controller": ">=6.0.11"
       }
     ]
   },

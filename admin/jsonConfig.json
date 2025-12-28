@@ -2,6 +2,27 @@
     "type": "panel",
     "i18n": true,
     "items": {
+        "header_Start": {
+            "type": "header",
+            "text": "bluelink adapter settings",
+            "size": 2
+        },
+
+        "_documentationLink": {
+            "type": "staticLink",
+            "label": "Token-documentation",
+            "button": true,
+            "href": "https://github.com/Newan/ioBroker.bluelink/tree/master/py",
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 4,
+            "xl": 4,
+            "style": {
+                "fontSize": 18,
+                "marginTop": 0
+            }
+        },
         "Account settings": {
             "type": "header",
             "text": "Account settings",
@@ -108,17 +129,6 @@
             "lg": 3,
             "xl": 3
         },
-        "client_secret": {
-            "newLine": true,
-            "type": "password",
-            "label": "Password",
-            "repeat": true,
-            "xs": 12,
-            "sm": 12,
-            "md": 4,
-            "lg": 3,
-            "xl": 3
-        },
         "client_secret_pin": {
             "type": "password",
             "label": "Pin",
@@ -127,6 +137,17 @@
             "md": 4,
             "lg": 3,
             "xl": 3
+        },
+        "client_secret": {
+            "newLine": true,
+            "type": "password",
+            "label": "Password_Token",
+            "repeat": false,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 5,
+            "xl": 5
         },
         "Api settings": {
             "type": "header",
