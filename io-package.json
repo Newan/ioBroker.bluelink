@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.25",
+    "version": "3.1.26",
     "news": {
+      "3.1.26": {
+        "en": "Dependencies have been updated",
+        "de": "Abhängigkeiten wurden aktualisiert",
+        "ru": "Зависимости были обновлены",
+        "pt": "As dependências foram atualizadas",
+        "nl": "Afhankelijkheden zijn bijgewerkt",
+        "fr": "Les dépendances ont été actualisées",
+        "it": "Le dipendenze sono state aggiornate",
+        "es": "Se han actualizado las dependencias",
+        "pl": "Zaktualizowano zależności",
+        "uk": "Залежність було оновлено",
+        "zh-cn": "依赖关系已更新"
+      },
       "3.1.25": {
         "en": "Dependencies have been updated\nadds documentation on the token generation process for HYUNDAI and KIA",
         "de": "Abhängigkeiten wurden aktualisiert\nfügt Dokumentation zum Token-Generierungsprozess für HYUNDAI und KIA hinzu",
@@ -80,19 +93,6 @@
         "pl": "fix Współrzędne Geo\nfix Kia Gas\nUwaga!!! nowa struktura dla niektórych pojazdów (tylko pojazd StatusRaw). Sprawdź drzewo obiektów.",
         "uk": "фіксація Географічні координати міста Гео\nфіксація Kia газ\nПро нас Нова структура для деяких транспортних засобів Перевірити об'єкти дерево.",
         "zh-cn": "固定 地理坐标\n固定 基亚天然气\n警告! 警告你们! 某些车辆的新结构(仅车辆状况记录)。 检查对象树 ."
-      },
-      "3.1.19": {
-        "en": "dependency update",
-        "de": "aktualisierung der abhängigkeit",
-        "ru": "обновление зависимостей",
-        "pt": "atualização de dependência",
-        "nl": "afhankelijkheidsupdate",
-        "fr": "mise à jour de la dépendance",
-        "it": "aggiornamento della dipendenza",
-        "es": "actualización de la dependencia",
-        "pl": "aktualizacja zależności",
-        "uk": "оновлення залежності",
-        "zh-cn": "依赖性更新"
       }
     },
     "titleLang": {
