@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "@iobroker/adapter-core": "^3.3.2",
-    "bluelinky": "https://github.com/arteck/bluelinky/tarball/48f295d11ea9056b919178282c6bd42d79b87503",
+    "bluelinky": "https://github.com/arteck/bluelinky/tarball/d8a3344dad06cafbbc5b83b04c17073fd7798201",
     "axios": "^1.13.2"
   },
   "devDependencies": {
