@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.26",
+    "version": "3.1.27",
     "news": {
+      "3.1.27": {
+        "en": "fix position_text \nDependencies have been updated",
+        "de": "fix position text\nAbhängigkeiten wurden aktualisiert",
+        "ru": "исправить положение text\nЗависимости были обновлены",
+        "pt": "corrigir posição  texto\nAs dependências foram atualizadas",
+        "nl": "fix position text\nAfhankelijkheden zijn bijgewerkt",
+        "fr": "correction du texte de position\nLes dépendances ont été actualisées",
+        "it": "correzione posizione text\nLe dipendenze sono state aggiornate",
+        "es": "fix position text\nSe han actualizado las dependencias",
+        "pl": "fix position _ text\nZaktualizowano zależności",
+        "uk": "фіксація позицій текст\nЗалежність було оновлено",
+        "zh-cn": "固定位置( t)\n依赖关系已更新"
+      },
       "3.1.26": {
         "en": "Dependencies have been updated",
         "de": "Abhängigkeiten wurden aktualisiert",
@@ -80,19 +93,6 @@
         "pl": "dodaj tylko token process dla KIA. zmienić PSW na TOKEN\nto jest szybkie adn brudne rozwiązanie na razie",
         "uk": "додати процес токенів для KIA тільки. змінити PSW до TOKEN\nце швидкий жировий розчин для зараз",
         "zh-cn": "只为投资管理局添加符号进程。 将 PSW 更改为 TOKEN\n今时此刻,这是个快速的肮脏解决方案"
-      },
-      "3.1.20": {
-        "en": "fix Geo coordinates\nfix Kia Gas\nWarning !!!!  new Structure for some Vehicles (vehicleStatusRaw only). Check you Objects tree.",
-        "de": "fixieren Geokoordinaten\nfixieren Kia Gas\nAchtung! neue Struktur für einige Fahrzeuge (nur VehikelStatusRaw). Sieh dir Objekte Baum an.",
-        "ru": "исправлять Геокоординаты\nисправлять Kia Gas\nПредупреждение!!! Новая конструкция для некоторых транспортных средств (только автомобиль StatusRaw). Проверьте дерево объектов.",
-        "pt": "corrigir Coordenadas geográficas\ncorrigir Kia Gas\nAviso!!! nova estrutura para alguns veículos (veículoStatusRaw apenas). Verifica a árvore de objectos.",
-        "nl": "fix Geocoördinaten\nfix Kia Gas\nWaarschuwing!!! nieuwe structuur voor sommige voertuigen (alleen voertuigStatusRaw). Controleer je Objecten boom.",
-        "fr": "correction Coordonnées géographiques\ncorrection Kia Gaz\nAvertissement !!!! nouvelle structure pour certains véhicules (véhiculeStatutRaw seulement). Vérifiez l'arbre des objets.",
-        "it": "correzione Coordinate Geo\ncorrezione Kia Gas\nAttenzione!!!! nuova struttura per alcuni veicoli (solo VeicoloStatusRaw). Controlla l'albero degli oggetti.",
-        "es": "arregle coordenadas geográficas\narregle Kia Gas\n¡Atención! nueva estructura para algunos vehículos (vehicleStatusRaw solamente). Compruébalo.",
-        "pl": "fix Współrzędne Geo\nfix Kia Gas\nUwaga!!! nowa struktura dla niektórych pojazdów (tylko pojazd StatusRaw). Sprawdź drzewo obiektów.",
-        "uk": "фіксація Географічні координати міста Гео\nфіксація Kia газ\nПро нас Нова структура для деяких транспортних засобів Перевірити об'єкти дерево.",
-        "zh-cn": "固定 地理坐标\n固定 基亚天然气\n警告! 警告你们! 某些车辆的新结构(仅车辆状况记录)。 检查对象树 ."
       }
     },
     "titleLang": {

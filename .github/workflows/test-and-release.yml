@@ -82,6 +82,6 @@ jobs:
     steps:
       - uses: ioBroker/testing-action-deploy@v1
         with:
-          node-version: '22.x'
+          node-version: ${{ matrix.node-version }}
           github-token: ${{ secrets.AUTO_MERGE_TOKEN }}
 #
