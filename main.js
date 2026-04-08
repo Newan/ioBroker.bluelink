@@ -545,15 +545,15 @@ class Bluelink extends utils.Adapter {
 
                 this.log.debug(`tripInfo ${  JSON.stringify(tripInfo)}`);
 
-                tripInfo = tripInfo.map(entry => {
-                    const {trips, ...rest} = entry; // Destrukturieren, um den `trips`-Knoten zu entfernen
-                    return {
-                        time: 'today',  // Neues Element einfügen an erster stelle
-                        ...rest         // Restliche Eigenschaften hinzufügen
-                    };
-                });
-
                 if (tripInfo.length > 0) {
+                    tripInfo = tripInfo.map(entry => {
+                        const {trips, ...rest} = entry; // Destrukturieren, um den `trips`-Knoten zu entfernen
+                        return {
+                            time: 'today',  // Neues Element einfügen an erster stelle
+                            ...rest         // Restliche Eigenschaften hinzufügen
+                        };
+                    });
+
                     await this.setObjectNotExistsAsync(`${vin  }.tripInfo`, {
                         type: 'channel',
                         common: {
@@ -579,21 +579,25 @@ class Bluelink extends utils.Adapter {
         const onlyHistory = driveHistory.history;
         const today = this.getToday();
 
-        for (const lpEntry in onlyHistory) {
-            const res =  onlyHistory[lpEntry];
-            this.log.debug(`check Today ${  today  } ${  res.rawDate}`);
-            if (today == res.rawDate) {          // suche heutiges Datum
-                await this.setObjectNotExistsAsync(`${vin  }.driveHistory.today`, {
-                    type: 'channel',
-                    common: {
-                        name: 'today report',
-                    },
-                    native: {},
-                });
-                this.log.debug(`write Today ${  res}`);
-                await this.json2iob.parse(`${vin  }.driveHistory.today`, res);
-                break;
+        if (onlyHistory.length > 0) {
+            for (const lpEntry in onlyHistory) {
+                const res = onlyHistory[lpEntry];
+                this.log.debug(`check Today ${today} ${res.rawDate}`);
+                if (today == res.rawDate) {          // suche heutiges Datum
+                    await this.setObjectNotExistsAsync(`${vin}.driveHistory.today`, {
+                        type: 'channel',
+                        common: {
+                            name: 'today report',
+                        },
+                        native: {},
+                    });
+                    this.log.debug(`todayOnly : ${  JSON.stringify(res)}`);
+                    await this.json2iob.parse(`${vin}.driveHistory.today`, res);
+                    break;
+                }
             }
+        } else {
+            this.log.debug('todayOnly no history found');
         }
     }
 
