@@ -13,10 +13,8 @@ const max_request = 400;
 let blueLinkyClient;
 
 
-let slow_charging = 100;
-let fast_charging = 100;
+// slow_charging / fast_charging werden als Instanz-Eigenschaften geführt (siehe constructor)
 
-const todayDriveEmpty = '{"period":0,"rawDate":"20230608","date":"2023-06-07T00:00:01.000Z","consumption":{"total":0,"engine":0,"climate":0,"devices":0,"battery":0},"regen":0,"distance":0}';
 
 const POSSIBLE_CHARGE_LIMIT_VALUES = [50, 60, 70, 80, 90, 100];
 let create_tools;
@@ -68,8 +66,10 @@ class Bluelink extends utils.Adapter {
         this.vehicles = [];
 
         this.json2iob = new Json2iob(this);
-        adapterIntervals.evHistoryInterval = null;
+        adapterIntervals.evHistoryIntervals = {}; // Dictionary { vin: intervalId }
         this.countError = 0;
+        this.slow_charging = 100;
+        this.fast_charging = 100;
     }
 
     async onReady() {
@@ -110,7 +110,13 @@ class Bluelink extends utils.Adapter {
     onUnload(callback) {
         try {
             clearTimeout(adapterIntervals.readAllStates);
-            clearInterval(adapterIntervals.evHistoryInterval);
+            clearTimeout(adapterIntervals.loginRetryTimeout);
+            for (const id of Object.values(adapterIntervals.evHistoryIntervals || {})) {
+                clearInterval(id);
+            }
+            if (blueLinkyClient) {
+                blueLinkyClient.removeAllListeners();
+            }
             this.log.info('Adapter bluelink cleaned up everything...');
             callback();
         } catch (e) {
@@ -123,12 +129,24 @@ class Bluelink extends utils.Adapter {
             if (id.indexOf('.control.') === -1) {
                 return;
             }
+            // Bestätigte States ignorieren (außer charge_limit wo ack explizit geprüft wird)
+            const tmpControlCheck = id.split('.')[5] || id.split('.')[4];
+            if (state.ack && tmpControlCheck !== 'charge_limit_fast' && tmpControlCheck !== 'charge_limit_slow') {
+                return;
+            }
             this.log.debug(`New Event for state: ${  JSON.stringify(state)}`);
             this.log.debug(`ID: ${  JSON.stringify(id)}`);
 
 	        let response = '';
             const vin = id.split('.')[2];
             const vehicle = this.vehiclesDict[vin];
+
+            // null-Prüfung: VIN aus State-ID muss bekanntem Fahrzeug entsprechen
+            if (!vehicle) {
+                this.log.error(`onStateChange: Kein Fahrzeug für VIN ${vin} gefunden`);
+                return;
+            }
+
             let tmpControl = id.split('.')[5];
 
             if (tmpControl == undefined) {  // wenn undefined nimm ebene höher
@@ -136,117 +154,128 @@ class Bluelink extends utils.Adapter {
             }
 
             const force_update_obj = await this.getStateAsync(`${vin}.control.force_update`);
-	        try {
-	            switch (tmpControl) {
-	                case 'force_checkDriveInfo':
-	                    this.log.info('force checkDriveInfo ');
-	                    await this.readStatusVin(vehicle, force_update_obj.val);
-	                    this.driveHistory(vehicle);
-	                    break;
-	                case 'lock':
-	                    this.log.info('Starting lock for vehicle');
-	                    response = await vehicle.lock();
-	                    this.log.debug(JSON.stringify(response));
-	                    break;
-	                case 'unlock':
-	                    this.log.info('Starting unlock for vehicle');
-	                    response = await vehicle.unlock();
-	                    this.log.debug(JSON.stringify(response));
-	                    break;
-	                case 'start':
-	                    this.log.info('Starting clima for vehicle');
-                      try {
-  	                    const airTempC = await this.getStateAsync(`${vin}.control.clima.set.airTemp`);
-  	                    const defrost = await this.getStateAsync(`${vin}.control.clima.set.defrost`);
-  	                    const heating = await this.getStateAsync(`${vin}.control.clima.set.heating`);
-  	                    
-                        response = await vehicle.start({
-                            airCtrl: true,
-                            hvacType: 0,
-                            igniOnDuration: 10,
-                            temperature: airTempC.val,
-                            defrost: defrost.val,
-                            heating1: heating.val,
-                            username: this.config.username,
-                            vin: vin,
-                        });
 
-	                       this.log.debug(JSON.stringify(response));
-	                    } catch (err) {
-	                        this.log.error(err);
-	                    }
-	                    break;
-	                case 'stop':
-	                    this.log.info('Stop clima for vehicle');
-	                    response = await vehicle.stop();
-	                    this.log.debug(JSON.stringify(response));
-	                    break;
-	                case 'force_refresh_from_server':
-	                    this.log.info('Forcing refresh from Server');
-	                    await this.readStatusVin(vehicle,false);
-	                    break;
-	                case 'force_refresh_from_car':
-	                    this.log.info('Forcing refresh from Car');
-	                    await this.readStatusVin(vehicle,true);
-	                    break;
-	                case 'force_refresh':
-	                    this.log.info('Forcing refresh');
-	                    await this.readStatusVin(vehicle, force_update_obj.val);
-	                    break;
-	                case 'force_update':
-	                    if (force_update_obj.val) {
-	                        this.log.info(`Update method for ${  vin  } changed to "directly from the car"`);
-	                    } else {
-	                        this.log.info(`Update method for ${  vin  } changed to "from the server"`);
-	                    }
-	                    break;
+            // null-Prüfung: State existiert möglicherweise noch nicht
+            if (!force_update_obj) {
+                this.log.warn(`onStateChange: State force_update für ${vin} nicht gefunden`);
+                return;
+            }
+            try {
+                switch (tmpControl) {
+                    case 'force_checkDriveInfo':
+                        this.log.info('force checkDriveInfo ');
+                        await this.readStatusVin(vehicle, force_update_obj.val);
+                        await this.driveHistory(vehicle);
+                        break;
+                    case 'lock':
+                        this.log.info('Starting lock for vehicle');
+                        response = await vehicle.lock();
+                        this.log.debug(JSON.stringify(response));
+                        break;
+                    case 'unlock':
+                        this.log.info('Starting unlock for vehicle');
+                        response = await vehicle.unlock();
+                        this.log.debug(JSON.stringify(response));
+                        break;
+                    case 'start':
+                        this.log.info('Starting clima for vehicle');
+                        try {
+                            const airTempC = await this.getStateAsync(`${vin}.control.clima.set.airTemp`);
+                            const defrost = await this.getStateAsync(`${vin}.control.clima.set.defrost`);
+                            const heating = await this.getStateAsync(`${vin}.control.clima.set.heating`);
+
+                            if (!airTempC || !defrost || !heating) {
+                                this.log.error('start: Clima-States nicht gefunden – Befehl abgebrochen');
+                                break;
+                            }
+
+                            response = await vehicle.start({
+                                airCtrl: true,
+                                hvacType: 0,
+                                igniOnDuration: 10,
+                                temperature: airTempC.val,
+                                defrost: defrost.val,
+                                heating1: heating.val,
+                                username: this.config.username,
+                                vin: vin,
+                            });
+                            this.log.debug(JSON.stringify(response));
+                        } catch (err) {
+                            this.log.error(err);
+                        }
+                        break;
+                    case 'stop':
+                        this.log.info('Stop clima for vehicle');
+                        response = await vehicle.stop();
+                        this.log.debug(JSON.stringify(response));
+                        break;
+                    case 'force_refresh_from_server':
+                        this.log.info('Forcing refresh from Server');
+                        await this.readStatusVin(vehicle, false);
+                        break;
+                    case 'force_refresh_from_car':
+                        this.log.info('Forcing refresh from Car');
+                        await this.readStatusVin(vehicle, true);
+                        break;
+                    case 'force_refresh':
+                        this.log.info('Forcing refresh');
+                        await this.readStatusVin(vehicle, force_update_obj.val);
+                        break;
+                    case 'force_update':
+                        if (force_update_obj.val) {
+                            this.log.info(`Update method for ${vin} changed to "directly from the car"`);
+                        } else {
+                            this.log.info(`Update method for ${vin} changed to "from the server"`);
+                        }
+                        break;
                     case 'force_login':
                         clearTimeout(adapterIntervals.readAllStates);
-                        clearInterval(adapterIntervals.evHistoryInterval);
-                        this.login();
+                        for (const intervalId of Object.values(adapterIntervals.evHistoryIntervals || {})) {
+                            clearInterval(intervalId);
+                        }
+                        adapterIntervals.evHistoryIntervals = {};
+                        await this.login();
                         break;
-	                case 'charge':
-	                    this.log.info('Start charging');
-	                    response = await vehicle.startCharge();
-			            this.log.debug(JSON.stringify(response));
-	                    break;case 'charge_stop':
-	                    this.log.info('Stop charging');
-	                    response = await vehicle.stopCharge();
-			            this.log.debug(JSON.stringify(response));
-	                    break;
-
+                    case 'charge':
+                        this.log.info('Start charging');
+                        response = await vehicle.startCharge();
+                        this.log.debug(JSON.stringify(response));
+                        break;
+                    case 'charge_stop':
+                        this.log.info('Stop charging');
+                        response = await vehicle.stopCharge();
+                        this.log.debug(JSON.stringify(response));
+                        break;
                     case 'charge_limit_fast':
-			        case 'charge_limit_slow':
-	                    if (!state.ack) {
-	                        if (!POSSIBLE_CHARGE_LIMIT_VALUES.includes(state.val)) {
-	                            this.log.error(`Charge target values are limited to ${POSSIBLE_CHARGE_LIMIT_VALUES.join(', ')}`);
-	                        } else {
-	                            const charge_option = { fast: fast_charging, slow: slow_charging };
-	                            if (tmpControl == 'charge_limit_fast') {
-					                this.log.info('Set new charging options charge_limit_fast');
-	                                //set fast charging
-	                                const charge_limit_slow = await this.getStateAsync(`${vin}.control.charge_limit_slow`);
-	                                charge_option.fast = state.val;
-                					charge_option.slow = charge_limit_slow.val;
-	                            }
-				                if (tmpControl == 'charge_limit_slow') {
-					                this.log.info('Set new charging options charge_limit_slow');
-	                                //set slow charging
-	                                const charge_limit_fast = await this.getStateAsync(`${vin}.control.charge_limit_fast`);
-	                                charge_option.slow = state.val;
-                					charge_option.fast = charge_limit_fast.val;
-	                            }
-	                            response = await vehicle.setChargeTargets(charge_option);
-	                            this.log.debug(JSON.stringify(response));
-	                        }
-	                    }
-	                    break;
+                    case 'charge_limit_slow':
+                        if (!state.ack) {
+                            if (!POSSIBLE_CHARGE_LIMIT_VALUES.includes(state.val)) {
+                                this.log.error(`Charge target values are limited to ${POSSIBLE_CHARGE_LIMIT_VALUES.join(', ')}`);
+                            } else {
+                                const charge_option = { fast: this.fast_charging, slow: this.slow_charging };
+                                if (tmpControl == 'charge_limit_fast') {
+                                    this.log.info('Set new charging options charge_limit_fast');
+                                    const charge_limit_slow = await this.getStateAsync(`${vin}.control.charge_limit_slow`);
+                                    charge_option.fast = state.val;
+                                    charge_option.slow = charge_limit_slow ? charge_limit_slow.val : this.slow_charging;
+                                }
+                                if (tmpControl == 'charge_limit_slow') {
+                                    this.log.info('Set new charging options charge_limit_slow');
+                                    const charge_limit_fast = await this.getStateAsync(`${vin}.control.charge_limit_fast`);
+                                    charge_option.slow = state.val;
+                                    charge_option.fast = charge_limit_fast ? charge_limit_fast.val : this.fast_charging;
+                                }
+                                response = await vehicle.setChargeTargets(charge_option);
+                                this.log.debug(JSON.stringify(response));
+                            }
+                        }
+                        break;
                     default:
-	                    this.log.error('No command for Control found');
-	            }
-	        } catch(err) {
-	    	    this.log.error(`Error onStateChange ${  err}`);
-	        }
+                        this.log.error('No command for Control found');
+                }
+            } catch (err) {
+                this.log.error(`Error onStateChange ${err}`);
+            }
         }
     }
 
@@ -260,7 +289,7 @@ class Bluelink extends utils.Adapter {
             const loginOptions = {
                 username: this.config.username,
                 password: this.config.client_secret,
-                stamp: this.config.client_secret,
+                stamp: this.config.stamp,          // eigener Config-Key, nicht client_secret
                 pin: this.config.client_secret_pin,
                 brand: this.config.brand,
                 region: 'EU',
@@ -298,8 +327,12 @@ class Bluelink extends utils.Adapter {
                         try {
                             await this.driveHistory(vehicle);
 
-                            adapterIntervals.evHistoryInterval = setInterval(() => {
-                                this.receiveEVInformation(vehicle, false);
+                            adapterIntervals.evHistoryIntervals[vin] = setInterval(async () => {
+                                try {
+                                    await this.receiveEVInformation(vehicle, false);
+                                } catch (err) {
+                                    this.log.error(`receiveEVInformation Fehler: ${err}`);
+                                }
                             }, 60 * 60 * 1000); // check einmal die stunde nur intern
                         } catch (error) {
                             this.log.error('Error in receiveEVInformation');
@@ -319,8 +352,9 @@ class Bluelink extends utils.Adapter {
                 this.log.error('Server is not available or login credentials are wrong');
                 this.log.error('next auto login attempt in 1 hour or restart adapter manual');
 
-                const requestTimeout = setTimeout(async () => {
-                    this.login();
+                adapterIntervals.loginRetryTimeout = setTimeout(async () => {
+                    blueLinkyClient.removeAllListeners();
+                    await this.login();
                 }, 1000 * 60 * 60);  // warte 1 stunde
             });
         } catch (error) {
@@ -342,7 +376,14 @@ class Bluelink extends utils.Adapter {
             this.log.debug(`Read new status from api for ${  vin}`);
             const batteryControlState12V = await this.getStateAsync(`${vin}.control.batteryControlState12V`);
 
-            if (this.batteryState12V[vin] && this.batteryState12V[vin] < batteryControlState12V.val && force_update_obj.val) {
+            // null-Prüfung: States existieren möglicherweise noch nicht beim ersten Start
+            if (!force_update_obj) {
+                this.log.warn(`State force_update für ${vin} nicht gefunden – überspringe Batterie-Check`);
+                await this.readStatusVin(vehicle, false);
+                continue;
+            }
+
+            if (this.batteryState12V[vin] && batteryControlState12V && this.batteryState12V[vin] < batteryControlState12V.val && force_update_obj.val) {
                 this.log.warn(`Vin${  vin  } 12V Battery state is low: ${  vin  } ${  this.batteryState12V[vin]  }%. Recharge to prevent damage!`);
                 if (this.config.protectAgainstDeepDischarge && !force) {
                     this.log.warn('Auto Refresh is disabled, only use force refresh to reenable refresh if you are willing to risk your battery');
@@ -392,7 +433,7 @@ class Bluelink extends utils.Adapter {
                     await this.setNewFullStatus(newStatus, vin);
                 } else {
                     // neue struktur ohne auflösung
-                    await tools.cleanNotAvailableObjects(this);
+                    await tools.cleanNotAvailableObjects(this, vin);
                     // location sonderlocke
                     if (newStatus.hasOwnProperty('Location')) {   // beniziner haben anscheinenden keine location
                     	await tools.setLocation(this, vin, newStatus.Location.GeoCoord.Latitude, newStatus.Location.GeoCoord.Longitude, newStatus.Location.Speed.Value);
@@ -422,7 +463,7 @@ class Bluelink extends utils.Adapter {
                         await this.setShortStatus(newStatus, vin);
                     } else {
                         // neue struktur ohne auflösung
-                        await tools.cleanNotAvailableObjects(this);
+                        await tools.cleanNotAvailableObjects(this, vin);
                         // location sonderlocke
                         if (newStatus.hasOwnProperty('Location')) {   // beniziner haben anscheinenden keine location
                         	await tools.setLocation(this, vin, newStatus.Location.GeoCoord.Latitude, newStatus.Location.GeoCoord.Longitude, newStatus.Location.Speed.Value);
@@ -432,12 +473,11 @@ class Bluelink extends utils.Adapter {
             }
 
             if (newStatus !== undefined) {
-                this.checkOdometer(vin, newStatus);
+                await this.checkOdometer(vin, newStatus);
             }
 
             //Abfrage war erfolgreich, lösche ErrorCounter
             this.countError = 0;
-            await this.setStateAsync(`${vin}.error_counter`, this.countError, true);
             this.log.info(`Update for ${  vin  } successfull`);
             // last update
             await this.setStateAsync(`${vin}.lastInfoUpdate`, Number(Date.now()), true);
@@ -491,7 +531,7 @@ class Bluelink extends utils.Adapter {
 
         if (tickHour == 23 && !manu) {
 		    this.log.info(`DriveHistory Update for ${  vehicle.vehicleConfig.vin}`);
-            this.driveHistory(vehicle);
+            await this.driveHistory(vehicle);
         }
     }
 
@@ -516,7 +556,7 @@ class Bluelink extends utils.Adapter {
 
                     await this.json2iob.parse(`${vin  }.driveHistory`, driveHistory, {preferedArrayName: 'rawDate'});
 
-                    this.todayOnly(vin, driveHistory);
+                    await this.todayOnly(vin, driveHistory);
                 }
             }
 
@@ -539,8 +579,8 @@ class Bluelink extends utils.Adapter {
             if (this.config.motor == 'EV') {
                 let tripInfo = await vehicle.tripInfo({
                     year: new Date().getFullYear(),
-                    month: new Date().getMonth(),
-                    day: new Date().getDay()
+                    month: new Date().getMonth() + 1,  // getMonth() ist 0-basiert
+                    day: new Date().getDate()           // getDay() = Wochentag, getDate() = Tag des Monats
                 });
 
                 this.log.debug(`tripInfo ${  JSON.stringify(tripInfo)}`);
@@ -580,8 +620,7 @@ class Bluelink extends utils.Adapter {
         const today = this.getToday();
 
         if (onlyHistory.length > 0) {
-            for (const lpEntry in onlyHistory) {
-                const res = onlyHistory[lpEntry];
+            for (const res of onlyHistory) {
                 this.log.debug(`check Today ${today} ${res.rawDate}`);
                 if (today == res.rawDate) {          // suche heutiges Datum
                     await this.setObjectNotExistsAsync(`${vin}.driveHistory.today`, {
@@ -607,14 +646,10 @@ class Bluelink extends utils.Adapter {
         let mm = today.getMonth() + 1;
         let dd = today.getDate();
 
-        if (dd < 10) {
-dd = `0${  dd}`;
-}
-        if (mm < 10) {
-mm = `0${  mm}`;
-}
+        if (dd < 10) { dd = `0${dd}`; }
+        if (mm < 10) { mm = `0${mm}`; }
 
-        return `${yyyy  }${  mm  }${  dd}`;
+        return `${yyyy}${mm}${dd}`;
     }
 
     //short status
@@ -625,7 +660,7 @@ mm = `0${  mm}`;
             await this.setStateAsync(`${vin  }.vehicleStatus.trunkOpen`, {val: newStatus.chassis.trunkOpen, ack: true});
             await this.setStateAsync(`${vin  }.vehicleStatus.hoodOpen`, {val: newStatus.chassis.hoodOpen, ack: true});
 
-            this.checkDoor(vin, newStatus.chassis.openDoors);
+            await this.checkDoor(vin, newStatus.chassis.openDoors);
 
             //climate
             await this.setStateAsync(`${vin  }.vehicleStatus.airCtrlOn`, {val: newStatus.climate.active, ack: true});
@@ -673,7 +708,7 @@ mm = `0${  mm}`;
     //full status
     async setNewFullStatus(newStatus, vin) {
 
-        let lastUpdate = 0;
+        let lastUpdate = '0'; // als String, da ccs2-Vergleich lastUpdate_ccs2 ebenfalls ein String ist
 
         try {
             await this.setStateAsync(`${vin  }.vehicleStatus.airCtrlOn`, {
@@ -690,8 +725,8 @@ mm = `0${  mm}`;
 
             if (newStatus.hasOwnProperty('vehicleLocation')) {
                 if (newStatus.vehicleLocation != undefined) {
-                    lastUpdate = newStatus.vehicleLocation.time;
-                    tools.setLocation(this, vin, newStatus.vehicleLocation.coord.lat, newStatus.vehicleLocation.coord.lon, newStatus.vehicleLocation.speed.value);
+                    lastUpdate = String(newStatus.vehicleLocation.time);
+                    await tools.setLocation(this, vin, newStatus.vehicleLocation.coord.lat, newStatus.vehicleLocation.coord.lon, newStatus.vehicleLocation.speed.value);
                 }
             }
 
@@ -705,58 +740,62 @@ mm = `0${  mm}`;
             } else {
                 if (newStatus.vehicleStatus.hasOwnProperty('evStatus')) {
 
-		            if (newStatus.vehicleStatus.evStatus.reservChargeInfos.hasOwnProperty('targetSOClist[0]')) {
+		            if (newStatus.vehicleStatus.evStatus.hasOwnProperty('reservChargeInfos') &&
+                        newStatus.vehicleStatus.evStatus.reservChargeInfos.hasOwnProperty('targetSOClist') &&
+                        newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist.length >= 2) {
 	                    if (newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].plugType == 1) {
 	                        //Slow  = 1  -> Index 0 ist slow
-	                        slow_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
+	                        this.slow_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
 	                        await this.setStateAsync(`${vin  }.control.charge_limit_slow`, {
-	                            val: slow_charging,
+	                            val: this.slow_charging,
 	                            ack: true,
 	                        });
 
-	                        fast_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel;
+	                        this.fast_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel;
 	                        await this.setStateAsync(`${vin  }.control.charge_limit_fast`, {
-	                            val: fast_charging,
+	                            val: this.fast_charging,
 	                            ack: true,
 	                        });
 
 	                    } else {
 	                        //fast  = 0  -> Index 0 ist fast
-	                        slow_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel;
+	                        this.slow_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel;
 	                        await this.setStateAsync(`${vin  }.control.charge_limit_slow`, {
-	                            val: slow_charging,
+	                            val: this.slow_charging,
 	                            ack: true,
 	                        });
 
-	                        fast_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
+	                        this.fast_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
 	                        await this.setStateAsync(`${vin  }.control.charge_limit_fast`, {
-	                            val: fast_charging,
+	                            val: this.fast_charging,
 	                            ack: true,
 	                        });
 	                    }
 		            }
 
                     //Nur für Elektro Fahrzeuge - Battery
-                    await this.setStateAsync(`${vin  }.vehicleStatus.dte`, {
-                        val: newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.totalAvailableRange.value,
-                        ack: true,
-                    });
-
-                    let evRange = newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.evModeRange.value;
-                    if (evRange < 1 && this.config.batteryRange > 0) {
-                        evRange = Math.round(((newStatus.vehicleStatus.evStatus.batteryStatus / 100) * this.config.batteryRange)*100)/100;
-		            }
-                    await this.setStateAsync(`${vin  }.vehicleStatus.evModeRange`, {
-                        val: evRange,
-                        ack: true,
-                    });
-
-                    if (newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.hasOwnProperty('gasModeRange')) {
-                        //Only for PHEV
-                        await this.setStateAsync(`${vin  }.vehicleStatus.gasModeRange`, {
-                            val: newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.gasModeRange.value,
+                    if (newStatus.vehicleStatus.evStatus.drvDistance && newStatus.vehicleStatus.evStatus.drvDistance.length > 0) {
+                        await this.setStateAsync(`${vin  }.vehicleStatus.dte`, {
+                            val: newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.totalAvailableRange.value,
                             ack: true,
                         });
+
+                        let evRange = newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.evModeRange.value;
+                        if (evRange < 1 && this.config.batteryRange > 0) {
+                            evRange = Math.round(((newStatus.vehicleStatus.evStatus.batteryStatus / 100) * this.config.batteryRange)*100)/100;
+                        }
+                        await this.setStateAsync(`${vin  }.vehicleStatus.evModeRange`, {
+                            val: evRange,
+                            ack: true,
+                        });
+
+                        if (newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.hasOwnProperty('gasModeRange')) {
+                            //Only for PHEV
+                            await this.setStateAsync(`${vin  }.vehicleStatus.gasModeRange`, {
+                                val: newStatus.vehicleStatus.evStatus.drvDistance[0].rangeByFuel.gasModeRange.value,
+                                ack: true,
+                            });
+                        }
                     }
 
                     await this.setStateAsync(`${vin  }.vehicleStatus.battery.soc`, {
@@ -774,14 +813,15 @@ mm = `0${  mm}`;
                         ack: true
                     });
 
-                    //Ladezeit anzeigen, da noch nicht klar welche Werte
-                    await this.setStateAsync(`${vin  }.vehicleStatus.battery.minutes_to_charged`, {
-                        val: newStatus.vehicleStatus.evStatus.remainTime2.atc.value,
-                        ack: true,
-                    });
-
-                    this.log.debug('Folgende Ladezeitenmöglichkeiten wurden gefunden:');
-                    this.log.debug(JSON.stringify(newStatus.vehicleStatus.evStatus.remainTime2));
+                    //Ladezeit anzeigen
+                    if (newStatus.vehicleStatus.evStatus.remainTime2 && newStatus.vehicleStatus.evStatus.remainTime2.atc) {
+                        await this.setStateAsync(`${vin  }.vehicleStatus.battery.minutes_to_charged`, {
+                            val: newStatus.vehicleStatus.evStatus.remainTime2.atc.value,
+                            ack: true,
+                        });
+                        this.log.debug('Folgende Ladezeitenmöglichkeiten wurden gefunden:');
+                        this.log.debug(JSON.stringify(newStatus.vehicleStatus.evStatus.remainTime2));
+                    }
                 }
             }
 
@@ -793,7 +833,7 @@ mm = `0${  mm}`;
                     const ts = newStatus.ccs2Status.state.Vehicle.Location.TimeStamp;
 
                     const lastUpdate_ccs2 =
-                        ts.Year +
+                        String(ts.Year) +
                         String(ts.Mon).padStart(2, '0') +
                         String(ts.Day).padStart(2, '0') +
                         String(ts.Hour).padStart(2, '0') +
@@ -801,7 +841,7 @@ mm = `0${  mm}`;
                         String(ts.Sec).padStart(2, '0');
 
                     if (lastUpdate_ccs2 > lastUpdate) {
-                        tools.setLocation(this, vin, newStatus.ccs2Status.state.Vehicle.Location.GeoCoord.Latitude, newStatus.ccs2Status.state.Vehicle.Location.GeoCoord.Longitude, newStatus.ccs2Status.state.Vehicle.Location.Speed.Value);
+                        await tools.setLocation(this, vin, newStatus.ccs2Status.state.Vehicle.Location.GeoCoord.Latitude, newStatus.ccs2Status.state.Vehicle.Location.GeoCoord.Longitude, newStatus.ccs2Status.state.Vehicle.Location.Speed.Value);
                     }
                 }
 
@@ -841,20 +881,18 @@ mm = `0${  mm}`;
                     }
                 }
 
-                //Odometer
-                await this.checkOdometer(vin, newStatus);
 
                 //fast  = 0  -> Index 0 ist fast
                 if (newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.hasOwnProperty('TargetSoC')) {
-                    slow_charging = newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.TargetSoC.Standard;
+                    this.slow_charging = newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.TargetSoC.Standard;
                     await this.setStateAsync(`${vin  }.control.charge_limit_slow`, {
-                        val: slow_charging,
+                        val: this.slow_charging,
                         ack: true,
                     });
 
-                    fast_charging = newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.TargetSoC.Quick;
+                    this.fast_charging = newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.TargetSoC.Quick;
                     await this.setStateAsync(`${vin  }.control.charge_limit_fast`, {
-                        val: fast_charging,
+                        val: this.fast_charging,
                         ack: true,
                     });
                 }
@@ -869,9 +907,6 @@ mm = `0${  mm}`;
                         ack: true
                     });
                 }
-
-                //Odometer
-                await this.checkOdometer(vin, newStatus);
             }
 
             //door
@@ -888,13 +923,9 @@ mm = `0${  mm}`;
                 ack: true
             });
 
-            this.checkDoor(vin, newStatus.vehicleStatus.doorOpen);
+            await this.checkDoor(vin, newStatus.vehicleStatus.doorOpen);
 
-            //status parameter
-            await this.setStateAsync(`${vin  }.vehicleStatus.airCtrlOn`, {
-                val: newStatus.vehicleStatus.airCtrlOn,
-                ack: true
-            });
+            //status parameter - airCtrlOn bereits am Anfang der Methode gesetzt
             await this.setStateAsync(`${vin  }.vehicleStatus.smartKeyBatteryWarning`, {
                 val: newStatus.vehicleStatus.smartKeyBatteryWarning,
                 ack: true
@@ -920,13 +951,9 @@ mm = `0${  mm}`;
                 ack: true
             });
 
-            // hier 12V merken
-            if (newStatus.vehicleStatus. hasOwnProperty('battery')) {
-                this.log.debug(`Set ${  newStatus.vehicleStatus.battery.batSoc  } battery state for ${  vin}`);
-                await this.setStateAsync(`${vin  }.vehicleStatus.battery.soc-12V`, {
-		    val: newStatus.vehicleStatus.battery.batSoc,
-		    ack: true
-                });
+            // hier 12V merken (nur wenn nicht ccs2Status bereits gesetzt hat)
+            if (!newStatus.hasOwnProperty('ccs2Status') && newStatus.vehicleStatus.hasOwnProperty('battery')) {
+                this.log.debug(`Set ${newStatus.vehicleStatus.battery.batSoc} battery state for ${vin}`);
                 this.batteryState12V[vin] = newStatus.vehicleStatus.battery.batSoc;
             }
         } catch (err) {
@@ -988,6 +1015,10 @@ mm = `0${  mm}`;
             tempRange.push(i);
         }
         const tempIndex = parseInt(tempCode, 16);
+        if (isNaN(tempIndex) || tempIndex < 0 || tempIndex >= tempRange.length) {
+            this.log.warn(`getCelsiusFromTempcode: ungültiger tempCode "${tempCode}" (Index ${tempIndex})`);
+            return null;
+        }
         return tempRange[tempIndex];
     }
 }
