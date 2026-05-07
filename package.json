@@ -34,7 +34,7 @@
     "url": "https://github.com/Newan/ioBroker.bluelink"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.0.0"
   },
   "dependencies": {
     "@iobroker/adapter-core": "^3.3.2",
