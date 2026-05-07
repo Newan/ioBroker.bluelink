@@ -226,6 +226,8 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 ### 1.0.0
 * (Newan) First stable version
 
+[Older changelogs can be found there](CHANGELOG_OLD.md)
+
 ## Donation
 [![](https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L55UBQJKJEUJL)
 
