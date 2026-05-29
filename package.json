@@ -38,8 +38,8 @@
   },
   "dependencies": {
     "@iobroker/adapter-core": "^3.3.2",
-    "bluelinky": "https://github.com/arteck/bluelinky/tarball/d8a3344dad06cafbbc5b83b04c17073fd7798201",
-    "axios": "^1.15.2"
+    "axios": "^1.15.2",
+    "bluelinky": "https://github.com/arteck/bluelinky/tarball/d8a3344dad06cafbbc5b83b04c17073fd7798201"
   },
   "devDependencies": {
     "@alcalzone/release-script": "^5.2.0",
@@ -47,9 +47,9 @@
     "@alcalzone/release-script-plugin-license": "^5.2.0",
     "@alcalzone/release-script-plugin-manual-review": "^5.2.0",
     "@iobroker/adapter-dev": "^1.5.0",
-    "@iobroker/testing": "^5.2.2",
     "@iobroker/eslint-config": "^2.1.0",
-    "@tsconfig/node14": "^14.1.8",
+    "@iobroker/testing": "^5.2.2",
+    "@tsconfig/node22": "^22.0.5",
     "@types/node": "^25.6.0",
     "@types/node-schedule": "^2.1.8",
     "typescript": "~6.0.3"
