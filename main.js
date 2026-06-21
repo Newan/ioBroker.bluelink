@@ -437,6 +437,16 @@ class Bluelink extends utils.Adapter {
                     // location sonderlocke
                     if (newStatus.hasOwnProperty('Location')) {   // beniziner haben anscheinenden keine location
                     	await tools.setLocation(this, vin, newStatus.Location.GeoCoord.Latitude, newStatus.Location.GeoCoord.Longitude, newStatus.Location.Speed.Value);
+                    } else {
+                        // new API format (Body structure): Location not in fullStatus – separate call
+                        try {
+                            const loc = await vehicle.location();
+                            if (loc && loc.latitude != null && loc.longitude != null) {
+                                await tools.setLocation(this, vin, loc.latitude, loc.longitude, loc.speed?.value ?? 0);
+                            }
+                        } catch (locErr) {
+                            this.log.warn(`vehicle.location() failed: ${locErr}`);
+                        }
                     }
                 }
 
@@ -467,6 +477,16 @@ class Bluelink extends utils.Adapter {
                         // location sonderlocke
                         if (newStatus.hasOwnProperty('Location')) {   // beniziner haben anscheinenden keine location
                         	await tools.setLocation(this, vin, newStatus.Location.GeoCoord.Latitude, newStatus.Location.GeoCoord.Longitude, newStatus.Location.Speed.Value);
+                        } else {
+                            // new API format: separate location call
+                            try {
+                                const loc = await vehicle.location();
+                                if (loc && loc.latitude != null && loc.longitude != null) {
+                                    await tools.setLocation(this, vin, loc.latitude, loc.longitude, loc.speed?.value ?? 0);
+                                }
+                            } catch (locErr) {
+                                this.log.warn(`vehicle.location() failed: ${locErr}`);
+                            }
                         }
                     }
                 }
