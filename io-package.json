@@ -139,6 +139,7 @@
     },
     "platform": "Javascript/Node.js",
     "icon": "bluelink.png",
+    "messagebox": true,
     "enabled": true,
     "extIcon": "https://raw.githubusercontent.com/Newan/ioBroker.bluelink/master/admin/bluelink.png",
     "readme": "https://github.com/Newan/ioBroker.bluelink/blob/master/README.md",
@@ -161,17 +162,24 @@
     ]
   },
   "protectedNative": [
+    "password",
+    "refreshToken",
     "client_secret",
     "client_secret_pin"
   ],
   "encryptedNative": [
+    "password",
+    "refreshToken",
     "client_secret",
     "client_secret_pin"
   ],
   "native": {
     "username": "",
+    "password": "",
+    "refreshToken": "",
     "client_secret": "",
     "client_secret_pin": "",
+    "tokenExpiry": "",
     "brand": "kia",
     "request": 100,
     "evHistory": true,
@@ -200,6 +208,32 @@
         "read": true,
         "write": false,
         "def": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.refreshToken",
+      "type": "state",
+      "common": {
+        "role": "text",
+        "name": "Auto-fetched refresh token (internal)",
+        "type": "string",
+        "read": false,
+        "write": false,
+        "def": ""
+      },
+      "native": {}
+    },
+    {
+      "_id": "info.tokenExpiry",
+      "type": "state",
+      "common": {
+        "role": "text",
+        "name": "Refresh token expiry date",
+        "type": "string",
+        "read": true,
+        "write": false,
+        "def": ""
       },
       "native": {}
     }
