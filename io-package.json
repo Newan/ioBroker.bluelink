@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.28",
+    "version": "3.1.29",
     "news": {
+      "3.1.29": {
+        "en": "Adapter requires node.js >= 22 now\nfix login hyundai",
+        "de": "Der Adapter benötigt jetzt Node.js >= 22.\nHyundai-Login reparieren",
+        "ru": "Для работы адаптера требуется Node.js версии >= 22.\nисправить вход в систему Hyundai",
+        "pt": "O adaptador agora requer Node.js >= 22.\nCorrigir login Hyundai",
+        "nl": "De adapter vereist nu Node.js versie 22 of hoger.\nHyundai login repareren",
+        "fr": "L'adaptateur nécessite désormais Node.js >= 22.\nRésoudre les problèmes de connexion Hyundai",
+        "it": "L'adattatore ora richiede Node.js >= 22\nrisolvere il problema di accesso hyundai",
+        "es": "El adaptador ahora requiere node.js >= 22.\nSolucionar el problema de inicio de sesión de Hyundai",
+        "pl": "Adapter wymaga teraz node.js >= 22\nnapraw logowanie hyundai",
+        "uk": "Адаптер тепер вимагає node.js >= 22\nвиправити вхід Hyundai",
+        "zh-cn": "适配器现在需要 node.js 版本 >= 22。\n修复现代汽车登录问题"
+      },
       "3.1.28": {
         "en": "Dependencies have been updated\nbetter LOG",
         "de": "Abhängigkeiten wurden aktualisiert\nbesser LOG",
@@ -80,19 +93,6 @@
         "pl": "nowy bluelinky",
         "uk": "новий синійlinky",
         "zh-cn": "新蓝领"
-      },
-      "3.1.22": {
-        "en": "(arteck) add token process for HYUNDAI only. change PSW to TOKEN",
-        "de": "(arteck) Fügen Sie Token-Verfahren nur für HYUNDAI hinzu. PSW to TOKEN ändern",
-        "ru": "(arteck) - процесс добавления токенов только для HYUNDAI. Изменить PSW на TOKEN",
-        "pt": "(arteck) adicionar processo de token apenas para HYUNDAI. mudar PSW para TOKEN",
-        "nl": "(arteck) alleen voor HYUNDAI tokenproces toevoegen. PSW veranderen naar TOKEN",
-        "fr": "(arteck) ajouter le processus de jeton pour HYUNDAI seulement. changer PSW en TOKEN",
-        "it": "(arteck) aggiungere il processo di token solo per HYUNDAI. cambiare PSW a TOKEN",
-        "es": "(arteck) añadir token process for HYUNDAI only. cambiar PSW a TOKEN",
-        "pl": "(arteck) dodać token procesu tylko dla Hyundai. zmienić PSW na TOKEN",
-        "uk": "(arteck) додають токенний процес тільки для HYUNDAI. змінити PSW до TOKEN",
-        "zh-cn": "(arteck)只为HYUNDAI添加符号过程. 将 PSW 更改为 TOKEN"
       }
     },
     "titleLang": {
