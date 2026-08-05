@@ -7,7 +7,6 @@
             "text": "bluelink adapter settings",
             "size": 2
         },
-
         "_documentationLink": {
             "type": "staticLink",
             "label": "Token-documentation",
@@ -129,6 +128,16 @@
             "lg": 3,
             "xl": 3
         },
+        "password": {
+            "type": "password",
+            "label": "Password",
+            "repeat": false,
+            "xs": 12,
+            "sm": 12,
+            "md": 4,
+            "lg": 3,
+            "xl": 3
+        },
         "client_secret_pin": {
             "type": "password",
             "label": "Pin",
@@ -138,16 +147,61 @@
             "lg": 3,
             "xl": 3
         },
-        "client_secret": {
+        "refreshToken": {
             "newLine": true,
-            "type": "password",
+            "type": "text",
             "label": "Password_Token",
-            "repeat": false,
             "xs": 12,
             "sm": 12,
             "md": 6,
             "lg": 5,
-            "xl": 5
+            "xl": 5,
+            "disabled": "true",
+            "help": "fetchTokenHelp",
+            "hidden": "true"
+        },
+        "client_secret": {
+            "newLine": true,
+            "type": "text",
+            "label": "Password_Token",
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 5,
+            "xl": 5,
+            "hidden": "true"
+        },
+        "tokenExpiry": {
+            "type": "text",
+            "label": "Token valid until (auto-managed)",
+            "disabled": "true",
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 5,
+            "xl": 5,
+            "newLine": true
+        },
+        "_fetchTokenBtn": {
+            "type": "sendTo",
+            "label": "Fetch / refresh token now",
+            "command": "fetchToken",
+            "data": {},
+            "xs": 12,
+            "sm": 12,
+            "md": 4,
+            "lg": 3,
+            "xl": 3
+        },
+        "_fetchTokenStatus": {
+            "type": "staticText",
+            "text": "fetchTokenHint",
+            "newLine": true,
+            "xs": 12,
+            "sm": 12,
+            "md": 12,
+            "lg": 12,
+            "xl": 12
         },
         "Api settings": {
             "type": "header",

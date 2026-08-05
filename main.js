@@ -6,6 +6,7 @@ const { BlueLinky } = require('bluelinky');
 const Json2iob = require('./lib/json2iob');
 const tools = require('./lib/tools');
 const Create_tools = require('./lib/create_tools').Create_tools;
+const tokenManager = require('./lib/tokenManager');
 
 const adapterIntervals = {}; //halten von allen Intervallen
 let request_count = 48; // halbstündig sollte als Standardeinstellung reichen (zu häufige Abfragen entleeren die Batterie spürbar)
@@ -61,6 +62,7 @@ class Bluelink extends utils.Adapter {
         this.on('ready', this.onReady.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));
         this.on('unload', this.onUnload.bind(this));
+        this.on('message', this.onMessage.bind(this));
         this.vehiclesDict = {};
         this.batteryState12V = {};
         this.vehicles = [];
@@ -70,6 +72,8 @@ class Bluelink extends utils.Adapter {
         this.countError = 0;
         this.slow_charging = 100;
         this.fast_charging = 100;
+        this._renewalAttempted = false;
+        this._lastTokenCheck = 0;
     }
 
     async onReady() {
@@ -98,6 +102,7 @@ class Bluelink extends utils.Adapter {
         }
 
         if (loginGo) {
+            await this.ensureRefreshToken();
             await this.login();
         }
     }
@@ -280,15 +285,118 @@ class Bluelink extends utils.Adapter {
     }
 
     /**
+     * Encrypt token and persist it to the adapter's native config.
+     *
+     * @param refreshToken
+     * @param expiresAt
+     */
+    async saveTokenToConfig(refreshToken, expiresAt) {
+        const adapterObj = await this.getForeignObjectAsync(`system.adapter.${this.namespace}`);
+        if (!adapterObj) {
+return;
+}
+        adapterObj.native.refreshToken = this.encrypt(refreshToken);
+        adapterObj.native.tokenExpiry  = expiresAt;
+        await this.setForeignObjectAsync(`system.adapter.${this.namespace}`, adapterObj);
+        this.log.info(`[saveTokenToConfig] Token encrypted and saved, valid until ${expiresAt}`);
+    }
+
+    /**
+     * Attempt one token renewal. Returns true if a new token was saved (adapter will restart).
+     * Never throws — logs errors internally.
+     */
+    async tryRenewToken() {
+        if (!this.config.password || !this.config.username) {
+return false;
+}
+        try {
+            const result = await tokenManager.fetchToken(
+                this.config.brand, this.config.username, this.config.password
+            );
+            await this.saveTokenToConfig(result.refreshToken, result.expiresAt);
+            return true;
+        } catch (err) {
+            this.log.error(`Token auto-renewal failed: ${err.message || err}`);
+            return false;
+        }
+    }
+
+    /** On adapter start: renew token if it expires within 14 days. */
+    async ensureRefreshToken() {
+        const token  = this.config.refreshToken || this.config.client_secret || '';
+        const expiry = this.config.tokenExpiry || '';
+        if (!token || !expiry) {
+return;
+}
+        const daysLeft = Math.floor((new Date(expiry).getTime() - Date.now()) / 86400000);
+        if (daysLeft > 14) {
+return;
+}
+        if (!this.config.password || !this.config.username) {
+            this.log.warn(`Token expires in ${daysLeft} days — set password for auto-renewal`);
+            return;
+        }
+        await this.tryRenewToken();
+    }
+
+    /**
+     * Handle sendTo messages from admin UI.
+     *
+     * @param {{command: string, message: any, callback: Function}} obj
+     */
+    onMessage(obj) {
+        if (!obj || !obj.command) {
+return;
+}
+
+        if (obj.command === 'fetchToken') {
+            this.log.info('[fetchToken] Message received from admin UI');
+
+            // Always respond — if callback is never called the GUI stays grey forever
+            const respond = (payload) => {
+                if (obj.callback) {
+                    this.sendTo(obj.from, obj.command, payload, obj.callback);
+                }
+            };
+
+            const username = this.config.username;
+            const password = this.config.password;
+            const brand    = this.config.brand;
+
+            this.log.info(`[fetchToken] brand=${brand} username=${username} password-set=${!!password}`);
+
+            if (!username || !password || !brand) {
+                const msg = `Save settings first. Missing: ${[!username && 'username', !password && 'password', !brand && 'brand'].filter(Boolean).join(', ')}`;
+                this.log.error(`[fetchToken] ${msg}`);
+                respond(`ERROR: ${msg}`);
+                return;
+            }
+
+            // Fetch token, save directly to adapter native config, then respond
+            tokenManager.fetchToken(brand, username, password, msg => this.log.info(msg))
+                .then(async (result) => {
+                    this.log.info(`[fetchToken] Success – token valid until ${result.expiresAt}`);
+                    await this.saveTokenToConfig(result.refreshToken, result.expiresAt);
+                    respond(`Token saved. Valid until ${result.expiresAt}. Restart the adapter to connect.`);
+                })
+                .catch((err) => {
+                    this.log.error(`[fetchToken] Failed: ${err.message || err}`);
+                    respond(`ERROR: ${err.message || err}`);
+                });
+        }
+    }
+
+    /**
      * Funktion to login in bluelink / UVO
      */
     async login() {
         try {
-            this.log.info('Login to api');
+            const activeToken = this.config.refreshToken || this.config.client_secret || '';
+            this.log.info(`Login to api – token source: ${this.config.refreshToken ? 'refreshToken' : 'client_secret(legacy)'}, tokenLen=${activeToken.length}`);
 
             const loginOptions = {
                 username: this.config.username,
-                password: this.config.client_secret,
+                password: activeToken,
                 stamp: this.config.stamp,          // eigener Config-Key, nicht client_secret
                 pin: this.config.client_secret_pin,
                 brand: this.config.brand,
@@ -347,15 +455,23 @@ class Bluelink extends utils.Adapter {
             });
 
             blueLinkyClient.on('error', async (err) => {
-                // something went wrong with login
                 this.log.error(err);
                 this.log.error('Server is not available or login credentials are wrong');
-                this.log.error('next auto login attempt in 1 hour or restart adapter manual');
 
+                // One-shot token renewal on login failure (no loop: flag prevents second attempt)
+                if (!this._renewalAttempted && this.config.password) {
+                    this._renewalAttempted = true;
+                    const renewed = await this.tryRenewToken();
+                    if (renewed) {
+return;
+} // adapter restarts automatically with new token
+                }
+
+                this.log.error('next auto login attempt in 1 hour or restart adapter manual');
                 adapterIntervals.loginRetryTimeout = setTimeout(async () => {
                     blueLinkyClient.removeAllListeners();
                     await this.login();
-                }, 1000 * 60 * 60);  // warte 1 stunde
+                }, 1000 * 60 * 60);
             });
         } catch (error) {
             this.log.error('Error in login/on function');
@@ -391,6 +507,13 @@ class Bluelink extends utils.Adapter {
                 }
             }
             await this.readStatusVin(vehicle,force_update_obj.val);
+        }
+
+        // Check token expiry once per day (not on every poll cycle)
+        const now = Date.now();
+        if (now - this._lastTokenCheck > 24 * 60 * 60 * 1000) {
+            this._lastTokenCheck = now;
+            await this.ensureRefreshToken();
         }
 
         //set ne cycle
