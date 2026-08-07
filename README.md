@@ -28,7 +28,7 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 ## Changelog
 ### 3.1.29 (2026-08-05)
 * (copilot) Adapter requires node.js >= 22 now
-* (ipod86) fix login hyundai
+* (ipod86) add Tokenmanager
 
 ### 3.1.28 (2026-04-08)
 * (arteck) Dependencies have been updated

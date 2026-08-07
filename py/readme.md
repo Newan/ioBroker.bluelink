@@ -1,3 +1,11 @@
+
+
+
+## ist Obsolet .. durch tokenmanager
+
+
+
+
 auf der konsole
 
 `rm -r /opt/iobroker/node_modules/bluelinky/`
@@ -8,9 +16,12 @@ könnte länger dauern, also geduld
 
 ## dann den Refresh Token holen
 
+
+so https://github.com/TMA84/bluelink-refresh-token/releases
+
 -------------------------------------------------------------------
 
-ausführen
+oder ausführen
 
 https://github.com/RustyDust/bluelink_refresh_token
 
@@ -31,4 +42,4 @@ https://forum.iobroker.net/topic/43592/adapter-hyundai-bluelink-oder-kia-uvo/224
 
 <br><br><br>
 <hr>
-zu guter letzt den Refresh Token in den adapter Einstellungen unter Password einfügen
+zu guter letzt den Refresh Token in den adapter Einstellungen 
