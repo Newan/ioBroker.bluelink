@@ -104,6 +104,8 @@ class Bluelink extends utils.Adapter {
         if (loginGo) {
             await this.ensureRefreshToken();
             await this.login();
+        } else {
+            this.terminate('Invalid configuration: Username or engine type missing', 11);
         }
     }
 
@@ -261,14 +263,14 @@ class Bluelink extends utils.Adapter {
                                 if (tmpControl == 'charge_limit_fast') {
                                     this.log.info('Set new charging options charge_limit_fast');
                                     const charge_limit_slow = await this.getStateAsync(`${vin}.control.charge_limit_slow`);
-                                    charge_option.fast = state.val;
-                                    charge_option.slow = charge_limit_slow ? charge_limit_slow.val : this.slow_charging;
+                                    charge_option.fast = Number(state.val);
+                                    charge_option.slow = (charge_limit_slow && charge_limit_slow.val != null) ? Number(charge_limit_slow.val) : this.slow_charging;
                                 }
                                 if (tmpControl == 'charge_limit_slow') {
                                     this.log.info('Set new charging options charge_limit_slow');
                                     const charge_limit_fast = await this.getStateAsync(`${vin}.control.charge_limit_fast`);
-                                    charge_option.slow = state.val;
-                                    charge_option.fast = charge_limit_fast ? charge_limit_fast.val : this.fast_charging;
+                                    charge_option.slow = Number(state.val);
+                                    charge_option.fast = (charge_limit_fast && charge_limit_fast.val != null) ? Number(charge_limit_fast.val) : this.fast_charging;
                                 }
                                 response = await vehicle.setChargeTargets(charge_option);
                                 this.log.debug(JSON.stringify(response));
@@ -391,7 +393,7 @@ return;
      */
     async login() {
         try {
-            const activeToken = this.config.refreshToken || this.config.client_secret || '';
+            const activeToken = this.config.refreshToken || this.config.password || this.config.client_secret || '';
             this.log.info(`Login to api – token source: ${this.config.refreshToken ? 'refreshToken' : 'client_secret(legacy)'}, tokenLen=${activeToken.length}`);
 
             const loginOptions = {
@@ -499,7 +501,7 @@ return;
                 continue;
             }
 
-            if (this.batteryState12V[vin] && batteryControlState12V && this.batteryState12V[vin] < batteryControlState12V.val && force_update_obj.val) {
+            if (this.batteryState12V[vin] && batteryControlState12V?.val != null && this.batteryState12V[vin] < Number(batteryControlState12V.val) && force_update_obj.val) {
                 this.log.warn(`Vin${  vin  } 12V Battery state is low: ${  vin  } ${  this.batteryState12V[vin]  }%. Recharge to prevent damage!`);
                 if (this.config.protectAgainstDeepDischarge && !force) {
                     this.log.warn('Auto Refresh is disabled, only use force refresh to reenable refresh if you are willing to risk your battery');
@@ -557,21 +559,8 @@ return;
                 } else {
                     // neue struktur ohne auflösung
                     await tools.cleanNotAvailableObjects(this, vin);
-                    // location sonderlocke
-                    if (newStatus.hasOwnProperty('Location')) {   // beniziner haben anscheinenden keine location
-                    	await tools.setLocation(this, vin, newStatus.Location.GeoCoord.Latitude, newStatus.Location.GeoCoord.Longitude, newStatus.Location.Speed.Value);
-                    } else {
-                        // new API format (Body structure): Location not in fullStatus – separate call
-                        try {
-                            const loc = await vehicle.location();
-                            if (loc && loc.latitude != null && loc.longitude != null) {
-                                await tools.setLocation(this, vin, loc.latitude, loc.longitude, loc.speed?.value ?? 0);
-                            }
-                        } catch (locErr) {
-                            this.log.warn(`vehicle.location() failed: ${locErr}`);
-                        }
-                    }
                 }
+                await this.processLocationData(vehicle, vin, newStatus);
 
             } catch (error) {
                 if (typeof error === 'string') {
@@ -597,21 +586,8 @@ return;
                     } else {
                         // neue struktur ohne auflösung
                         await tools.cleanNotAvailableObjects(this, vin);
-                        // location sonderlocke
-                        if (newStatus.hasOwnProperty('Location')) {   // beniziner haben anscheinenden keine location
-                        	await tools.setLocation(this, vin, newStatus.Location.GeoCoord.Latitude, newStatus.Location.GeoCoord.Longitude, newStatus.Location.Speed.Value);
-                        } else {
-                            // new API format: separate location call
-                            try {
-                                const loc = await vehicle.location();
-                                if (loc && loc.latitude != null && loc.longitude != null) {
-                                    await tools.setLocation(this, vin, loc.latitude, loc.longitude, loc.speed?.value ?? 0);
-                                }
-                            } catch (locErr) {
-                                this.log.warn(`vehicle.location() failed: ${locErr}`);
-                            }
-                        }
                     }
+                    await this.processLocationData(vehicle, vin, newStatus);
                 }
             }
 
@@ -668,6 +644,69 @@ return;
             await this.setStateAsync(`${vin}.odometer.value`, {val: odometer, ack: true});
         }
     }
+
+    async processLocationData(vehicle, vin, newStatus) {
+        let locationFound = false;
+
+        const extractCoords = (obj) => {
+            if (!obj || typeof obj !== 'object') {
+                return null;
+            }
+
+            const lat = obj.latitude ?? obj.lat ?? obj.coord?.lat ?? obj.coord?.latitude ?? obj.GeoCoord?.Latitude;
+            const lon = obj.longitude ?? obj.lon ?? obj.lng ?? obj.coord?.lon ?? obj.coord?.longitude ?? obj.GeoCoord?.Longitude;
+            const speed = obj.speed?.value ?? obj.speed ?? obj.Speed?.Value ?? 0;
+
+            if (lat != null && lon != null && !isNaN(Number(lat)) && !isNaN(Number(lon))) {
+                return {
+                    lat: Number(lat),
+                    lon: Number(lon),
+                    speed: typeof speed === 'number' ? speed : (Number(speed) || 0)
+                };
+            }
+            return null;
+        };
+
+        let coords = null;
+        if (newStatus) {
+            if (newStatus.vehicleLocation) {
+                coords = extractCoords(newStatus.vehicleLocation);
+            }
+            if (!coords && newStatus.Location) {
+                coords = extractCoords(newStatus.Location);
+            }
+            if (!coords && newStatus.gpsDetail) {
+                coords = extractCoords(newStatus.gpsDetail);
+            }
+            if (!coords && newStatus.ccs2Status?.state?.Vehicle?.Location) {
+                coords = extractCoords(newStatus.ccs2Status.state.Vehicle.Location);
+            }
+        }
+
+        if (coords) {
+            this.log.debug(`Location extracted from status payload for ${vin}: lat=${coords.lat}, lon=${coords.lon}`);
+            await tools.setLocation(this, vin, coords.lat, coords.lon, coords.speed);
+            locationFound = true;
+        } else {
+            this.log.debug(`Location missing in status response for ${vin}. Requesting vehicle.location()...`);
+            try {
+                const loc = await vehicle.location();
+                this.log.debug(`vehicle.location() raw response for ${vin}: ${JSON.stringify(loc)}`);
+                const locCoords = extractCoords(loc);
+                if (locCoords) {
+                    await tools.setLocation(this, vin, locCoords.lat, locCoords.lon, locCoords.speed);
+                    locationFound = true;
+                } else {
+                    this.log.warn(`vehicle.location() returned result but coordinates could not be parsed: ${JSON.stringify(loc)}`);
+                }
+            } catch (locErr) {
+                this.log.warn(`vehicle.location() API call failed for ${vin}: ${locErr}`);
+            }
+        }
+
+        return locationFound;
+    }
+
 
     async receiveEVInformation(vehicle, manu) {
         const tickHour = new Date().getHours(); // um 23 uhr daten festschreiben
@@ -786,17 +825,13 @@ return;
     getToday() {
         const today = new Date();
         const yyyy = today.getFullYear();
-        let mm = today.getMonth() + 1;
-        let dd = today.getDate();
+        const mm = today.getMonth() + 1;
+        const dd = today.getDate();
 
-        if (dd < 10) {
- dd = `0${dd}`; 
-}
-        if (mm < 10) {
- mm = `0${mm}`; 
-}
+        const ddStr = dd < 10 ? `0${dd}` : String(dd);
+        const mmStr = mm < 10 ? `0${mm}` : String(mm);
 
-        return `${yyyy}${mm}${dd}`;
+        return `${yyyy}${mmStr}${ddStr}`;
     }
 
     //short status
