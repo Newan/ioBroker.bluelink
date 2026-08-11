@@ -217,12 +217,13 @@ class Bluelink extends utils.Adapter {
                     case 'force_refresh_from_server':
                         this.log.info('Forcing refresh from Server');
                         await this.readStatusVin(vehicle, false);
+                        this.setState(id, {val: true, ack: true});
                         break;
                     case 'force_refresh_from_car':
                         this.log.info('Forcing refresh from Car');
                         await this.readStatusVin(vehicle, true);
                         await this.forceVehicleLocation(vehicle, vin);
-                        await this.setStateAsync(id, {val: true, ack: true});
+                        this.setState(id, {val: true, ack: true});
                         break;
                     case 'force_refresh':
                         this.log.info('Forcing refresh');
@@ -281,7 +282,7 @@ class Bluelink extends utils.Adapter {
                     case 'force_refresh_location':
                         this.log.info(`Forcing vehicle location update for ${vin}`);
                         await this.forceVehicleLocation(vehicle, vin);
-                        await this.setStateAsync(id, {val: true, ack: true});
+                        this.setState(id, {val: true, ack: true});
                         break;
 
                     default:
@@ -455,7 +456,7 @@ class Bluelink extends utils.Adapter {
                             this.log.error('Error in receiveEVInformation');
                         }
                     }
-                    await this.setStateAsync(`${vin}.error_counter`, 0, true);
+                    this.setState(`${vin}.error_counter`, 0, true);
                 }
 
                 await this.readStatus();
@@ -624,7 +625,7 @@ class Bluelink extends utils.Adapter {
             this.countError = 0;
             this.log.info(`Update for ${vin} successfull`);
             // last update
-            await this.setStateAsync(`${vin}.lastInfoUpdate`, Number(Date.now()), true);
+            this.setState(`${vin}.lastInfoUpdate`, Number(Date.now()), true);
 
         } catch (error) {
             this.countError += 1;  // add 1
@@ -637,7 +638,7 @@ class Bluelink extends utils.Adapter {
             }
         }
 
-        await this.setStateAsync(`${vin}.error_counter`, this.countError, true);
+        this.setState(`${vin}.error_counter`, this.countError, true);
 
         if (this.countError > this.config.errorCounter) {
             //Error counter over x erros, restart Adapter to fix te API Token
@@ -810,7 +811,7 @@ class Bluelink extends utils.Adapter {
         }
 
         if (odometer > 0) {
-            await this.setStateAsync(`${vin}.odometer.value`, {val: odometer, ack: true});
+            this.setState(`${vin}.odometer.value`, {val: odometer, ack: true});
         }
     }
 
@@ -944,15 +945,15 @@ class Bluelink extends utils.Adapter {
     async setShortStatus(newStatus, vin) {
         try {
             //chassis
-            await this.setStateAsync(`${vin}.vehicleStatus.doorLock`, {val: newStatus.chassis.locked, ack: true});
-            await this.setStateAsync(`${vin}.vehicleStatus.trunkOpen`, {val: newStatus.chassis.trunkOpen, ack: true});
-            await this.setStateAsync(`${vin}.vehicleStatus.hoodOpen`, {val: newStatus.chassis.hoodOpen, ack: true});
+            this.setState(`${vin}.vehicleStatus.doorLock`, {val: newStatus.chassis.locked, ack: true});
+            this.setState(`${vin}.vehicleStatus.trunkOpen`, {val: newStatus.chassis.trunkOpen, ack: true});
+            this.setState(`${vin}.vehicleStatus.hoodOpen`, {val: newStatus.chassis.hoodOpen, ack: true});
 
             await this.checkDoor(vin, newStatus.chassis.openDoors);
 
             //climate
-            await this.setStateAsync(`${vin}.vehicleStatus.airCtrlOn`, {val: newStatus.climate.active, ack: true});
-            await this.setStateAsync(`${vin}.vehicleStatus.airTemp`, {
+            this.setState(`${vin}.vehicleStatus.airCtrlOn`, {val: newStatus.climate.active, ack: true});
+            this.setState(`${vin}.vehicleStatus.airTemp`, {
                 val: newStatus.climate.temperatureSetpoint,
                 ack: true
             });
@@ -963,26 +964,26 @@ class Bluelink extends utils.Adapter {
                 steerWheelHeat = steerWheelHeat == 0 ? false : true;
             }
 
-            await this.setStateAsync(`${vin}.vehicleStatus.steerWheelHeat`, {val: steerWheelHeat, ack: true});
+            this.setState(`${vin}.vehicleStatus.steerWheelHeat`, {val: steerWheelHeat, ack: true});
 
             //Engine
 
             if (newStatus.engine.hasOwnProperty('batteryChargeHV')) {
-                await this.setStateAsync(`${vin}.vehicleStatus.battery.soc`, {
+                this.setState(`${vin}.vehicleStatus.battery.soc`, {
                     val: newStatus.engine.batteryChargeHV,
                     ack: true
                 });
             }
 
             if (newStatus.engine.hasOwnProperty('charging')) {
-                await this.setStateAsync(`${vin}.vehicleStatus.battery.charge`, {
+                this.setState(`${vin}.vehicleStatus.battery.charge`, {
                     val: newStatus.engine.charging,
                     ack: true
                 });
             }
 
             if (newStatus.engine.hasOwnProperty('batteryCharge12v')) {
-                await this.setStateAsync(`${vin}.vehicleStatus.battery.soc-12V`, {
+                this.setState(`${vin}.vehicleStatus.battery.soc-12V`, {
                     val: newStatus.engine.batteryCharge12v,
                     ack: true
                 });
@@ -999,13 +1000,13 @@ class Bluelink extends utils.Adapter {
         let lastUpdate = '0'; // als String, da ccs2-Vergleich lastUpdate_ccs2 ebenfalls ein String ist
 
         try {
-            await this.setStateAsync(`${vin}.vehicleStatus.airCtrlOn`, {
+            this.setState(`${vin}.vehicleStatus.airCtrlOn`, {
                 val: newStatus.vehicleStatus.airCtrlOn,
                 ack: true
             });
 
             if (newStatus.vehicleStatus.hasOwnProperty('airTemp')) {
-                await this.setStateAsync(`${vin}.vehicleStatus.airTemp`, {
+                this.setState(`${vin}.vehicleStatus.airTemp`, {
                     val: this.getCelsiusFromTempcode(newStatus.vehicleStatus.airTemp.value),
                     ack: true
                 });
@@ -1021,7 +1022,7 @@ class Bluelink extends utils.Adapter {
 
             //Charge
             if (this.config.motor == 'GAS') {
-                await this.setStateAsync(`${vin}.vehicleStatus.dte`, {
+                this.setState(`${vin}.vehicleStatus.dte`, {
                     val: newStatus.vehicleStatus.dte.value,
                     ack: true
                 });
@@ -1034,13 +1035,13 @@ class Bluelink extends utils.Adapter {
                         if (newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].plugType == 1) {
                             //Slow  = 1  -> Index 0 ist slow
                             this.slow_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
-                            await this.setStateAsync(`${vin}.control.charge_limit_slow`, {
+                            this.setState(`${vin}.control.charge_limit_slow`, {
                                 val: this.slow_charging,
                                 ack: true,
                             });
 
                             this.fast_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel;
-                            await this.setStateAsync(`${vin}.control.charge_limit_fast`, {
+                            this.setState(`${vin}.control.charge_limit_fast`, {
                                 val: this.fast_charging,
                                 ack: true,
                             });
@@ -1048,13 +1049,13 @@ class Bluelink extends utils.Adapter {
                         } else {
                             //fast  = 0  -> Index 0 ist fast
                             this.slow_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[1].targetSOClevel;
-                            await this.setStateAsync(`${vin}.control.charge_limit_slow`, {
+                            this.setState(`${vin}.control.charge_limit_slow`, {
                                 val: this.slow_charging,
                                 ack: true,
                             });
 
                             this.fast_charging = newStatus.vehicleStatus.evStatus.reservChargeInfos.targetSOClist[0].targetSOClevel;
-                            await this.setStateAsync(`${vin}.control.charge_limit_fast`, {
+                            this.setState(`${vin}.control.charge_limit_fast`, {
                                 val: this.fast_charging,
                                 ack: true,
                             });
@@ -1067,7 +1068,7 @@ class Bluelink extends utils.Adapter {
                         const drvDist = evStatus.drvDistance[0];
                         if (drvDist?.rangeByFuel) {
                             if (drvDist.rangeByFuel.totalAvailableRange?.value !== undefined) {
-                                await this.setStateAsync(`${vin}.vehicleStatus.dte`, {
+                                this.setState(`${vin}.vehicleStatus.dte`, {
                                     val: drvDist.rangeByFuel.totalAvailableRange.value,
                                     ack: true,
                                 });
@@ -1080,7 +1081,7 @@ class Bluelink extends utils.Adapter {
                                 if (evRange < 1 && batteryRangeConfig > 0 && typeof batteryStatus === 'number') {
                                     evRange = Math.round(((batteryStatus / 100) * batteryRangeConfig) * 100) / 100;
                                 }
-                                await this.setStateAsync(`${vin}.vehicleStatus.evModeRange`, {
+                                this.setState(`${vin}.vehicleStatus.evModeRange`, {
                                     val: evRange,
                                     ack: true,
                                 });
@@ -1088,7 +1089,7 @@ class Bluelink extends utils.Adapter {
 
                             if (drvDist.rangeByFuel.gasModeRange?.value !== undefined) {
                                 //Only for PHEV
-                                await this.setStateAsync(`${vin}.vehicleStatus.gasModeRange`, {
+                                this.setState(`${vin}.vehicleStatus.gasModeRange`, {
                                     val: drvDist.rangeByFuel.gasModeRange.value,
                                     ack: true,
                                 });
@@ -1096,24 +1097,24 @@ class Bluelink extends utils.Adapter {
                         }
                     }
 
-                    await this.setStateAsync(`${vin}.vehicleStatus.battery.soc`, {
+                    this.setState(`${vin}.vehicleStatus.battery.soc`, {
                         val: newStatus.vehicleStatus.evStatus.batteryStatus,
                         ack: true
                     });
-                    await this.setStateAsync(`${vin}.vehicleStatus.battery.charge`, {
+                    this.setState(`${vin}.vehicleStatus.battery.charge`, {
                         val: newStatus.vehicleStatus.evStatus.batteryCharge,
                         ack: true
                     });
 
 
-                    await this.setStateAsync(`${vin}.vehicleStatus.battery.plugin`, {
+                    this.setState(`${vin}.vehicleStatus.battery.plugin`, {
                         val: newStatus.vehicleStatus.evStatus.batteryPlugin,
                         ack: true
                     });
 
                     //Ladezeit anzeigen
                     if (newStatus.vehicleStatus.evStatus.remainTime2 && newStatus.vehicleStatus.evStatus.remainTime2.atc) {
-                        await this.setStateAsync(`${vin}.vehicleStatus.battery.minutes_to_charged`, {
+                        this.setState(`${vin}.vehicleStatus.battery.minutes_to_charged`, {
                             val: newStatus.vehicleStatus.evStatus.remainTime2.atc.value,
                             ack: true,
                         });
@@ -1129,14 +1130,14 @@ class Bluelink extends utils.Adapter {
 
 
                 // Battery
-                await this.setStateAsync(`${vin}.vehicleStatus.battery.soc-12V`, {
+                this.setState(`${vin}.vehicleStatus.battery.soc-12V`, {
                     val: newStatus.ccs2Status.state.Vehicle.Electronics.Battery.Level,
                     ack: true
                 });
 
                 if (newStatus.ccs2Status.state.Vehicle.Green.hasOwnProperty('BatteryManagement')) {
                     if (newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.hasOwnProperty('BatteryRemain')) {
-                        await this.setStateAsync(`${vin}.vehicleStatus.battery.soc`, {
+                        this.setState(`${vin}.vehicleStatus.battery.soc`, {
                             val: newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.BatteryRemain.Ratio,
                             ack: true
                         });
@@ -1144,14 +1145,14 @@ class Bluelink extends utils.Adapter {
                 }
 
                 if (newStatus.ccs2Status.state.Vehicle.Green?.ChargingInformation?.hasOwnProperty('ConnectorFastening')) {
-                    await this.setStateAsync(`${vin}.vehicleStatus.battery.charge`, {
+                    this.setState(`${vin}.vehicleStatus.battery.charge`, {
                         val: newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.ConnectorFastening.State == 1 ? true : false,
                         ack: true
                     });
                 }
 
                 if (newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.hasOwnProperty('Charging')) {
-                    await this.setStateAsync(`${vin}.vehicleStatus.battery.minutes_to_charged`, {
+                    this.setState(`${vin}.vehicleStatus.battery.minutes_to_charged`, {
                         val: newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.Charging.RemainTime,
                         ack: true,
                     });
@@ -1159,7 +1160,7 @@ class Bluelink extends utils.Adapter {
 
                 if (newStatus.ccs2Status.state.Vehicle.Green.hasOwnProperty('BatteryManagement')) {
                     if (newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.hasOwnProperty('SoH')) {
-                        await this.setStateAsync(`${vin}.vehicleStatus.battery.soh`, {
+                        this.setState(`${vin}.vehicleStatus.battery.soh`, {
                             val: newStatus.ccs2Status.state.Vehicle.Green.BatteryManagement.SoH.Ratio,
                             ack: true,
                         });
@@ -1170,24 +1171,24 @@ class Bluelink extends utils.Adapter {
                 //fast  = 0  -> Index 0 ist fast
                 if (newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.hasOwnProperty('TargetSoC')) {
                     this.slow_charging = newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.TargetSoC.Standard;
-                    await this.setStateAsync(`${vin}.control.charge_limit_slow`, {
+                    this.setState(`${vin}.control.charge_limit_slow`, {
                         val: this.slow_charging,
                         ack: true,
                     });
 
                     this.fast_charging = newStatus.ccs2Status.state.Vehicle.Green.ChargingInformation.TargetSoC.Quick;
-                    await this.setStateAsync(`${vin}.control.charge_limit_fast`, {
+                    this.setState(`${vin}.control.charge_limit_fast`, {
                         val: this.fast_charging,
                         ack: true,
                     });
                 }
             } else {
                 if (newStatus.vehicleStatus.hasOwnProperty('battery')) {
-                    await this.setStateAsync(`${vin}.vehicleStatus.battery.soc-12V`, {
+                    this.setState(`${vin}.vehicleStatus.battery.soc-12V`, {
                         val: newStatus.vehicleStatus.battery.batSoc,
                         ack: true
                     });
-                    await this.setStateAsync(`${vin}.vehicleStatus.battery.state-12V`, {
+                    this.setState(`${vin}.vehicleStatus.battery.state-12V`, {
                         val: newStatus.vehicleStatus.battery.batState,
                         ack: true
                     });
@@ -1195,15 +1196,15 @@ class Bluelink extends utils.Adapter {
             }
 
             //door
-            await this.setStateAsync(`${vin}.vehicleStatus.doorLock`, {
+            this.setState(`${vin}.vehicleStatus.doorLock`, {
                 val: newStatus.vehicleStatus.doorLock,
                 ack: true
             });
-            await this.setStateAsync(`${vin}.vehicleStatus.trunkOpen`, {
+            this.setState(`${vin}.vehicleStatus.trunkOpen`, {
                 val: newStatus.vehicleStatus.trunkOpen,
                 ack: true
             });
-            await this.setStateAsync(`${vin}.vehicleStatus.hoodOpen`, {
+            this.setState(`${vin}.vehicleStatus.hoodOpen`, {
                 val: newStatus.vehicleStatus.hoodOpen,
                 ack: true
             });
@@ -1211,15 +1212,15 @@ class Bluelink extends utils.Adapter {
             await this.checkDoor(vin, newStatus.vehicleStatus.doorOpen);
 
             //status parameter - airCtrlOn bereits am Anfang der Methode gesetzt
-            await this.setStateAsync(`${vin}.vehicleStatus.smartKeyBatteryWarning`, {
+            this.setState(`${vin}.vehicleStatus.smartKeyBatteryWarning`, {
                 val: newStatus.vehicleStatus.smartKeyBatteryWarning,
                 ack: true
             });
-            await this.setStateAsync(`${vin}.vehicleStatus.washerFluidStatus`, {
+            this.setState(`${vin}.vehicleStatus.washerFluidStatus`, {
                 val: newStatus.vehicleStatus.washerFluidStatus,
                 ack: true
             });
-            await this.setStateAsync(`${vin}.vehicleStatus.breakOilStatus`, {
+            this.setState(`${vin}.vehicleStatus.breakOilStatus`, {
                 val: newStatus.vehicleStatus.breakOilStatus,
                 ack: true
             });
@@ -1230,8 +1231,8 @@ class Bluelink extends utils.Adapter {
                 steerWheelHeat = steerWheelHeat == 0 ? false : true;
             }
 
-            await this.setStateAsync(`${vin}.vehicleStatus.steerWheelHeat`, {val: steerWheelHeat, ack: true});
-            await this.setStateAsync(`${vin}.vehicleStatus.sideBackWindowHeat`, {
+            this.setState(`${vin}.vehicleStatus.steerWheelHeat`, {val: steerWheelHeat, ack: true});
+            this.setState(`${vin}.vehicleStatus.sideBackWindowHeat`, {
                 val: newStatus.vehicleStatus.sideBackWindowHeat,
                 ack: true
             });
@@ -1271,10 +1272,10 @@ class Bluelink extends utils.Adapter {
                 backRight = backRight == 0 ? false : true;
             }
 
-            await this.setStateAsync(`${vin}.vehicleStatus.doorOpen.frontLeft`, {val: frontLeft, ack: true});
-            await this.setStateAsync(`${vin}.vehicleStatus.doorOpen.frontRight`, {val: frontRight, ack: true});
-            await this.setStateAsync(`${vin}.vehicleStatus.doorOpen.backLeft`, {val: backLeft, ack: true});
-            await this.setStateAsync(`${vin}.vehicleStatus.doorOpen.backRight`, {val: backRight, ack: true});
+            this.setState(`${vin}.vehicleStatus.doorOpen.frontLeft`, {val: frontLeft, ack: true});
+            this.setState(`${vin}.vehicleStatus.doorOpen.frontRight`, {val: frontRight, ack: true});
+            this.setState(`${vin}.vehicleStatus.doorOpen.backLeft`, {val: backLeft, ack: true});
+            this.setState(`${vin}.vehicleStatus.doorOpen.backRight`, {val: backRight, ack: true});
         }
     }
 
