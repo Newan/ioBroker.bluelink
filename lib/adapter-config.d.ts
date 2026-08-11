@@ -10,9 +10,7 @@ type _AdapterConfig = typeof native;
 declare global {
     namespace ioBroker {
         interface AdapterConfig extends _AdapterConfig {
-            motor?: string;
-            stamp?: string;
-            batteryRange?: number;
+            // Do not enter anything here!
         }
     }
 }

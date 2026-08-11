@@ -1,21 +1,8 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.30",
+    "version": "3.1.29",
     "news": {
-      "3.1.30": {
-        "en": "Fix vehicle location data extraction for Kia and Hyundai CCS2 vehicles and prioritize dedicated location API\nAdd control.force_location button and implement live telematics POST location/status polling directly from vehicle hardware\nFix TypeScript type definitions and unsafe property access in status parsing",
-        "de": "Behebung der Fehlerbehebung bei der Extraktion von Fahrzeugstandortdaten für Kia- und Hyundai-CCS2-Fahrzeuge und Priorisierung einer dedizierten Standort-API\nFügen Sie die Schaltfläche „control.force_location“ hinzu und implementieren Sie die Live-Telematik-POST-Abfrage von Standort/Status direkt von der Fahrzeughardware.\nBeheben Sie TypeScript-Typdefinitionen und unsicheren Eigenschaftszugriff beim Status-Parsing.",
-        "ru": "Исправлена ошибка извлечения данных о местоположении автомобилей Kia и Hyundai, работающих с CCS2, и уделено приоритетное внимание выделенному API для определения местоположения.\nДобавьте кнопку control.force_location и реализуйте опрос местоположения/статуса в режиме реального времени с помощью POST-запросов от аппаратного обеспечения автомобиля.\nИсправить определения типов TypeScript и небезопасный доступ к свойствам при анализе состояния.",
-        "pt": "Corrigir a extração de dados de localização de veículos Kia e Hyundai CCS2 e priorizar a API de localização dedicada.\nAdicionar botão control.force_location e implementar coleta de localização/status via POST de telemática em tempo real diretamente do hardware do veículo.\nCorrigir definições de tipo TypeScript e acesso inseguro a propriedades na análise de status.",
-        "nl": "Verbeter de extractie van voertuiglocatiegegevens voor Kia- en Hyundai CCS2-voertuigen en geef prioriteit aan de specifieke locatie-API.\nVoeg de knop control.force_location toe en implementeer live telematica POST-locatie-/statuspolling rechtstreeks vanuit de voertuighardware.\nCorrigeer TypeScript-typedefinities en onveilige toegang tot eigenschappen bij het parsen van de status.",
-        "fr": "Correction de l'extraction des données de géolocalisation des véhicules Kia et Hyundai CCS2 et priorisation de l'API de géolocalisation dédiée\nAjoutez le bouton control.force_location et implémentez l'interrogation en temps réel de la position/de l'état par requête POST télématique directement depuis le matériel du véhicule.\nCorrection des définitions de types TypeScript et de l'accès non sécurisé aux propriétés lors de l'analyse de l'état",
-        "it": "Correggere l'estrazione dei dati di localizzazione dei veicoli Kia e Hyundai CCS2 e dare priorità all'API di localizzazione dedicata.\nAggiungi il pulsante control.force_location e implementa il polling POST di posizione/stato telematico in tempo reale direttamente dall'hardware del veicolo.\nCorreggere le definizioni dei tipi TypeScript e l'accesso non sicuro alle proprietà nell'analisi dello stato.",
-        "es": "Solucionar la extracción de datos de ubicación de vehículos para vehículos Kia y Hyundai CCS2 y priorizar la API de ubicación dedicada\nAgregue el botón control.force_location e implemente el sondeo de ubicación/estado POST de telemática en tiempo real directamente desde el hardware del vehículo.\nCorrige las definiciones de tipo de TypeScript y el acceso inseguro a las propiedades en el análisis de estado.",
-        "pl": "Napraw ekstrakcję danych o lokalizacji pojazdów Kia i Hyundai CCS2 i nadaj priorytet dedykowanemu interfejsowi API lokalizacji\nDodaj przycisk control.force_location i wdróż funkcję telematyki POST do pobierania danych o lokalizacji/statusie na żywo bezpośrednio ze sprzętu pojazdu\nNapraw definicje typu TypeScript i niebezpieczny dostęp do właściwości podczas analizy statusu",
-        "uk": "Виправлено вилучення даних про місцезнаходження транспортних засобів для автомобілів Kia та Hyundai CCS2 та надано пріоритет виділеному API визначення місцезнаходження\nДодайте кнопку control.force_location та реалізуйте опитування місцезнаходження/статусу в режимі реального часу за допомогою телематики POST безпосередньо з апаратного забезпечення транспортного засобу.\nВиправлено визначення типів TypeScript та небезпечний доступ до властивостей під час розбору статусу",
-        "zh-cn": "修复起亚和现代CCS2车辆的车辆位置数据提取问题，并优先考虑专用位置API。\n添加 control.force_location 按钮，并直接从车辆硬件实现实时远程信息处理 POST 位置/状态轮询\n修复状态解析中的 TypeScript 类型定义和不安全属性访问"
-      },
       "3.1.29": {
         "en": "Adapter requires node.js >= 22 now\nfix login hyundai",
         "de": "Der Adapter benötigt jetzt Node.js >= 22.\nHyundai-Login reparieren",
@@ -93,6 +80,19 @@
         "pl": "pojazdy naprawcze > 2 na rachunek",
         "uk": "фіксуючі засоби > 2 в акаунті",
         "zh-cn": "固定车辆 > 2个账户"
+      },
+      "3.1.23": {
+        "en": "new bluelinky",
+        "de": "neue bluelinky",
+        "ru": "новый bluelinky",
+        "pt": "novo bluelinky",
+        "nl": "nieuwe bluelinky",
+        "fr": "nouveau lien bleu",
+        "it": "nuovo bluelinky",
+        "es": "nuevo bluelinky",
+        "pl": "nowy bluelinky",
+        "uk": "новий синійlinky",
+        "zh-cn": "新蓝领"
       }
     },
     "titleLang": {
