@@ -26,6 +26,8 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 ------------------------------------------------------------------------------------
 ## Changelog
+### **WORK IN PROGRESS**
+* (meistermopper) Add 1.5s rate-limit pause before vehicle.location() API calls to prevent 4004 Duplicate Request errors
 ### 3.1.30 (2026-08-11)
 * (meistermopper) Fix vehicle location data extraction for Kia and Hyundai CCS2 vehicles and prioritize dedicated location API
 * (meistermopper) Add control.force_location button and implement live telematics POST location/status polling directly from vehicle hardware
@@ -48,6 +50,24 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 
+## Donation
+[![](https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L55UBQJKJEUJL)
+
+
+## License
+MIT License
+
+Copyright (c) 2025-2026 Newan <info@newan.de>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 ## Donation
 [![](https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L55UBQJKJEUJL)
 
