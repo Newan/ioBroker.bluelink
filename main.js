@@ -74,6 +74,7 @@ class Bluelink extends utils.Adapter {
         this.fast_charging = 100;
         this._renewalAttempted = false;
         this._lastTokenCheck = 0;
+        this._cciTokenSet = null; // in-memory only - see prepareCciSession()
     }
 
     async onReady() {
@@ -296,17 +297,26 @@ class Bluelink extends utils.Adapter {
 
     /**
      * Encrypt token and persist it to the adapter's native config.
+     * Writing native config makes js-controller restart this instance.
      *
-     * @param refreshToken
-     * @param expiresAt
+     * @param {string} refreshToken
+     * @param {string} expiresAt
+     * @param {{cci?: object}} [extra] CCI token set (see tokenManager.fetchTokenCci) when the
+     *                                 token was obtained via the OneApp/CCI flow; omitted for
+     *                                 the legacy flow.
      */
-    async saveTokenToConfig(refreshToken, expiresAt) {
+    async saveTokenToConfig(refreshToken, expiresAt, extra = {}) {
         const adapterObj = await this.getForeignObjectAsync(`system.adapter.${this.namespace}`);
         if (!adapterObj) {
             return;
         }
         adapterObj.native.refreshToken = this.encrypt(refreshToken);
         adapterObj.native.tokenExpiry = expiresAt;
+        adapterObj.native.tokenType = extra.cci ? 'cci' : 'legacy';
+        adapterObj.native.lastTokenSaveAt = Date.now();
+        if (extra.cci) {
+            adapterObj.native.cciTokenSet = this.encrypt(JSON.stringify(extra.cci));
+        }
         await this.setForeignObjectAsync(`system.adapter.${this.namespace}`, adapterObj);
         this.log.info(`[saveTokenToConfig] Token encrypted and saved, valid until ${expiresAt}`);
     }
@@ -323,7 +333,7 @@ class Bluelink extends utils.Adapter {
             const result = await tokenManager.fetchToken(
                 this.config.brand, this.config.username, this.config.password
             );
-            await this.saveTokenToConfig(result.refreshToken, result.expiresAt);
+            await this.saveTokenToConfig(result.refreshToken, result.expiresAt, { cci: result.cci });
             return true;
         } catch (err) {
             this.log.error(`Token auto-renewal failed: ${err.message || err}`);
@@ -386,7 +396,7 @@ class Bluelink extends utils.Adapter {
             tokenManager.fetchToken(brand, username, password, msg => this.log.info(msg))
                 .then(async (result) => {
                     this.log.info(`[fetchToken] Success – token valid until ${result.expiresAt}`);
-                    await this.saveTokenToConfig(result.refreshToken, result.expiresAt);
+                    await this.saveTokenToConfig(result.refreshToken, result.expiresAt, { cci: result.cci });
                     respond(`Token saved. Valid until ${result.expiresAt}. Restart the adapter to connect.`);
                 })
                 .catch((err) => {
@@ -402,20 +412,61 @@ class Bluelink extends utils.Adapter {
     async login() {
         try {
             const activeToken = this.config.refreshToken || this.config.client_secret || '';
-            this.log.info(`Login to api – token source: ${this.config.refreshToken ? 'refreshToken' : 'client_secret(legacy)'}, tokenLen=${activeToken.length}`);
+            // Legacy refresh_tokens are the 48-char uppercase-alnum format bluelinky's own
+            // grant_type=refresh_token call expects; CCI ones aren't, and bluelinky rejects
+            // them outright ("Could not manage to get token") - see tokenManager.js. Older
+            // configs saved before tokenType existed are sniffed by format.
+            const isCci = this.config.tokenType === 'cci' ||
+                (!this.config.tokenType && !!activeToken && !/^[A-Z0-9]{48}$/.test(activeToken));
+            this.log.info(`Login to api – token source: ${this.config.refreshToken ? 'refreshToken' : 'client_secret(legacy)'}, tokenLen=${activeToken.length}${isCci ? ' (CCI/CCS mode)' : ''}`);
+
+            let cciPrimed = null;
+            if (isCci) {
+                cciPrimed = await this.prepareCciSession();
+                if (!cciPrimed) {
+                    return; // already logged; either scheduled a retry or is restarting after a fresh full login
+                }
+            }
 
             const loginOptions = {
                 username: this.config.username,
-                password: activeToken,
+                password: isCci ? '' : activeToken,
                 stamp: this.config.stamp,          // eigener Config-Key, nicht client_secret
                 pin: this.config.client_secret_pin,
                 brand: this.config.brand,
                 region: 'EU',
                 language: this.config.language,
+                autoLogin: !isCci,
             };
 
             blueLinkyClient = new BlueLinky(loginOptions);
             create_tools = new Create_tools(this);
+
+            if (isCci && cciPrimed) {
+                // bluelinky has no public API to prime a session or replace its refresh
+                // logic; `controller` is TS-private only (bracket access sidesteps that
+                // at the type level, same object at runtime - see makeCciRefresher()).
+                const nowSec = Math.floor(Date.now() / 1000);
+                const ctrl = blueLinkyClient['controller'];
+                ctrl.session.accessToken = cciPrimed.accessToken;
+                ctrl.session.tokenExpiresAt = nowSec + (cciPrimed.cci.expiresIn || 3599) - 60;
+                ctrl.refreshAccessToken = this.makeCciRefresher();
+
+                // bluelinky's own login() registers a device ID with the vehicle API as its
+                // last step and uses the server-issued one for every later call; skipping
+                // login() entirely (the whole point, for CCI sessions) skips that too, so
+                // vehicle calls fail with resCode 4002 "Invalid deviceId" unless redone here.
+                try {
+                    const env = ctrl.environment;
+                    ctrl.session.deviceId = await tokenManager.registerDeviceId(
+                        env.endpoints.deviceIdURL, env.ccspServiceID, env.ccspApplicationID,
+                        env.stamp && env.stamp.result, env.pushType,
+                        msg => this.log.debug(msg),
+                    );
+                } catch (err) {
+                    this.log.warn(`[login] CCI device registration failed (${err.message || err}) — vehicle calls will likely fail with "Invalid deviceId"`);
+                }
+            }
 
             blueLinkyClient.on('ready', async (vehicles) => {
                 this.setState('info.connection', true, true);
@@ -468,13 +519,22 @@ class Bluelink extends utils.Adapter {
                 this.log.error(err);
                 this.log.error('Server is not available or login credentials are wrong');
 
-                // One-shot token renewal on login failure (no loop: flag prevents second attempt)
-                if (!this._renewalAttempted && this.config.password) {
+                // One-shot token renewal on login failure (no loop: flag prevents second attempt
+                // within this process). A saved token restarts the adapter though, so a bug that
+                // keeps failing AFTER a successful renewal (wrong error, e.g.) would otherwise
+                // still loop once per restart - guard against that with a cooldown independent of
+                // the per-process flag, since js-controller's own crash-loop protection only kicks
+                // in after several restarts, by which point real accounts have been hammered.
+                const sinceLastSave = Date.now() - (Number(this.config.lastTokenSaveAt) || 0);
+                const cooldownActive = sinceLastSave < 3 * 60 * 1000;
+                if (!this._renewalAttempted && this.config.password && !cooldownActive) {
                     this._renewalAttempted = true;
                     const renewed = await this.tryRenewToken();
                     if (renewed) {
                         return;
                     } // adapter restarts automatically with new token
+                } else if (cooldownActive) {
+                    this.log.error(`[login] Not retrying — last token save was only ${Math.round(sinceLastSave / 1000)}s ago. A fresh token clearly isn't fixing this; check the log instead of restart-looping.`);
                 }
 
                 this.log.error('next auto login attempt in 1 hour or restart adapter manual');
@@ -483,6 +543,18 @@ class Bluelink extends utils.Adapter {
                     await this.login();
                 }, 1000 * 60 * 60);
             });
+
+            if (isCci) {
+                // autoLogin:false - bluelinky never calls controller.login() itself (that call
+                // is exactly what's broken for CCI tokens), so we drive the same
+                // getVehicles()-then-emit sequence its own login() would have done.
+                try {
+                    const vehicles = await blueLinkyClient.getVehicles();
+                    blueLinkyClient.emit('ready', vehicles);
+                } catch (err) {
+                    blueLinkyClient.emit('error', err);
+                }
+            }
         } catch (error) {
             this.log.error('Error in login/on function');
             if (typeof error === 'string') {
@@ -491,6 +563,84 @@ class Bluelink extends utils.Adapter {
                 this.log.error(error.message);
             }
         }
+    }
+
+    /**
+     * Get a fresh CCS access token for the CCI/OneApp login path (see tokenManager.js),
+     * without going through bluelinky's own (incompatible) refresh/login. Tries a cheap
+     * CCI token-refresh using the persisted CCI token set first; only falls back to a
+     * full username/password login if that fails (e.g. the persisted CCI refresh token
+     * has gone stale). A full login persists a fresh token set via saveTokenToConfig,
+     * which restarts this adapter instance - the restarted process then refreshes
+     * cleanly from what was just saved.
+     *
+     * @returns {Promise<{accessToken: string, cci: object}|null>} null means login() should
+     *          stop - either a retry was scheduled, or a restart is already underway.
+     */
+    async prepareCciSession() {
+        let cciSet = null;
+        try {
+            if (this.config.cciTokenSet) {
+                // js-controller already decrypts native fields listed in io-package.json's
+                // encryptedNative into this.config.* on adapter start - unlike
+                // saveTokenToConfig()'s direct setForeignObjectAsync write, which bypasses
+                // that pipeline and has to call this.encrypt() itself.
+                cciSet = JSON.parse(this.config.cciTokenSet);
+            }
+        } catch (e) {
+            this.log.warn('[prepareCciSession] Stored CCI token set unreadable — forcing full login');
+        }
+
+        if (cciSet && cciSet.refreshToken) {
+            try {
+                const refreshed = await tokenManager.refreshCciToken(this.config.brand, cciSet, msg => this.log.debug(msg));
+                this._cciTokenSet = refreshed.cci;
+                return refreshed;
+            } catch (err) {
+                this.log.warn(`[prepareCciSession] CCI token refresh failed (${err.message || err}) — falling back to full login`);
+            }
+        }
+
+        if (!this.config.username || !this.config.password) {
+            this.log.error('[prepareCciSession] No valid CCI token and no username/password for a full login');
+            this.setState('info.connection', false, true);
+            return null;
+        }
+
+        try {
+            const full = await tokenManager.fetchToken(this.config.brand, this.config.username, this.config.password, msg => this.log.debug(msg));
+            await this.saveTokenToConfig(full.refreshToken, full.expiresAt, { cci: full.cci });
+            if (!full.cci) {
+                this.log.info('[prepareCciSession] Obtained a legacy-format token instead — adapter restarts into the legacy flow');
+                return null;
+            }
+            this._cciTokenSet = full.cci;
+            return { accessToken: full.accessToken, cci: full.cci };
+        } catch (err) {
+            this.log.error(`[prepareCciSession] Full login failed: ${err.message || err}`);
+            this.setState('info.connection', false, true);
+            adapterIntervals.loginRetryTimeout = setTimeout(async () => {
+ await this.login(); 
+}, 1000 * 60 * 60);
+            return null;
+        }
+    }
+
+    /** Replacement for bluelinky's own controller.refreshAccessToken() when using a CCI/CCS session. */
+    makeCciRefresher() {
+        return async () => {
+            const sess = blueLinkyClient['controller'].session;
+            const nowSec = Math.floor(Date.now() / 1000);
+            if (nowSec < sess.tokenExpiresAt - 10) {
+                return 'Token not expired, no need to refresh';
+            }
+            const refreshed = await tokenManager.refreshCciToken(this.config.brand, this._cciTokenSet, msg => this.log.debug(msg));
+            this._cciTokenSet = refreshed.cci;
+            sess.accessToken = refreshed.accessToken;
+            sess.tokenExpiresAt = Math.floor(Date.now() / 1000) + (refreshed.cci.expiresIn || 3599) - 60;
+            this.log.info('[refreshAccessToken] CCS token refreshed via CCI (kept in memory, not persisted)');
+            return 'Token refreshed';
+        };
     }
 
     //read new sates from vehicle
