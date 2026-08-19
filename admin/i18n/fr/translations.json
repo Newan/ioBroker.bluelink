@@ -17,8 +17,5 @@
     "only for PHEV": "seulement pour PHEV",
     "Token-documentation": "Documentation relative aux jetons",
     "Password": "Mot de passe (mot de passe du compte)",
-    "Token valid until (auto-managed)": "Jeton d'actualisation valide jusqu'au (géré automatiquement)",
-    "Fetch / refresh token now": "Récupérer / actualiser le jeton maintenant",
-    "fetchTokenHelp": "Rempli par le bouton. Redémarrez l'adaptateur après la récupération.",
-    "fetchTokenHint": "Après récupération: redémarrez l'adaptateur."
+    "Token valid until (auto-managed)": "Jeton d'actualisation valide jusqu'au (géré automatiquement)"
 }

@@ -17,8 +17,5 @@
     "only for PHEV": "tylko dla PHEV",
     "Token-documentation": "Dokumentacja tokena",
     "Password": "Hasło (hasło do konta)",
-    "Token valid until (auto-managed)": "Token odświeżający ważny do (zarządzany automatycznie)",
-    "Fetch / refresh token now": "Pobierz / odśwież token teraz",
-    "fetchTokenHelp": "Wypełniane przez przycisk. Zrestartuj adapter po pobraniu.",
-    "fetchTokenHint": "Po pobraniu: uruchom ponownie adapter."
+    "Token valid until (auto-managed)": "Token odświeżający ważny do (zarządzany automatycznie)"
 }

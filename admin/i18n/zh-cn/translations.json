@@ -18,8 +18,5 @@
     "only for PHEV": "?????????????(PHEV)",
     "Token-documentation": "令牌文档",
     "Password": "密码（账户密码）",
-    "Token valid until (auto-managed)": "刷新令牌有效期至（自动管理）",
-    "Fetch / refresh token now": "立即获取/刷新令牌",
-    "fetchTokenHelp": "由按钮自动填写。获取后重启适配器。",
-    "fetchTokenHint": "获取后：重启适配器以连接。"
+    "Token valid until (auto-managed)": "刷新令牌有效期至（自动管理）"
 }

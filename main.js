@@ -62,7 +62,6 @@ class Bluelink extends utils.Adapter {
         this.on('ready', this.onReady.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));
         this.on('unload', this.onUnload.bind(this));
-        this.on('message', this.onMessage.bind(this));
         this.vehiclesDict = {};
         this.batteryState12V = {};
         this.vehicles = [];
@@ -75,6 +74,7 @@ class Bluelink extends utils.Adapter {
         this._renewalAttempted = false;
         this._lastTokenCheck = 0;
         this._cciTokenSet = null; // in-memory only - see prepareCciSession()
+        this._cciPersistedRefreshToken = null; // last refreshToken written to disk - see persistRotatedCciTokenIfNeeded()
     }
 
     async onReady() {
@@ -101,6 +101,45 @@ class Bluelink extends utils.Adapter {
             this.log.error('Check Settings. Enginetype is not defined ');
             loginGo = false;
         }
+
+        await this.setObjectNotExistsAsync('info.fetchToken', {
+            type: 'state',
+            common: {
+                name: 'Fetch / refresh token manually',
+                type: 'boolean',
+                role: 'button',
+                read: true,
+                write: true,
+                def: false,
+            },
+            native: {},
+        });
+        this.subscribeStates('info.fetchToken');
+
+        await this.setObjectNotExistsAsync('info.tokenType', {
+            type: 'state',
+            common: {
+                name: 'Active login mode (cci = OneApp workaround, legacy = original flow)',
+                type: 'string',
+                role: 'text',
+                read: true,
+                write: false,
+                def: '',
+            },
+            native: {},
+        });
+        await this.setObjectNotExistsAsync('info.lastTokenRefresh', {
+            type: 'state',
+            common: {
+                name: 'Timestamp of the last successful token refresh/login',
+                type: 'number',
+                role: 'value.time',
+                read: true,
+                write: false,
+                def: 0,
+            },
+            native: {},
+        });
 
         if (loginGo) {
             await this.ensureRefreshToken();
@@ -132,6 +171,19 @@ class Bluelink extends utils.Adapter {
 
     async onStateChange(id, state) {
         if (state) {
+            // Manual token fetch trigger: write true to info.fetchToken
+            if (id.endsWith('.info.fetchToken') && state.val === true && !state.ack) {
+                this.setState('info.fetchToken', false, true);
+                this.log.info('[fetchToken] Triggered via state info.fetchToken');
+                const ok = await this.tryRenewToken();
+                if (ok) {
+                    this.log.info('[fetchToken] Token fetched and saved — adapter restarting');
+                } else {
+                    this.log.error('[fetchToken] Failed — check log for details');
+                }
+                return;
+            }
+
             if (id.indexOf('.control.') === -1) {
                 return;
             }
@@ -331,9 +383,11 @@ class Bluelink extends utils.Adapter {
         }
         try {
             const result = await tokenManager.fetchToken(
-                this.config.brand, this.config.username, this.config.password
+                this.config.brand, this.config.username, this.config.password,
+                msg => this.log.debug(msg),
             );
             await this.saveTokenToConfig(result.refreshToken, result.expiresAt, { cci: result.cci });
+            this.setState('info.lastTokenRefresh', Date.now(), true);
             return true;
         } catch (err) {
             this.log.error(`Token auto-renewal failed: ${err.message || err}`);
@@ -360,53 +414,6 @@ class Bluelink extends utils.Adapter {
     }
 
     /**
-     * Handle sendTo messages from admin UI.
-     *
-     * @param {{command: string, message: any, callback: Function}} obj
-     */
-    onMessage(obj) {
-        if (!obj || !obj.command) {
-            return;
-        }
-
-        if (obj.command === 'fetchToken') {
-            this.log.info('[fetchToken] Message received from admin UI');
-
-            // Always respond — if callback is never called the GUI stays grey forever
-            const respond = (payload) => {
-                if (obj.callback) {
-                    this.sendTo(obj.from, obj.command, payload, obj.callback);
-                }
-            };
-
-            const username = this.config.username;
-            const password = this.config.password;
-            const brand = this.config.brand;
-
-            this.log.info(`[fetchToken] brand=${brand} username=${username} password-set=${!!password}`);
-
-            if (!username || !password || !brand) {
-                const msg = `Save settings first. Missing: ${[!username && 'username', !password && 'password', !brand && 'brand'].filter(Boolean).join(', ')}`;
-                this.log.error(`[fetchToken] ${msg}`);
-                respond(`ERROR: ${msg}`);
-                return;
-            }
-
-            // Fetch token, save directly to adapter native config, then respond
-            tokenManager.fetchToken(brand, username, password, msg => this.log.info(msg))
-                .then(async (result) => {
-                    this.log.info(`[fetchToken] Success – token valid until ${result.expiresAt}`);
-                    await this.saveTokenToConfig(result.refreshToken, result.expiresAt, { cci: result.cci });
-                    respond(`Token saved. Valid until ${result.expiresAt}. Restart the adapter to connect.`);
-                })
-                .catch((err) => {
-                    this.log.error(`[fetchToken] Failed: ${err.message || err}`);
-                    respond(`ERROR: ${err.message || err}`);
-                });
-        }
-    }
-
-    /**
      * Funktion to login in bluelink / UVO
      */
     async login() {
@@ -419,6 +426,7 @@ class Bluelink extends utils.Adapter {
             const isCci = this.config.tokenType === 'cci' ||
                 (!this.config.tokenType && !!activeToken && !/^[A-Z0-9]{48}$/.test(activeToken));
             this.log.info(`Login to api – token source: ${this.config.refreshToken ? 'refreshToken' : 'client_secret(legacy)'}, tokenLen=${activeToken.length}${isCci ? ' (CCI/CCS mode)' : ''}`);
+            this.setState('info.tokenType', isCci ? 'cci' : 'legacy', true);
 
             let cciPrimed = null;
             if (isCci) {
@@ -590,11 +598,15 @@ class Bluelink extends utils.Adapter {
         } catch (e) {
             this.log.warn('[prepareCciSession] Stored CCI token set unreadable — forcing full login');
         }
+        // Reflects what's currently on disk, so persistRotatedCciTokenIfNeeded() doesn't
+        // immediately re-save (and restart) the very token it just loaded unchanged.
+        this._cciPersistedRefreshToken = cciSet ? cciSet.refreshToken : null;
 
         if (cciSet && cciSet.refreshToken) {
             try {
                 const refreshed = await tokenManager.refreshCciToken(this.config.brand, cciSet, msg => this.log.debug(msg));
                 this._cciTokenSet = refreshed.cci;
+                this.setState('info.lastTokenRefresh', Date.now(), true);
                 return refreshed;
             } catch (err) {
                 this.log.warn(`[prepareCciSession] CCI token refresh failed (${err.message || err}) — falling back to full login`);
@@ -615,6 +627,8 @@ class Bluelink extends utils.Adapter {
                 return null;
             }
             this._cciTokenSet = full.cci;
+            this._cciPersistedRefreshToken = full.cci.refreshToken;
+            this.setState('info.lastTokenRefresh', Date.now(), true);
             return { accessToken: full.accessToken, cci: full.cci };
         } catch (err) {
             this.log.error(`[prepareCciSession] Full login failed: ${err.message || err}`);
@@ -638,9 +652,32 @@ class Bluelink extends utils.Adapter {
             this._cciTokenSet = refreshed.cci;
             sess.accessToken = refreshed.accessToken;
             sess.tokenExpiresAt = Math.floor(Date.now() / 1000) + (refreshed.cci.expiresIn || 3599) - 60;
+            this.setState('info.lastTokenRefresh', Date.now(), true);
             this.log.info('[refreshAccessToken] CCS token refreshed via CCI (kept in memory, not persisted)');
             return 'Token refreshed';
         };
+    }
+
+    /**
+     * Once a day: if the in-memory CCI token set has rotated since the last persist,
+     * write it to native config. Hourly in-session refreshes (makeCciRefresher()) stay
+     * memory-only on purpose to avoid restarting the adapter every hour, but that means
+     * an unplanned crash-restart falls back to whatever refreshToken was last written to
+     * disk - if that one's already been rotated away by many hours of in-memory-only
+     * refreshes, the restarted process needs a full password login instead of a cheap
+     * refresh. Persisting once a day keeps the on-disk copy from going too stale, at the
+     * cost of one extra restart per day (same restart saveTokenToConfig always causes).
+     */
+    async persistRotatedCciTokenIfNeeded() {
+        if (!this._cciTokenSet || !this._cciTokenSet.refreshToken) {
+            return;
+        }
+        if (this._cciTokenSet.refreshToken === this._cciPersistedRefreshToken) {
+            return; // unchanged since the last persist - no need to restart for nothing
+        }
+        const expiresAt = new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString();
+        await this.saveTokenToConfig(this._cciTokenSet.refreshToken, expiresAt, { cci: this._cciTokenSet });
+        this._cciPersistedRefreshToken = this._cciTokenSet.refreshToken;
     }
 
     //read new sates from vehicle
@@ -673,7 +710,11 @@ class Bluelink extends utils.Adapter {
         const now = Date.now();
         if (now - this._lastTokenCheck > 24 * 60 * 60 * 1000) {
             this._lastTokenCheck = now;
-            await this.ensureRefreshToken();
+            if (this.config.tokenType === 'cci') {
+                await this.persistRotatedCciTokenIfNeeded();
+            } else {
+                await this.ensureRefreshToken();
+            }
         }
 
         //set ne cycle
