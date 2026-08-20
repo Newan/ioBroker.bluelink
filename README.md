@@ -26,6 +26,9 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 ------------------------------------------------------------------------------------
 ## Changelog
+### **WORK IN PROGRESS**
+* (ipod86) Fix EU Hyundai/Kia login: IDPConnect started blocking the legacy client_id's password login as an "abusing request" (~2026-08-11), breaking token auto-renewal entirely. Adds the OneApp/CCI login workaround (not on that block list), bypasses bluelinky's own token refresh for CCI-issued tokens (architecturally incompatible - see lib/tokenManager.js), and adds the device-ID registration step that bypass otherwise skips.
+
 ### 3.1.31 (2026-08-11)
 * (arteck) Dependencies have been updated
 
