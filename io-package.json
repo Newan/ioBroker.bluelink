@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.31",
+    "version": "3.1.32",
     "news": {
+      "3.1.32": {
+        "en": "Fix EU Hyundai/Kia login",
+        "de": "EU-Hyundai/Kia-Login reparieren",
+        "ru": "Исправлена ошибка входа в систему Hyundai/Kia в ЕС.",
+        "pt": "Corrigir login da Hyundai/Kia na UE",
+        "nl": "Probleem met Hyundai/Kia-login in de EU oplossen",
+        "fr": "Correction de la connexion UE Hyundai/Kia",
+        "it": "Risolto il problema di accesso ai sistemi Hyundai/Kia in Europa",
+        "es": "Solucionar el problema de inicio de sesión de Hyundai/Kia en la UE",
+        "pl": "Napraw logowanie do Hyundai/Kia w UE",
+        "uk": "Виправлення входу в систему ЄС Hyundai/Kia",
+        "zh-cn": "修复欧盟现代/起亚登录问题"
+      },
       "3.1.31": {
         "en": "Dependencies have been updated",
         "de": "Die Abhängigkeiten wurden aktualisiert.",
@@ -80,19 +93,6 @@
         "pl": "Zaktualizowano zależności",
         "uk": "Залежність було оновлено",
         "zh-cn": "依赖关系已更新"
-      },
-      "3.1.25": {
-        "en": "Dependencies have been updated\nadds documentation on the token generation process for HYUNDAI and KIA",
-        "de": "Abhängigkeiten wurden aktualisiert\nfügt Dokumentation zum Token-Generierungsprozess für HYUNDAI und KIA hinzu",
-        "ru": "Зависимости были обновлены\nдобавлена документация по процессу генерации токенов для HYUNDAI и KIA",
-        "pt": "As dependências foram atualizadas\nadiciona documentação sobre o processo de geração de fichas para HYUNDAI e KIA",
-        "nl": "Afhankelijkheden zijn bijgewerkt\nvoegt documentatie toe over het tokengeneratieproces voor HYUNDAI en KIA",
-        "fr": "Les dépendances ont été actualisées\najoute de la documentation sur le processus de génération de jetons pour HYUNDAI et KIA",
-        "it": "Le dipendenze sono state aggiornate\naggiunge documentazione sul processo di generazione dei token per HYUNDAI e KIA",
-        "es": "Se han actualizado las dependencias\nañade documentación sobre el proceso de generación de fichas para HYUNDAI y KIA",
-        "pl": "Zaktualizowano zależności\ndodaje dokumentację dotyczącą procesu generowania symboli dla HYUNDAI i KIA",
-        "uk": "Залежність було оновлено\nдодає документацію про процес генерації токенів для HYUNDAI та KIA",
-        "zh-cn": "依赖关系已更新\n为 HYUNDAI 和 KIA 添加关于符号生成过程的文档"
       }
     },
     "titleLang": {

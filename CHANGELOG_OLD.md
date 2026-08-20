@@ -1,7 +1,11 @@
 # Older changes
-## 3.1.26 (2026-01-17)
+## 3.1.27 (2026-04-06)
+* (arteck) fix position_text 
 * (arteck) Dependencies have been updated
 
+
+## 3.1.26 (2026-01-17)
+* (arteck) Dependencies have been updated
 
 ## 3.1.25 (2025-12-28)
 * (arteck) Dependencies have been updated
