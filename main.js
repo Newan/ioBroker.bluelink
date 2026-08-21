@@ -706,15 +706,23 @@ class Bluelink extends utils.Adapter {
             await this.readStatusVin(vehicle, force_update_obj.val);
         }
 
-        // Check token expiry once per day (not on every poll cycle)
+        // Check token expiry once per day (not on every poll cycle). For CCI accounts
+        // this MUST be gated on the persisted lastTokenSaveAt, not the in-memory
+        // _lastTokenCheck: that resets to 0 on every restart, and since the CCI token
+        // rotates on every single refresh (see prepareCciSession()/makeCciRefresher()),
+        // gating on it made this fire on every restart instead of once a day - each
+        // firing found a "changed" token, persisted it, and restarted again, an
+        // infinite loop (confirmed live against a real account, js-controller's
+        // crash-loop protection had to disable the instance).
         const now = Date.now();
-        if (now - this._lastTokenCheck > 24 * 60 * 60 * 1000) {
-            this._lastTokenCheck = now;
-            if (this.config.tokenType === 'cci') {
+        if (this.config.tokenType === 'cci') {
+            const sinceLastSave = now - (Number(this.config.lastTokenSaveAt) || 0);
+            if (sinceLastSave > 24 * 60 * 60 * 1000) {
                 await this.persistRotatedCciTokenIfNeeded();
-            } else {
-                await this.ensureRefreshToken();
             }
+        } else if (now - this._lastTokenCheck > 24 * 60 * 60 * 1000) {
+            this._lastTokenCheck = now;
+            await this.ensureRefreshToken();
         }
 
         //set ne cycle
