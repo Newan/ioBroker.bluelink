@@ -141,6 +141,17 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
 
+        // One-time backfill: older installs already have a real lastTokenSaveAt but never
+        // had lastLoginDisplay set (field didn't exist yet) - without this it'd stay blank
+        // in the admin UI until the next actual token save, even though a login did happen.
+        if (!this.config.lastLoginDisplay && this.config.lastTokenSaveAt) {
+            const adapterObj = await this.getForeignObjectAsync(`system.adapter.${this.namespace}`);
+            if (adapterObj) {
+                adapterObj.native.lastLoginDisplay = new Date(Number(this.config.lastTokenSaveAt)).toISOString();
+                await this.setForeignObjectAsync(`system.adapter.${this.namespace}`, adapterObj);
+            }
+        }
+
         if (loginGo) {
             await this.ensureRefreshToken();
             await this.login();
