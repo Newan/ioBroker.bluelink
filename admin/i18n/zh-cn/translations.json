@@ -18,5 +18,5 @@
     "only for PHEV": "?????????????(PHEV)",
     "Token-documentation": "令牌文档",
     "Password": "密码（账户密码）",
-    "Token valid until (auto-managed)": "刷新令牌有效期至（自动管理）"
+    "Last successful login (auto-managed)": "上次成功登录（自动管理）"
 }

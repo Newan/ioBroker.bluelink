@@ -17,5 +17,5 @@
     "only for PHEV": "alleen voor PHEV",
     "Token-documentation": "Tokendocumentatie",
     "Password": "Wachtwoord (accountwachtwoord)",
-    "Token valid until (auto-managed)": "Vernieuwingstoken geldig tot (automatisch beheerd)"
+    "Last successful login (auto-managed)": "Laatste geslaagde aanmelding (automatisch beheerd)"
 }

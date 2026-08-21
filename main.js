@@ -366,6 +366,11 @@ class Bluelink extends utils.Adapter {
         adapterObj.native.tokenExpiry = expiresAt;
         adapterObj.native.tokenType = extra.cci ? 'cci' : 'legacy';
         adapterObj.native.lastTokenSaveAt = Date.now();
+        // tokenExpiry isn't a real server-provided expiry (Hyundai doesn't document one) -
+        // it's just our own +180-day scheduling placeholder for ensureRefreshToken()'s
+        // proactive-renewal check. Track the real save time separately so the admin UI can
+        // show something honest instead of a made-up "valid until" date.
+        adapterObj.native.lastLoginDisplay = new Date().toISOString();
         if (extra.cci) {
             adapterObj.native.cciTokenSet = this.encrypt(JSON.stringify(extra.cci));
         }

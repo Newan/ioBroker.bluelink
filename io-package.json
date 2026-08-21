@@ -185,6 +185,7 @@
     "tokenType": "",
     "cciTokenSet": "",
     "lastTokenSaveAt": 0,
+    "lastLoginDisplay": "",
     "brand": "kia",
     "request": 100,
     "evHistory": true,

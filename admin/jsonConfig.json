@@ -132,9 +132,9 @@
             "lg": 3,
             "xl": 3
         },
-        "tokenExpiry": {
+        "lastLoginDisplay": {
             "type": "text",
-            "label": "Token valid until (auto-managed)",
+            "label": "Last successful login (auto-managed)",
             "disabled": "true",
             "xs": 12,
             "sm": 12,

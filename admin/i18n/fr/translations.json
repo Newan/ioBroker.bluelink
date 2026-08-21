@@ -17,5 +17,5 @@
     "only for PHEV": "seulement pour PHEV",
     "Token-documentation": "Documentation relative aux jetons",
     "Password": "Mot de passe (mot de passe du compte)",
-    "Token valid until (auto-managed)": "Jeton d'actualisation valide jusqu'au (géré automatiquement)"
+    "Last successful login (auto-managed)": "Dernière connexion réussie (gérée automatiquement)"
 }
