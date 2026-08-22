@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.32",
+    "version": "3.1.33",
     "news": {
+      "3.1.33": {
+        "en": "Fix EU Hyundai/Kia login",
+        "de": "EU-Hyundai/Kia-Login reparieren",
+        "ru": "Исправлена ошибка входа в систему Hyundai/Kia в ЕС.",
+        "pt": "Corrigir login da Hyundai/Kia na UE",
+        "nl": "Probleem met Hyundai/Kia-login in de EU oplossen",
+        "fr": "Correction de la connexion UE Hyundai/Kia",
+        "it": "Risolto il problema di accesso ai sistemi Hyundai/Kia in Europa",
+        "es": "Solucionar el problema de inicio de sesión de Hyundai/Kia en la UE",
+        "pl": "Napraw logowanie do Hyundai/Kia w UE",
+        "uk": "Виправлення входу в систему ЄС Hyundai/Kia",
+        "zh-cn": "修复欧盟现代/起亚登录问题"
+      },
       "3.1.32": {
         "en": "Fix EU Hyundai/Kia login",
         "de": "EU-Hyundai/Kia-Login reparieren",
@@ -80,19 +93,6 @@
         "pl": "fix position _ text\nZaktualizowano zależności",
         "uk": "фіксація позицій текст\nЗалежність було оновлено",
         "zh-cn": "固定位置( t)\n依赖关系已更新"
-      },
-      "3.1.26": {
-        "en": "Dependencies have been updated",
-        "de": "Abhängigkeiten wurden aktualisiert",
-        "ru": "Зависимости были обновлены",
-        "pt": "As dependências foram atualizadas",
-        "nl": "Afhankelijkheden zijn bijgewerkt",
-        "fr": "Les dépendances ont été actualisées",
-        "it": "Le dipendenze sono state aggiornate",
-        "es": "Se han actualizado las dependencias",
-        "pl": "Zaktualizowano zależności",
-        "uk": "Залежність було оновлено",
-        "zh-cn": "依赖关系已更新"
       }
     },
     "titleLang": {
