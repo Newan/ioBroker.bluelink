@@ -17,5 +17,5 @@
     "only for PHEV": "тільки для PHEV",
     "Token-documentation": "Документація токена",
     "Password": "Пароль (пароль облікового запису)",
-    "Token valid until (auto-managed)": "Токен оновлення дійсний до (керується автоматично)"
+    "Last successful login (auto-managed)": "Останній успішний вхід (керується автоматично)"
 }

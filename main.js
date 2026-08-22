@@ -141,6 +141,17 @@ class Bluelink extends utils.Adapter {
             native: {},
         });
 
+        // One-time backfill: older installs already have a real lastTokenSaveAt but never
+        // had lastLoginDisplay set (field didn't exist yet) - without this it'd stay blank
+        // in the admin UI until the next actual token save, even though a login did happen.
+        if (!this.config.lastLoginDisplay && this.config.lastTokenSaveAt) {
+            const adapterObj = await this.getForeignObjectAsync(`system.adapter.${this.namespace}`);
+            if (adapterObj) {
+                adapterObj.native.lastLoginDisplay = new Date(Number(this.config.lastTokenSaveAt)).toISOString();
+                await this.setForeignObjectAsync(`system.adapter.${this.namespace}`, adapterObj);
+            }
+        }
+
         if (loginGo) {
             await this.ensureRefreshToken();
             await this.login();
@@ -366,6 +377,11 @@ class Bluelink extends utils.Adapter {
         adapterObj.native.tokenExpiry = expiresAt;
         adapterObj.native.tokenType = extra.cci ? 'cci' : 'legacy';
         adapterObj.native.lastTokenSaveAt = Date.now();
+        // tokenExpiry isn't a real server-provided expiry (Hyundai doesn't document one) -
+        // it's just our own +180-day scheduling placeholder for ensureRefreshToken()'s
+        // proactive-renewal check. Track the real save time separately so the admin UI can
+        // show something honest instead of a made-up "valid until" date.
+        adapterObj.native.lastLoginDisplay = new Date().toISOString();
         if (extra.cci) {
             adapterObj.native.cciTokenSet = this.encrypt(JSON.stringify(extra.cci));
         }
@@ -706,15 +722,23 @@ class Bluelink extends utils.Adapter {
             await this.readStatusVin(vehicle, force_update_obj.val);
         }
 
-        // Check token expiry once per day (not on every poll cycle)
+        // Check token expiry once per day (not on every poll cycle). For CCI accounts
+        // this MUST be gated on the persisted lastTokenSaveAt, not the in-memory
+        // _lastTokenCheck: that resets to 0 on every restart, and since the CCI token
+        // rotates on every single refresh (see prepareCciSession()/makeCciRefresher()),
+        // gating on it made this fire on every restart instead of once a day - each
+        // firing found a "changed" token, persisted it, and restarted again, an
+        // infinite loop (confirmed live against a real account, js-controller's
+        // crash-loop protection had to disable the instance).
         const now = Date.now();
-        if (now - this._lastTokenCheck > 24 * 60 * 60 * 1000) {
-            this._lastTokenCheck = now;
-            if (this.config.tokenType === 'cci') {
+        if (this.config.tokenType === 'cci') {
+            const sinceLastSave = now - (Number(this.config.lastTokenSaveAt) || 0);
+            if (sinceLastSave > 24 * 60 * 60 * 1000) {
                 await this.persistRotatedCciTokenIfNeeded();
-            } else {
-                await this.ensureRefreshToken();
             }
+        } else if (now - this._lastTokenCheck > 24 * 60 * 60 * 1000) {
+            this._lastTokenCheck = now;
+            await this.ensureRefreshToken();
         }
 
         //set ne cycle

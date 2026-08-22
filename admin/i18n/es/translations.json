@@ -17,5 +17,5 @@
     "only for PHEV": "solo para PHEV",
     "Token-documentation": "Documentación del token",
     "Password": "Contraseña (contraseña de cuenta)",
-    "Token valid until (auto-managed)": "Token de actualización válido hasta (gestionado automáticamente)"
+    "Last successful login (auto-managed)": "Último inicio de sesión correcto (gestionado automáticamente)"
 }
