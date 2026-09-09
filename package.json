@@ -40,7 +40,7 @@
     "@iobroker/adapter-core": "^3.4.1",
     "axios": "^1.18.1",
     "bluelinky": "https://github.com/arteck/bluelinky/tarball/d8a3344dad06cafbbc5b83b04c17073fd7798201",
-    "impit": "^0.14.3"
+    "impit": "^0.14.4"
   },
   "devDependencies": {
     "@alcalzone/release-script": "^5.2.1",
