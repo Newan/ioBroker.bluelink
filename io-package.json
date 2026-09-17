@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.1.33",
+    "version": "3.1.34",
     "news": {
+      "3.1.34": {
+        "en": "fix location request",
+        "de": "Ortsanfrage fixieren",
+        "ru": "запрос на исправление местоположения",
+        "pt": "fixar pedido de local",
+        "nl": "locatieverzoek corrigeren",
+        "fr": "demande de lieu fixe",
+        "it": "richiesta sede fissa",
+        "es": "solicitud de ubicación fija",
+        "pl": "popraw żądanie lokalizacji",
+        "uk": "виправити запит на місцезнаходження",
+        "zh-cn": "修复位置请求"
+      },
       "3.1.33": {
         "en": "Fix EU Hyundai/Kia login",
         "de": "EU-Hyundai/Kia-Login reparieren",
@@ -80,19 +93,6 @@
         "pl": "Zaktualizowano zależności\nlepszy LOG",
         "uk": "Залежність було оновлено\nкраще LOG",
         "zh-cn": "依赖关系已更新\n更好的 LOG 语言"
-      },
-      "3.1.27": {
-        "en": "fix position_text \nDependencies have been updated",
-        "de": "fix position text\nAbhängigkeiten wurden aktualisiert",
-        "ru": "исправить положение text\nЗависимости были обновлены",
-        "pt": "corrigir posição  texto\nAs dependências foram atualizadas",
-        "nl": "fix position text\nAfhankelijkheden zijn bijgewerkt",
-        "fr": "correction du texte de position\nLes dépendances ont été actualisées",
-        "it": "correzione posizione text\nLe dipendenze sono state aggiornate",
-        "es": "fix position text\nSe han actualizado las dependencias",
-        "pl": "fix position _ text\nZaktualizowano zależności",
-        "uk": "фіксація позицій текст\nЗалежність було оновлено",
-        "zh-cn": "固定位置( t)\n依赖关系已更新"
       }
     },
     "titleLang": {
