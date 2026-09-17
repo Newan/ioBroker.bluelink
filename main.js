@@ -802,7 +802,7 @@ class Bluelink extends utils.Adapter {
                     // neue struktur ohne auflösung
                     await tools.cleanNotAvailableObjects(this, vin);
                 }
-                await this.processLocationData(vehicle, vin, newStatus);
+                await this.processLocationData(vehicle, vin, newStatus, force_update);
             } catch (error) {
                 if (typeof error === 'string') {
                     this.log.error('Error on API-Request fullStatus');
@@ -828,7 +828,7 @@ class Bluelink extends utils.Adapter {
                         // neue struktur ohne auflösung
                         await tools.cleanNotAvailableObjects(this, vin);
                     }
-                    await this.processLocationData(vehicle, vin, newStatus);
+                    await this.processLocationData(vehicle, vin, newStatus, force_update);
                 }
             }
 
@@ -900,12 +900,14 @@ class Bluelink extends utils.Adapter {
         return null;
     }
 
-    async processLocationData(vehicle, vin, newStatus) {
+    async processLocationData(vehicle, vin, newStatus, force_update) {
         let locationFound = false;
         let coords = null;
 
         // 1. Query dedicated vehicle.location() endpoint first (same GET /location API endpoint used by official app)
-        if (vehicle && typeof vehicle.location === 'function') {
+        // Only do this on a forced/live update - a plain server-side (cached) status query must not
+        // trigger an additional live location request to the vehicle/backend.
+        if (force_update && vehicle && typeof vehicle.location === 'function') {
             try {
                 this.log.debug(`Requesting dedicated vehicle.location() for ${vin}...`);
                 const loc = await vehicle.location();

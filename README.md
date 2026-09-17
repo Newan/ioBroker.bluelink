@@ -26,6 +26,10 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 ------------------------------------------------------------------------------------
 ## Changelog
+
+### **WORK IN PROGRESS**
+* (arteck) fix location request
+
 ### 3.1.33 (2026-08-22)
 * (ipod86) Fix EU Hyundai/Kia login
 
