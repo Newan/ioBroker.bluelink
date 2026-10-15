@@ -418,6 +418,7 @@ class Bluelink extends utils.Adapter {
             const result = await tokenManager.fetchToken(
                 this.config.brand, this.config.username, this.config.password,
                 msg => this.log.debug(msg),
+                { fpSecret: this.config.cciFingerprintKey },
             );
             await this.saveTokenToConfig(result.refreshToken, result.expiresAt, { cci: result.cci });
             this.setState('info.lastTokenRefresh', Date.now(), true);
@@ -637,7 +638,7 @@ class Bluelink extends utils.Adapter {
 
         if (cciSet && cciSet.refreshToken) {
             try {
-                const refreshed = await tokenManager.refreshCciToken(this.config.brand, cciSet, msg => this.log.debug(msg));
+                const refreshed = await tokenManager.refreshCciToken(this.config.brand, cciSet, msg => this.log.debug(msg), { fpSecret: this.config.cciFingerprintKey });
                 this._cciTokenSet = refreshed.cci;
                 this.setState('info.lastTokenRefresh', Date.now(), true);
                 return refreshed;
@@ -653,7 +654,7 @@ class Bluelink extends utils.Adapter {
         }
 
         try {
-            const full = await tokenManager.fetchToken(this.config.brand, this.config.username, this.config.password, msg => this.log.debug(msg));
+            const full = await tokenManager.fetchToken(this.config.brand, this.config.username, this.config.password, msg => this.log.debug(msg), { fpSecret: this.config.cciFingerprintKey });
             await this.saveTokenToConfig(full.refreshToken, full.expiresAt, { cci: full.cci });
             if (!full.cci) {
                 this.log.info('[prepareCciSession] Obtained a legacy-format token instead — adapter restarts into the legacy flow');
@@ -681,7 +682,7 @@ class Bluelink extends utils.Adapter {
             if (nowSec < sess.tokenExpiresAt - 10) {
                 return 'Token not expired, no need to refresh';
             }
-            const refreshed = await tokenManager.refreshCciToken(this.config.brand, this._cciTokenSet, msg => this.log.debug(msg));
+            const refreshed = await tokenManager.refreshCciToken(this.config.brand, this._cciTokenSet, msg => this.log.debug(msg), { fpSecret: this.config.cciFingerprintKey });
             this._cciTokenSet = refreshed.cci;
             sess.accessToken = refreshed.accessToken;
             sess.tokenExpiresAt = Math.floor(Date.now() / 1000) + (refreshed.cci.expiresIn || 3599) - 60;

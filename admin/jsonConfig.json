@@ -353,6 +353,27 @@
                     "lg": 4,
                     "xl": 4
                 },
+                "header_CciFingerprint": {
+                    "type": "header",
+                    "text": "CCI Fingerprint (EU OneApp)",
+                    "size": 2,
+                    "newLine": true
+                },
+                "_cciFingerprintHelp": {
+                    "type": "staticText",
+                    "text": "Nur für EU (Hyundai/Kia). Seit ~13.10.2026 verlangen die OneApp-Login-Endpunkte eine signierte Anfrage (X-Fingerprint). Der Adapter bringt den aktuell gültigen Schlüssel bereits mit – dieses Feld LEER lassen. Nur ausfüllen, wenn der Login mit 9035/9036 scheitert (der App-Schlüssel wurde mit einem App-Update gewechselt): hier den neuen, markenpassenden Schlüssel eintragen. Die drei Teile dürfen mit Leerzeichen oder Komma getrennt eingegeben werden.",
+                    "newLine": true
+                },
+                "cciFingerprintKey": {
+                    "type": "text",
+                    "label": "CCI Fingerprint Key (optional, überschreibt den eingebauten Standard)",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 8,
+                    "lg": 6,
+                    "xl": 6
+                },
                 "header_BluelinkOptions": {
                     "type": "header",
                     "text": "Options",
