@@ -50,5 +50,6 @@
     "4. In the popup sign in with your Bluelink / Kia Connect app account (same e-mail and password as in the app) and confirm the data sharing.": "4. 在弹出窗口中使用 Bluelink / Kia Connect 应用账户登录（与应用中相同的电子邮件和密码），并确认数据共享。",
     "5. Copy the Client ID and Client Secret shown into the fields above, set the brand in the General tab to the same brand, save and close.": "5. 将显示的 Client ID 和 Client Secret 复制到上方字段，在“常规”选项卡中设置相同品牌，保存并关闭。",
     "Troubleshooting: token error or \"40404\" - Client ID, Client Secret or brand wrong. No vehicle found - data sharing consent missing, repeat steps 3 and 4. Some values stay empty - not provided for your model.": "故障排除：令牌错误或“40404”——Client ID、Client Secret 或品牌错误。未找到车辆——缺少数据共享同意，请重复步骤 3 和 4。部分值为空——你的车型不提供。",
-    "One-time setup: get a Client ID and Client Secret at pleos.ai/playground and enter them below. Step-by-step guide: open \"Help\" below.": "一次性设置：在 pleos.ai/playground 获取 Client ID 和 Client Secret 并填入下方。分步指南：展开下方“帮助”。"
+    "One-time setup: get a Client ID and Client Secret at pleos.ai/playground and enter them below. Step-by-step guide: open \"Help\" below.": "一次性设置：在 pleos.ai/playground 获取 Client ID 和 Client Secret 并填入下方。分步指南：展开下方“帮助”。",
+    "Tip: switch off the automatic browser translation for pleos.ai - otherwise the page crashes when ticking the boxes (\"insertBefore\" error).": "提示：请关闭浏览器对 pleos.ai 的自动翻译——否则勾选复选框时页面会崩溃（“insertBefore”错误）。"
 }

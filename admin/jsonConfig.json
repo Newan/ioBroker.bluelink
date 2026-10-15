@@ -449,6 +449,16 @@
                     "lg": 12,
                     "xl": 12,
                     "items": {
+                        "_helpPleosTip": {
+                            "type": "staticText",
+                            "text": "Tip: switch off the automatic browser translation for pleos.ai - otherwise the page crashes when ticking the boxes (\"insertBefore\" error).",
+                            "newLine": true,
+                            "xs": 12,
+                            "sm": 12,
+                            "md": 12,
+                            "lg": 12,
+                            "xl": 12
+                        },
                         "_helpPleos0": {
                             "type": "staticText",
                             "text": "1. Open pleos.ai/playground (button above), create a free account (Sign up) and sign in.",

@@ -1542,6 +1542,7 @@ class Bluelink extends utils.Adapter {
         this.log.info(`[pleos] ${vehicles.length} vehicle(s) with data sharing consent found`);
         if (vehicles.length === 0) {
             this.log.warn('[pleos] No vehicle shared - check "My Vehicle Data API" at pleos.ai/playground');
+            this.log.warn(`[pleos] Raw consent response: ${JSON.stringify(this.pleosClient.lastConsentResponse)}`);
         }
 
         this.pleosVins = [];
