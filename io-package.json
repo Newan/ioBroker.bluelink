@@ -1,8 +1,25 @@
 {
   "common": {
     "name": "bluelink",
-    "version": "3.2.0-alpha.2",
+    "version": "3.2.0",
     "news": {
+      "3.2.0": {
+        "en": "New Pleos Vehicle Data API data source (read-only); configurable CCI fingerprint key; clearer login diagnostics; quieter location warning",
+        "de": "Neue Datenquelle Pleos Vehicle Data API (nur lesen); konfigurierbarer CCI-Fingerprint-Key; klarere Login-Diagnose; weniger Location-Warnungen"
+      },
+      "3.1.35": {
+        "en": "Fix EU Hyundai/Kia login",
+        "de": "Fix EU Hyundai/Kia Login",
+        "ru": "Исправить логин Hyundai/Kia в ЕС",
+        "pt": "Fixar login UE Hyundai/Kia",
+        "nl": "Login voor de EU voor Hyundai/Kia herstellen",
+        "fr": "Fix EU Hyundai/K/Login",
+        "it": "Login Fix UE Hyundai/Kia",
+        "es": "Fijar Hyundai/Kia en la UE",
+        "pl": "Napraw logowanie EU Hyundai/Kia",
+        "uk": "Виправте вхід в ЄС Хюндай/Кіа",
+        "zh-cn": "修复欧盟现代/起亚登录"
+      },
       "3.1.34": {
         "en": "fix location request",
         "de": "Ortsanfrage fixieren",
@@ -80,19 +97,6 @@
         "pl": "Adapter wymaga teraz node.js >= 22\nnapraw logowanie hyundai",
         "uk": "Адаптер тепер вимагає node.js >= 22\nвиправити вхід Hyundai",
         "zh-cn": "适配器现在需要 node.js 版本 >= 22。\n修复现代汽车登录问题"
-      },
-      "3.1.28": {
-        "en": "Dependencies have been updated\nbetter LOG",
-        "de": "Abhängigkeiten wurden aktualisiert\nbesser LOG",
-        "ru": "Зависимости были обновлены\nлучше LOG",
-        "pt": "As dependências foram atualizadas\nlOG melhor",
-        "nl": "Afhankelijkheden zijn bijgewerkt\nbeter LOG",
-        "fr": "Les dépendances ont été actualisées\nmeilleure LOG",
-        "it": "Le dipendenze sono state aggiornate\nlOG",
-        "es": "Se han actualizado las dependencias\nmejor LOG",
-        "pl": "Zaktualizowano zależności\nlepszy LOG",
-        "uk": "Залежність було оновлено\nкраще LOG",
-        "zh-cn": "依赖关系已更新\n更好的 LOG 语言"
       }
     },
     "titleLang": {
