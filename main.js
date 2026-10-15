@@ -78,6 +78,7 @@ class Bluelink extends utils.Adapter {
         this._cciPersistedRefreshToken = null; // last refreshToken written to disk - see persistRotatedCciTokenIfNeeded()
         this.pleosClient = null; // set in Pleos (EU Data Act) mode only - see startPleos()
         this.pleosVins = [];
+        this.pleosChargeLimits = {}; // vin -> {slow, fast}, last values read from Pleos
     }
 
     async onReady() {
@@ -1591,6 +1592,16 @@ class Bluelink extends utils.Adapter {
             });
             await create_tools.setStatusObjects(vin);
             await create_tools.setVehicleStatusObjects(vin);
+            await this.setObjectNotExistsAsync(`${vin}.control`, {
+                type: 'channel',
+                common: {
+                    name: 'control',
+                    write: false,
+                    read: true,
+                },
+                native: {},
+            });
+            await create_tools.setChargeLimitObjects(vin);
             await this.setObjectNotExistsAsync(`${vin}.control.force_refresh`, {
                 type: 'state',
                 common: {
@@ -1697,6 +1708,13 @@ class Bluelink extends utils.Adapter {
             if (charge.remainTime !== undefined && charge.remainTime !== 65535) {
                 await this.setPleosState(`${st}.battery.minutes_to_charged`, charge.remainTime);
             }
+            const target = charge.targetStateOfCharge;
+            if (target) {
+                // standard = AC/slow, quick = DC/fast - same states as in Bluelink mode
+                this.pleosChargeLimits[vin] = { slow: target.standard, fast: target.quick };
+                await this.setPleosState(`${vin}.control.charge_limit_slow`, target.standard);
+                await this.setPleosState(`${vin}.control.charge_limit_fast`, target.quick);
+            }
         } else if (data.powertrains && Array.isArray(data.powertrains.batteries)) {
             const main = data.powertrains.batteries.find(b => b.type === 'main');
             if (main) {
@@ -1790,6 +1808,11 @@ class Bluelink extends utils.Adapter {
         }
         if (id.indexOf('.control.') !== -1) {
             this.log.warn(`[pleos] "${control}" is not available in Pleos (EU Data Act) mode - the API is read-only, no remote commands`);
+            // charge limits are read from the car - put the real value back instead of leaving the unconfirmed one
+            const limits = this.pleosChargeLimits[vin];
+            if (limits && (control === 'charge_limit_slow' || control === 'charge_limit_fast')) {
+                await this.setPleosState(id, control === 'charge_limit_slow' ? limits.slow : limits.fast);
+            }
         }
     }
 
