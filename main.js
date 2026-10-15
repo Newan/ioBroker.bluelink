@@ -7,6 +7,7 @@ const Json2iob = require('./lib/json2iob');
 const tools = require('./lib/tools');
 const Create_tools = require('./lib/create_tools').Create_tools;
 const tokenManager = require('./lib/tokenManager');
+const {PleosClient, toKm, toKmh, toCelsius} = require('./lib/pleos');
 
 const adapterIntervals = {}; //halten von allen Intervallen
 let request_count = 48; // halbstündig sollte als Standardeinstellung reichen (zu häufige Abfragen entleeren die Batterie spürbar)
@@ -75,14 +76,17 @@ class Bluelink extends utils.Adapter {
         this._lastTokenCheck = 0;
         this._cciTokenSet = null; // in-memory only - see prepareCciSession()
         this._cciPersistedRefreshToken = null; // last refreshToken written to disk - see persistRotatedCciTokenIfNeeded()
+        this.pleosClient = null; // set in Pleos (EU Data Act) mode only - see startPleos()
+        this.pleosVins = [];
     }
 
     async onReady() {
         //first check account settings
         this.setState('info.connection', false, true);
         let loginGo = true;
+        const pleosMode = this.config.apiMode === 'pleos';
 
-        if (this.config.motor == 'GAS') {
+        if (this.config.motor == 'GAS' && !pleosMode) {
             this.config.evHistory = false;
             this.config.request = 1;
         }
@@ -93,7 +97,12 @@ class Bluelink extends utils.Adapter {
             request_count = this.config.request;
         }
 
-        if (this.config.username == '') {
+        if (pleosMode) {
+            if (!this.config.pleosClientId || !this.config.pleosClientSecret) {
+                this.log.error('Check Settings. Pleos mode needs Client ID and Client Secret (see https://pleos.ai/playground → My Vehicle Data API)');
+                loginGo = false;
+            }
+        } else if (this.config.username == '') {
             this.log.error('Check Settings. No Username set');
             loginGo = false;
         }
@@ -152,7 +161,10 @@ class Bluelink extends utils.Adapter {
             }
         }
 
-        if (loginGo) {
+        if (loginGo && pleosMode) {
+            this.setState('info.tokenType', 'pleos', true);
+            await this.startPleos();
+        } else if (loginGo) {
             await this.ensureRefreshToken();
             await this.login();
         }
@@ -182,6 +194,11 @@ class Bluelink extends utils.Adapter {
 
     async onStateChange(id, state) {
         if (state) {
+            if (this.pleosClient) {
+                await this.onPleosStateChange(id, state);
+                return;
+            }
+
             // Manual token fetch trigger: write true to info.fetchToken
             if (id.endsWith('.info.fetchToken') && state.val === true && !state.ack) {
                 this.setState('info.fetchToken', false, true);
@@ -1496,6 +1513,254 @@ class Bluelink extends utils.Adapter {
         }
     }
 
+
+    /**
+     * Pleos (EU Data Act) mode: read-only vehicle data via the official Pleos Vehicle
+     * Data API instead of the Bluelink app API, whose login is captcha-guarded since
+     * October 2026. Credentials are a Client ID/Secret the user issues once at
+     * pleos.ai/playground - no username/password login, no token rotation to persist.
+     * The API has no remote commands, so no control objects beyond a refresh button.
+     */
+    async startPleos() {
+        create_tools = new Create_tools(this);
+        this.pleosClient = new PleosClient(this.config.brand, this.config.pleosClientId, this.config.pleosClientSecret, msg => this.log.debug(msg));
+
+        let vehicles;
+        try {
+            vehicles = await this.pleosClient.getVehicles();
+        } catch (err) {
+            this.log.error(`[pleos] Login / vehicle list failed: ${err.message || err}`);
+            this.log.error('[pleos] Check Client ID, Client Secret and brand. Next attempt in 1 hour');
+            this.setState('info.connection', false, true);
+            this.pleosClient = null;
+            adapterIntervals.loginRetryTimeout = setTimeout(() => this.startPleos(), 1000 * 60 * 60);
+            return;
+        }
+
+        this.setState('info.connection', true, true);
+        this.setState('info.lastTokenRefresh', Date.now(), true);
+        this.log.info(`[pleos] ${vehicles.length} vehicle(s) with data sharing consent found`);
+        if (vehicles.length === 0) {
+            this.log.warn('[pleos] No vehicle shared - check "My Vehicle Data API" at pleos.ai/playground');
+        }
+
+        this.pleosVins = [];
+        for (const vehicle of vehicles) {
+            const vin = vehicle.vin;
+            if (!vin) {
+                continue;
+            }
+            this.pleosVins.push(vin);
+            await this.setObjectNotExistsAsync(vin, {
+                type: 'device',
+                common: {
+                    name: vehicle.nickname || vehicle.sellname || vehicle.name || vin,
+                },
+                native: {},
+            });
+            await create_tools.setStatusObjects(vin);
+            await create_tools.setVehicleStatusObjects(vin);
+            await this.setObjectNotExistsAsync(`${vin}.control.force_refresh`, {
+                type: 'state',
+                common: {
+                    name: 'Force refresh vehicle status',
+                    type: 'boolean',
+                    role: 'button',
+                    read: true,
+                    write: true,
+                    def: false,
+                },
+                native: {},
+            });
+            await this.json2iob.parse(`${vin}.general`, vehicle);
+            this.setState(`${vin}.error_counter`, 0, true);
+        }
+        this.subscribeStates('*.control.*');
+
+        await this.readPleosStatus();
+    }
+
+    async readPleosStatus() {
+        for (const vin of this.pleosVins) {
+            await this.readPleosVin(vin);
+        }
+        clearTimeout(adapterIntervals.readAllStates);
+        adapterIntervals.readAllStates = setTimeout(this.readPleosStatus.bind(this), ((24 * 60) / request_count) * 60000);
+    }
+
+    async readPleosVin(vin) {
+        let result;
+        try {
+            this.log.info(`[pleos] Read new update for ${vin}`);
+            result = await this.pleosClient.readAll(vin);
+        } catch (err) {
+            // only reached if the token request itself fails
+            this.countError += 1;
+            this.log.error(`[pleos] ${err.message || err}`);
+            this.setState('info.connection', false, true);
+            this.setState(`${vin}.error_counter`, this.countError, true);
+            return;
+        }
+
+        const { data, errors } = result;
+        for (const [endpoint, msg] of Object.entries(errors)) {
+            // models don't support every endpoint - not worth more than a debug line each poll
+            this.log.debug(`[pleos] ${vin} ${endpoint} not available: ${msg}`);
+        }
+        if (Object.keys(data).length === 0) {
+            this.countError += 1;
+            this.log.error(`[pleos] No data for ${vin}: ${JSON.stringify(errors)}`);
+            this.setState(`${vin}.error_counter`, this.countError, true);
+            return;
+        }
+
+        this.countError = 0;
+        this.setState('info.connection', true, true);
+        await this.json2iob.parse(`${vin}.pleosRaw`, data);
+        try {
+            await this.setPleosStatus(vin, data);
+        } catch (err) {
+            this.log.error(`[pleos] Mapping status for ${vin} failed: ${err.stack || err}`);
+        }
+        this.setState(`${vin}.error_counter`, 0, true);
+        this.setState(`${vin}.lastInfoUpdate`, Date.now(), true);
+        this.log.info(`[pleos] Update for ${vin} successfull`);
+    }
+
+    /**
+     * Writes a state only if its object exists - several vehicleStatus objects depend on the motor type.
+     *
+     * @param id
+     * @param val
+     */
+    async setPleosState(id, val) {
+        if (val === null || val === undefined || (typeof val === 'number' && isNaN(val))) {
+            return;
+        }
+        if (await this.getObjectAsync(id)) {
+            await this.setStateAsync(id, { val, ack: true });
+        }
+    }
+
+    /**
+     * Maps the Pleos payloads onto the same states the Bluelink mode fills, so existing
+     * scripts and visualisations keep working. Everything else stays in pleosRaw.
+     *
+     * @param {string} vin vehicle identification number
+     * @param {Record<string, any>} data payloads of PleosClient.readAll()
+     */
+    async setPleosStatus(vin, data) {
+        const st = `${vin}.vehicleStatus`;
+
+        const charge = data.batteries && data.batteries.charge;
+        if (charge) {
+            await this.setPleosState(`${st}.battery.soc`, charge.stateOfCharge);
+            const charging = !!charge.charging || ['charging', 'fastCharging', 'wirelessCharging', 'reservedCharging'].includes(charge.status);
+            await this.setPleosState(`${st}.battery.charge`, charging);
+            if (charge.plugin === 'disconnected') {
+                await this.setPleosState(`${st}.battery.plugin`, 0);
+            } else if (charge.plugin === 'connected') {
+                // same coding as Bluelink: 1 = DC (fast), 2 = AC
+                await this.setPleosState(`${st}.battery.plugin`, charge.status === 'fastCharging' ? 1 : 2);
+            }
+            if (charge.remainTime !== undefined && charge.remainTime !== 65535) {
+                await this.setPleosState(`${st}.battery.minutes_to_charged`, charge.remainTime);
+            }
+        } else if (data.powertrains && Array.isArray(data.powertrains.batteries)) {
+            const main = data.powertrains.batteries.find(b => b.type === 'main');
+            if (main) {
+                await this.setPleosState(`${st}.battery.soc`, main.remainRatio);
+            }
+        }
+
+        if (data.powertrains && Array.isArray(data.powertrains.distanceToEmpties)) {
+            const ranges = {};
+            for (const d of data.powertrains.distanceToEmpties) {
+                const km = toKm(d.value, d.unit);
+                if (km !== null) {
+                    ranges[d.type] = km;
+                }
+            }
+            if (ranges.EV !== undefined) {
+                await this.setPleosState(`${st}.evModeRange`, ranges.EV);
+            }
+            if (ranges.ICE !== undefined) {
+                await this.setPleosState(`${st}.gasModeRange`, ranges.ICE);
+            }
+            const total = ranges.PHEV ?? ranges.HEV ?? ranges.FCEV ??
+                ((ranges.EV !== undefined || ranges.ICE !== undefined) ? (ranges.EV || 0) + (ranges.ICE || 0) : undefined);
+            await this.setPleosState(`${st}.dte`, total);
+        }
+
+        if (data.driving && data.driving.odometer) {
+            const km = toKm(data.driving.odometer.value, data.driving.odometer.unit);
+            if (km !== null && km > 0) {
+                await this.setPleosState(`${vin}.odometer.value`, km);
+            }
+        }
+
+        const loc = data.locations && data.locations.location;
+        if (loc && typeof loc.latitude === 'number' && typeof loc.longitude === 'number' && !(loc.latitude === 0 && loc.longitude === 0)) {
+            await tools.setLocation(this, vin, loc.latitude, loc.longitude, toKmh(loc.speed));
+        }
+
+        const status = data.status;
+        if (status) {
+            const doors = Array.isArray(status.doors) ? status.doors : [];
+            const front = doors[0] || {};
+            const back = doors[1] || {};
+            const doorVals = [front.left, front.right, back.left, back.right].filter(v => v && v !== 'invalid');
+            if (doorVals.length) {
+                await this.setPleosState(`${st}.doorLock`, doorVals.every(v => v === 'locked'));
+                await this.setPleosState(`${st}.doorOpen.frontLeft`, front.left === 'open');
+                await this.setPleosState(`${st}.doorOpen.frontRight`, front.right === 'open');
+                await this.setPleosState(`${st}.doorOpen.backLeft`, back.left === 'open');
+                await this.setPleosState(`${st}.doorOpen.backRight`, back.right === 'open');
+            }
+            if (status.trunk && status.trunk !== 'invalid') {
+                await this.setPleosState(`${st}.trunkOpen`, status.trunk === 'open');
+            }
+            if (status.hood && status.hood !== 'invalid') {
+                await this.setPleosState(`${st}.hoodOpen`, status.hood === 'open');
+            }
+            if (status.climateControl) {
+                await this.setPleosState(`${st}.airCtrlOn`, status.climateControl.status === 'on');
+                await this.setPleosState(`${st}.airTemp`, toCelsius(status.climateControl.temperature));
+            }
+            if (status.steeringWheelHeat) {
+                await this.setPleosState(`${st}.steerWheelHeat`, status.steeringWheelHeat === 'on');
+            }
+            if (Array.isArray(status.warnings)) {
+                await this.setPleosState(`${st}.smartKeyBatteryWarning`, status.warnings.includes('smartKeyBattery'));
+                await this.setPleosState(`${st}.washerFluidStatus`, status.warnings.includes('washFluid'));
+                await this.setPleosState(`${st}.breakOilStatus`, status.warnings.includes('brakeOil'));
+            }
+        }
+    }
+
+    async onPleosStateChange(id, state) {
+        if (state.ack) {
+            return;
+        }
+        const parts = id.split('.');
+        const vin = parts[2];
+        const control = parts[parts.length - 1];
+
+        if (id.endsWith('.info.fetchToken') || control === 'force_refresh' || control === 'force_refresh_from_server' ||
+            control === 'force_refresh_from_car' || control === 'force_location') {
+            this.setState(id, { val: false, ack: true });
+            if (id.endsWith('.info.fetchToken')) {
+                this.pleosClient.accessToken = null; // forces a new token on the next request
+                await this.readPleosStatus();
+            } else if (this.pleosVins.includes(vin)) {
+                await this.readPleosVin(vin);
+            }
+            return;
+        }
+        if (id.indexOf('.control.') !== -1) {
+            this.log.warn(`[pleos] "${control}" is not available in Pleos (EU Data Act) mode - the API is read-only, no remote commands`);
+        }
+    }
 
     getCircularReplacer() {
         const seen = new WeakSet();

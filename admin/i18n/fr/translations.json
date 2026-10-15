@@ -17,5 +17,21 @@
     "only for PHEV": "seulement pour PHEV",
     "Token-documentation": "Documentation relative aux jetons",
     "Password": "Mot de passe (mot de passe du compte)",
-    "Last successful login (auto-managed)": "Dernière connexion réussie (gérée automatiquement)"
+    "Last successful login (auto-managed)": "Dernière connexion réussie (gérée automatiquement)",
+    "Data source": "Source de données",
+    "Bluelink / Kia Connect app (login, remote commands)": "App Bluelink / Kia Connect (connexion, commandes à distance)",
+    "Pleos Vehicle Data API (EU Data Act, read-only)": "Pleos Vehicle Data API (EU Data Act, lecture seule)",
+    "Bluelink mode uses the app login (captcha-blocked since October 2026). Pleos mode uses the official EU Data Act API: no login problems, but read-only - no lock, climate or charging commands.": "Le mode Bluelink utilise la connexion de l'app (bloquée par captcha depuis octobre 2026). Le mode Pleos utilise l'API officielle EU Data Act : pas de problème de connexion, mais lecture seule – pas de commandes de verrouillage, climatisation ou charge.",
+    "Vehicle": "Véhicule",
+    "Options": "Options",
+    "General": "Général",
+    "Bluelink app": "App Bluelink",
+    "Pleos (EU Data Act)": "Pleos (EU Data Act)",
+    "Pleos Vehicle Data API (EU Data Act)": "Pleos Vehicle Data API (EU Data Act)",
+    "Client ID": "Client ID",
+    "Client Secret": "Client Secret",
+    "Pleos Playground": "Pleos Playground",
+    "Guide: request API key": "Guide : demander une clé API",
+    "One-time setup: register at pleos.ai/playground, open \"My Vehicle Data API\" in the account menu, choose your brand, accept the terms, click \"Get API Key\" and sign in with your Bluelink / Kia Connect account. Copy the Client ID and Client Secret shown into the fields below. Brand above must match the key.": "Configuration unique : inscrivez-vous sur pleos.ai/playground, ouvrez « My Vehicle Data API » dans le menu du compte, choisissez la marque, acceptez les conditions, cliquez sur « Get API Key » et connectez-vous avec votre compte Bluelink / Kia Connect. Copiez le Client ID et le Client Secret ci-dessous. La marque doit correspondre à la clé.",
+    "Not available in this mode: remote commands (lock/unlock, climate, charging, charge limits), forced live update from the car, drive history. Data is what the car last sent to the server. All raw values are written to <vin>.pleosRaw.": "Non disponible dans ce mode : commandes à distance (verrouillage, climatisation, charge, limites de charge), mise à jour en direct depuis la voiture, historique de conduite. Les données sont celles envoyées en dernier par la voiture. Toutes les valeurs brutes sont dans <vin>.pleosRaw."
 }

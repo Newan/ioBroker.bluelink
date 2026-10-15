@@ -18,5 +18,21 @@
     "only for PHEV": "?????????????(PHEV)",
     "Token-documentation": "令牌文档",
     "Password": "密码（账户密码）",
-    "Last successful login (auto-managed)": "上次成功登录（自动管理）"
+    "Last successful login (auto-managed)": "上次成功登录（自动管理）",
+    "Data source": "数据源",
+    "Bluelink / Kia Connect app (login, remote commands)": "Bluelink / Kia Connect 应用（登录、远程命令）",
+    "Pleos Vehicle Data API (EU Data Act, read-only)": "Pleos Vehicle Data API（欧盟数据法案，只读）",
+    "Bluelink mode uses the app login (captcha-blocked since October 2026). Pleos mode uses the official EU Data Act API: no login problems, but read-only - no lock, climate or charging commands.": "Bluelink 模式使用应用登录（自 2026 年 10 月起被验证码阻止）。Pleos 模式使用官方欧盟数据法案 API：没有登录问题，但只读——没有锁车、空调或充电命令。",
+    "Vehicle": "车辆",
+    "Options": "选项",
+    "General": "常规",
+    "Bluelink app": "Bluelink 应用",
+    "Pleos (EU Data Act)": "Pleos (EU Data Act)",
+    "Pleos Vehicle Data API (EU Data Act)": "Pleos Vehicle Data API (EU Data Act)",
+    "Client ID": "Client ID",
+    "Client Secret": "Client Secret",
+    "Pleos Playground": "Pleos Playground",
+    "Guide: request API key": "指南：申请 API 密钥",
+    "One-time setup: register at pleos.ai/playground, open \"My Vehicle Data API\" in the account menu, choose your brand, accept the terms, click \"Get API Key\" and sign in with your Bluelink / Kia Connect account. Copy the Client ID and Client Secret shown into the fields below. Brand above must match the key.": "一次性设置：在 pleos.ai/playground 注册，在账户菜单中打开“My Vehicle Data API”，选择品牌，接受条款，点击“Get API Key”并使用 Bluelink / Kia Connect 账户登录。将显示的 Client ID 和 Client Secret 填入下方。品牌必须与密钥一致。",
+    "Not available in this mode: remote commands (lock/unlock, climate, charging, charge limits), forced live update from the car, drive history. Data is what the car last sent to the server. All raw values are written to <vin>.pleosRaw.": "此模式不可用：远程命令（锁车/解锁、空调、充电、充电上限）、从车辆实时更新、行驶记录。数据为车辆最后发送到服务器的状态。所有原始值写入 <vin>.pleosRaw。"
 }

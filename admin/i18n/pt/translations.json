@@ -18,5 +18,21 @@
     "only for PHEV": "apenas para PHEV",
     "Token-documentation": "Documentação do token",
     "Password": "Senha (senha da conta)",
-    "Last successful login (auto-managed)": "Último login bem-sucedido (gerenciado automaticamente)"
+    "Last successful login (auto-managed)": "Último login bem-sucedido (gerenciado automaticamente)",
+    "Data source": "Fonte de dados",
+    "Bluelink / Kia Connect app (login, remote commands)": "App Bluelink / Kia Connect (login, comandos remotos)",
+    "Pleos Vehicle Data API (EU Data Act, read-only)": "Pleos Vehicle Data API (EU Data Act, somente leitura)",
+    "Bluelink mode uses the app login (captcha-blocked since October 2026). Pleos mode uses the official EU Data Act API: no login problems, but read-only - no lock, climate or charging commands.": "O modo Bluelink usa o login do app (bloqueado por captcha desde outubro de 2026). O modo Pleos usa a API oficial do EU Data Act: sem problemas de login, mas somente leitura – sem comandos de travamento, climatização ou carregamento.",
+    "Vehicle": "Veículo",
+    "Options": "Opções",
+    "General": "Geral",
+    "Bluelink app": "App Bluelink",
+    "Pleos (EU Data Act)": "Pleos (EU Data Act)",
+    "Pleos Vehicle Data API (EU Data Act)": "Pleos Vehicle Data API (EU Data Act)",
+    "Client ID": "Client ID",
+    "Client Secret": "Client Secret",
+    "Pleos Playground": "Pleos Playground",
+    "Guide: request API key": "Guia: solicitar chave de API",
+    "One-time setup: register at pleos.ai/playground, open \"My Vehicle Data API\" in the account menu, choose your brand, accept the terms, click \"Get API Key\" and sign in with your Bluelink / Kia Connect account. Copy the Client ID and Client Secret shown into the fields below. Brand above must match the key.": "Configuração única: registre-se em pleos.ai/playground, abra \"My Vehicle Data API\" no menu da conta, escolha a marca, aceite os termos, clique em \"Get API Key\" e entre com sua conta Bluelink / Kia Connect. Copie o Client ID e o Client Secret abaixo. A marca deve corresponder à chave.",
+    "Not available in this mode: remote commands (lock/unlock, climate, charging, charge limits), forced live update from the car, drive history. Data is what the car last sent to the server. All raw values are written to <vin>.pleosRaw.": "Não disponível neste modo: comandos remotos (travar, climatização, carregamento, limites de carga), atualização ao vivo do carro, histórico de condução. Os dados são os últimos enviados pelo carro. Todos os valores brutos estão em <vin>.pleosRaw."
 }

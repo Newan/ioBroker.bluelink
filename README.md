@@ -24,8 +24,23 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 [Wiki](https://github.com/Newan/ioBroker.bluelink/wiki)
 
+### Data source: Bluelink app or Pleos (EU Data Act)
+
+Since October 2026 the Bluelink / Kia Connect app login is protected by a captcha, so automated logins fail (`Signin returned HTTP 403`, `code 9035`). As an alternative the adapter can read the vehicle data through the official **Pleos Vehicle Data API** (EU Data Act, Europe only, Hyundai / Kia / Genesis).
+
+* In the adapter settings, tab **General**, set *Data source* to *Pleos Vehicle Data API*.
+* Get a key once: register at [Pleos Playground](https://pleos.ai/playground), open *My Vehicle Data API* in the account menu, choose the brand, accept the terms, click *Get API Key* and sign in with your Bluelink / Kia Connect account ([guide](https://document.pleos.ai/en/api-reference/vehicle-data-api/getting-started/for-private-users/request-my-vehicle-api-key)).
+* Enter the Client ID and Client Secret in the **Pleos** tab. The brand in the General tab must match the key.
+
+The Pleos data is written to the same states as in Bluelink mode (SoC, charging, plug, range, odometer, location, doors, lock, trunk, hood, climate, warnings); all raw values are in `<vin>.pleosRaw`.
+
+**The Pleos API is read-only:** no lock/unlock, climate, charging or charge limit commands, no forced live update from the car, no drive history. `control.force_refresh` reads the latest server data.
+
 ------------------------------------------------------------------------------------
 ## Changelog
+### **WORK IN PROGRESS**
+* (ipod86) New data source Pleos Vehicle Data API (EU Data Act, read-only) as alternative to the captcha-blocked app login
+
 ### 3.1.34 (2026-09-17)
 * (arteck) fix location request
 

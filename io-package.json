@@ -166,16 +166,20 @@
     "refreshToken",
     "client_secret",
     "client_secret_pin",
-    "cciTokenSet"
+    "cciTokenSet",
+    "pleosClientSecret",
+    "pleosClientId"
   ],
   "encryptedNative": [
     "password",
     "refreshToken",
     "client_secret",
     "client_secret_pin",
-    "cciTokenSet"
+    "cciTokenSet",
+    "pleosClientSecret"
   ],
   "native": {
+    "apiMode": "bluelink",
     "username": "",
     "password": "",
     "refreshToken": "",
@@ -192,7 +196,9 @@
     "protectAgainstDeepDischarge": true,
     "errorCounter": 5,
     "language": "de",
-    "resAddress": false
+    "resAddress": false,
+    "pleosClientId": "",
+    "pleosClientSecret": ""
   },
   "objects": [],
   "instanceObjects": [
