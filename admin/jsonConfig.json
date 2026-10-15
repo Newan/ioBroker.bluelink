@@ -398,6 +398,21 @@
                     "md": 8,
                     "lg": 4,
                     "xl": 4
+                },
+                "locationEveryPoll": {
+                    "type": "checkbox",
+                    "label": "Standort bei jeder Abfrage aktualisieren",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 8,
+                    "lg": 4,
+                    "xl": 4
+                },
+                "_locationEveryPollHelp": {
+                    "type": "staticText",
+                    "text": "Holt bei jeder normalen Abfrage zusätzlich den zuletzt bekannten Parkstandort (GET /location/park). Das ist der Server-/Parkstand, es weckt das Auto NICHT. Früher kamen die GPS-Koordinaten im normalen Status mit; bei CCS2-Fahrzeugen fehlen sie dort und kommen nur noch über diesen Zusatzabruf. Achtung: kostet 1 zusätzlichen Request pro Abfrage (Request-Budget beachten). Standard: aus.",
+                    "newLine": true
                 }
             }
         },

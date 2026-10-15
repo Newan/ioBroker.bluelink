@@ -4,8 +4,8 @@
     "version": "3.2.0",
     "news": {
       "3.2.0": {
-        "en": "New Pleos Vehicle Data API data source (read-only); configurable CCI fingerprint key; clearer login diagnostics; quieter location warning",
-        "de": "Neue Datenquelle Pleos Vehicle Data API (nur lesen); konfigurierbarer CCI-Fingerprint-Key; klarere Login-Diagnose; weniger Location-Warnungen"
+        "en": "New Pleos Vehicle Data API data source (read-only); configurable CCI fingerprint key; clearer login diagnostics; quieter location warning; optional location update on every poll",
+        "de": "Neue Datenquelle Pleos Vehicle Data API (nur lesen); konfigurierbarer CCI-Fingerprint-Key; klarere Login-Diagnose; weniger Location-Warnungen; optionale Standort-Aktualisierung bei jeder Abfrage"
       },
       "3.1.35": {
         "en": "Fix EU Hyundai/Kia login",
@@ -199,6 +199,7 @@
     "request": 100,
     "evHistory": true,
     "protectAgainstDeepDischarge": true,
+    "locationEveryPoll": false,
     "errorCounter": 5,
     "language": "de",
     "resAddress": false,

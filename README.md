@@ -43,6 +43,7 @@ The Pleos data is written to the same states as in Bluelink mode (SoC, charging,
 * (ipod86) Admin field to override the CCI fingerprint key if the OneApp app secret rotates (no adapter release needed)
 * (ipod86) Clearer login diagnostics: detect nginx/WAF edge blocks (HTTP 403/429), guard against missing credentials, and surface the real CCI error instead of the masked legacy 403
 * (ipod86) Location: only warn when a live location request returns nothing; normal status polls no longer spam the warning
+* (ipod86) Optional "update location on every poll" setting — fetches the last known parked location (GET /location/park, does not wake the car) on normal polls too; off by default, costs one extra request per poll
 
 ### 3.1.35 (2026-10-15)
 * (arteck) Fix EU Hyundai/Kia login

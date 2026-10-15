@@ -922,10 +922,12 @@ class Bluelink extends utils.Adapter {
         let locationFound = false;
         let coords = null;
 
-        // 1. Query dedicated vehicle.location() endpoint first (same GET /location API endpoint used by official app)
-        // Only do this on a forced/live update - a plain server-side (cached) status query must not
-        // trigger an additional live location request to the vehicle/backend.
-        if (force_update && vehicle && typeof vehicle.location === 'function') {
+        // 1. Query dedicated vehicle.location() endpoint first (GET /location/park — the last
+        // known server-side/parked location; this does NOT wake the car). Always on a forced
+        // update; on normal polls only if the user opted in via config.locationEveryPoll
+        // (CCS2 cached status omits GPS, so this restores "coordinates on every poll" at the
+        // cost of one extra request per poll).
+        if ((force_update || this.config.locationEveryPoll) && vehicle && typeof vehicle.location === 'function') {
             try {
                 this.log.debug(`Requesting dedicated vehicle.location() for ${vin}...`);
                 const loc = await vehicle.location();
