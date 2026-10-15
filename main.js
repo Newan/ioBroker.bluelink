@@ -1543,6 +1543,22 @@ class Bluelink extends utils.Adapter {
         if (vehicles.length === 0) {
             this.log.warn('[pleos] No vehicle shared - check "My Vehicle Data API" at pleos.ai/playground');
             this.log.warn(`[pleos] Raw consent response: ${JSON.stringify(this.pleosClient.lastConsentResponse)}`);
+            // The consent list can be empty although data for a VIN is readable (or the
+            // probe tells why not) - try the vehicles already known from earlier runs.
+            const devices = await this.getDevicesAsync();
+            for (const dev of devices) {
+                const vin = dev._id.split('.').pop();
+                if (!/^[A-HJ-NPR-Z0-9]{17}$/.test(vin)) {
+                    continue;
+                }
+                const probe = await this.pleosClient.readAll(vin);
+                if (Object.keys(probe.data).length) {
+                    this.log.info(`[pleos] ${vin} is not in the consent list, but its data is readable - using it`);
+                    vehicles.push({ vin });
+                } else {
+                    this.log.warn(`[pleos] Probe of known vehicle ${vin} failed: ${JSON.stringify(probe.errors)}`);
+                }
+            }
         }
 
         this.pleosVins = [];
