@@ -1557,6 +1557,9 @@ class Bluelink extends utils.Adapter {
                     vehicles.push({ vin });
                 } else {
                     this.log.warn(`[pleos] Probe of known vehicle ${vin} failed: ${JSON.stringify(probe.errors)}`);
+                    if (JSON.stringify(probe.errors).includes('4101')) {
+                        this.log.warn(`[pleos] 4101 "Unregistered Vehicle": Pleos has no data sharing registration for ${vin}. Key and login are fine - the vehicle itself is not (yet) enabled for the EU Data Act API on Hyundai/Kia side.`);
+                    }
                 }
             }
         }
