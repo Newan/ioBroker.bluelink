@@ -974,8 +974,16 @@ class Bluelink extends utils.Adapter {
         if (coords) {
             await tools.setLocation(this, vin, coords.lat, coords.lon, coords.speed);
             locationFound = true;
+        } else if (force_update) {
+            // A live location was actively requested (vehicle.location()) and still
+            // returned nothing — that is worth a warning.
+            this.log.warn(`No valid location coordinates could be parsed for ${vin} (live location request returned none)`);
         } else {
-            this.log.warn(`No valid location coordinates could be parsed for ${vin}`);
+            // Normal (cached) status poll: CCS2 status payloads routinely omit GPS —
+            // the car only reports coordinates on a live/forced location request. This
+            // is expected and must not spam a warning on every poll; the last known
+            // location state is kept. Use the force_location button for a fresh fix.
+            this.log.debug(`No location in cached status for ${vin} (normal poll; use force_location for a live GPS fix)`);
         }
 
         return locationFound;
