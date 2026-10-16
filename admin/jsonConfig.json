@@ -547,7 +547,7 @@
                         },
                         "_helpPleos5": {
                             "type": "staticText",
-                            "text": "Troubleshooting: token error or \"40404\" - Client ID, Client Secret or brand wrong. No vehicle found - data sharing consent missing, repeat steps 3 and 4. Some values stay empty - not provided for your model.",
+                            "text": "Troubleshooting: token error or \"40404\" - Client ID, Client Secret or brand wrong. No vehicle found or \"4101 Unregistered Vehicle\" - data sharing consent missing, repeat steps 3 and 4. The key only covers vehicles that were in your Hyundai/Kia account when it was created - for a vehicle added later, revoke the key on pleos.ai and get a new one. The key expires after 90 days - then get a new one and enter the new Client ID / Client Secret. Some values stay empty - not provided for your model.",
                             "newLine": true,
                             "xs": 12,
                             "sm": 12,
@@ -560,7 +560,7 @@
                 "_pleosLimits": {
                     "type": "staticText",
                     "newLine": true,
-                    "text": "Not available in this mode: remote commands (lock/unlock, climate, charging, charge limits), forced live update from the car, drive history. Data is what the car last sent to the server. All raw values are written to <vin>.pleosRaw."
+                    "text": "Not available in this mode: remote commands (lock/unlock, climate, charging, changing charge limits - they are shown read-only), forced live update from the car, drive history. Data is what the car last sent to the server. All raw values are written to <vin>.pleosRaw."
                 }
             }
         }

@@ -31,6 +31,7 @@ Since October 2026 the Bluelink / Kia Connect app login is protected by a captch
 * In the adapter settings, tab **General**, set *Data source* to *Pleos Vehicle Data API*.
 * Get a key once: register at [Pleos Playground](https://pleos.ai/playground), open *My Vehicle Data API* in the account menu, choose the brand, accept the terms, click *Get API Key* and sign in with your Bluelink / Kia Connect account ([guide](https://document.pleos.ai/en/api-reference/vehicle-data-api/getting-started/for-private-users/request-my-vehicle-api-key)).
 * Enter the Client ID and Client Secret in the **Pleos** tab. The brand in the General tab must match the key.
+* The key expires after 90 days and only covers vehicles that were in your account when it was created. In both cases, get a new key on Pleos Playground and enter the new values.
 
 The Pleos data is written to the same states as in Bluelink mode (SoC, charging, plug, range, odometer, location, doors, lock, trunk, hood, climate, warnings, charge limits in `control.charge_limit_*` as read-only values); all raw values are in `<vin>.pleosRaw`.
 
