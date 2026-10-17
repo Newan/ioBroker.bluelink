@@ -10,7 +10,7 @@ Seit Oktober 2026 ist der Login der Bluelink-/Kia-Connect-App per Captcha gesch�
 * Einmalig einen Key holen: auf [Pleos Playground](https://pleos.ai/playground) registrieren, im Konto-Menü *My Vehicle Data API* öffnen, Marke wählen, Bedingungen akzeptieren, *Get API Key* klicken und mit dem Bluelink-/Kia-Connect-Konto anmelden ([Anleitung](https://document.pleos.ai/en/api-reference/vehicle-data-api/getting-started/for-private-users/request-my-vehicle-api-key)).
 * Client ID und Client Secret im Tab **Pleos** eintragen. Die Marke im Tab Allgemein muss zum Key passen.
 
-Die Pleos-Daten landen in denselben Datenpunkten wie im Bluelink-Modus (SoC, Laden, Stecker, Reichweite, km-Stand, Position, Türen, Verriegelung, Kofferraum, Haube, Klima, Warnungen); alle Rohwerte unter `<vin>.pleosRaw`.
+Die Pleos-Daten landen in denselben Datenpunkten wie im Bluelink-Modus (SoC, Laden, Stecker, Reichweite, km-Stand, Position, Türen, Verriegelung, Kofferraum, Haube, Klima, Warnungen). Der Reifendruck wird in beiden Modi nach bar in `vehicleStatus.tirePressure.*` umgerechnet (Rohwert: psi direkt, kPa ×5, bar ÷10; 255 = kein Messwert, z. B. wenn das Auto schläft – der letzte gültige Wert bleibt erhalten); alle Rohwerte unter `<vin>.pleosRaw`.
 
 **Die Pleos-API ist nur lesend:** kein Ver-/Entriegeln, keine Klima-, Lade- oder Ladelimit-Befehle, keine Live-Abfrage direkt vom Auto, kein Fahrtenbuch. `control.force_refresh` liest den aktuellen Serverstand.
 

@@ -7,7 +7,7 @@ const Json2iob = require('./lib/json2iob');
 const tools = require('./lib/tools');
 const Create_tools = require('./lib/create_tools').Create_tools;
 const tokenManager = require('./lib/tokenManager');
-const {PleosClient, toKm, toKmh, toCelsius} = require('./lib/pleos');
+const {PleosClient, toKm, toKmh, toCelsius, tirePressureBar} = require('./lib/pleos');
 
 const adapterIntervals = {}; //halten von allen Intervallen
 let request_count = 48; // halbstündig sollte als Standardeinstellung reichen (zu häufige Abfragen entleeren die Batterie spürbar)
@@ -813,6 +813,7 @@ class Bluelink extends utils.Adapter {
 
                 // raw data
                 await this.json2iob.parse(`${vin}.vehicleStatusRaw`, newStatus);
+                await this.setBluelinkTirePressure(vin, newStatus);
 
                 if (newStatus.hasOwnProperty('vehicleStatus')) {
                     await create_tools.setVehicleStatusObjects(vin);
@@ -839,6 +840,7 @@ class Bluelink extends utils.Adapter {
                     this.log.debug(JSON.stringify(newStatus));
 
                     await this.json2iob.parse(`${vin}.vehicleStatusRaw`, newStatus);
+                    await this.setBluelinkTirePressure(vin, newStatus);
 
                     if (newStatus.hasOwnProperty('vehicleStatus')) {
                         await create_tools.setVehicleStatusObjects(vin);
@@ -1779,11 +1781,76 @@ class Bluelink extends utils.Adapter {
             if (status.steeringWheelHeat) {
                 await this.setPleosState(`${st}.steerWheelHeat`, status.steeringWheelHeat === 'on');
             }
+            if (Array.isArray(status.tire)) {
+                await this.setTirePressure(st, status.tire);
+            }
             if (Array.isArray(status.warnings)) {
                 await this.setPleosState(`${st}.smartKeyBatteryWarning`, status.warnings.includes('smartKeyBattery'));
                 await this.setPleosState(`${st}.washerFluidStatus`, status.warnings.includes('washFluid'));
                 await this.setPleosState(`${st}.breakOilStatus`, status.warnings.includes('brakeOil'));
             }
+        }
+    }
+
+    /**
+     * Bluelink (app login, CCS2 status): Chassis.Axle.RowN.Left/Right.Tire.Pressure with
+     * Chassis.Axle.Tire.PressureUnit 0 = psi, 1 = kPa, 2 = bar (other values: no direct TPMS).
+     * Same raw scheme as Pleos, so it is passed on in the Pleos tire format.
+     *
+     * @param {string} vin vehicle identification number
+     * @param {any} status raw status of bluelinky
+     */
+    async setBluelinkTirePressure(vin, status) {
+        const axle = status && status.Chassis && status.Chassis.Axle;
+        const unit = axle && axle.Tire && { 0: 'psi', 1: 'kpa', 2: 'bar' }[axle.Tire.PressureUnit];
+        if (!unit) {
+            return;
+        }
+        const row = r => ({
+            left: axle[r] && axle[r].Left && axle[r].Left.Tire && axle[r].Left.Tire.Pressure,
+            right: axle[r] && axle[r].Right && axle[r].Right.Tire && axle[r].Right.Tire.Pressure,
+            unit,
+        });
+        await this.setTirePressure(`${vin}.vehicleStatus`, [row('Row1'), row('Row2')]);
+    }
+
+    /**
+     * Tire pressure in the Pleos format ([0] = front, [1] = rear, raw 0..254 + unit, 255 = invalid),
+     * converted into bar. Used by Pleos and Bluelink mode; raw values stay in pleosRaw / vehicleStatusRaw.
+     *
+     * @param {string} st vehicleStatus prefix
+     * @param {Array<{left?: number, right?: number, unit?: string}>} tire status.tire
+     */
+    async setTirePressure(st, tire) {
+        const wheels = [
+            ['frontLeft', tire[0], 'left', 'Tire pressure front left'],
+            ['frontRight', tire[0], 'right', 'Tire pressure front right'],
+            ['rearLeft', tire[1], 'left', 'Tire pressure rear left'],
+            ['rearRight', tire[1], 'right', 'Tire pressure rear right'],
+        ];
+        let channelDone = false;
+        for (const [key, axle, side, name] of wheels) {
+            if (!axle) {
+                continue;
+            }
+            const bar = tirePressureBar(axle[side], axle.unit);
+            if (bar === null) {
+                continue; // 255 = invalid or unknown unit - keep the last valid value
+            }
+            if (!channelDone) {
+                await this.setObjectNotExistsAsync(`${st}.tirePressure`, {
+                    type: 'channel',
+                    common: { name: 'Tire pressure' },
+                    native: {},
+                });
+                channelDone = true;
+            }
+            await this.setObjectNotExistsAsync(`${st}.tirePressure.${key}`, {
+                type: 'state',
+                common: { name, type: 'number', role: 'value', unit: 'bar', read: true, write: false },
+                native: {},
+            });
+            await this.setStateAsync(`${st}.tirePressure.${key}`, { val: bar, ack: true });
         }
     }
 

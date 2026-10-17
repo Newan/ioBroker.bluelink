@@ -33,7 +33,7 @@ Since October 2026 the Bluelink / Kia Connect app login is protected by a captch
 * Enter the Client ID and Client Secret in the **Pleos** tab. The brand in the General tab must match the key.
 * The key expires after 90 days and only covers vehicles that were in your account when it was created. In both cases, get a new key on Pleos Playground and enter the new values.
 
-The Pleos data is written to the same states as in Bluelink mode (SoC, charging, plug, range, odometer, location, doors, lock, trunk, hood, climate, warnings, charge limits in `control.charge_limit_*` as read-only values); all raw values are in `<vin>.pleosRaw`.
+The Pleos data is written to the same states as in Bluelink mode (SoC, charging, plug, range, odometer, location, doors, lock, trunk, hood, climate, warnings, charge limits in `control.charge_limit_*` as read-only values)). Tire pressure is converted to bar in `vehicleStatus.tirePressure.*` in both modes (raw value: psi as-is, kPa ×5, bar ÷10; 255 = no reading, e.g. while the car sleeps, the last valid value is kept). All raw values are in `<vin>.pleosRaw`.
 
 **The Pleos API is read-only:** no lock/unlock, climate, charging or charge limit commands, no forced live update from the car, no drive history. `control.force_refresh` reads the latest server data.
 
