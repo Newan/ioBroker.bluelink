@@ -24,8 +24,28 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 [Wiki](https://github.com/Newan/ioBroker.bluelink/wiki)
 
+### Data source: Bluelink app or Pleos (EU Data Act)
+
+Since October 2026 the Bluelink / Kia Connect app login is protected by a captcha, so automated logins fail (`Signin returned HTTP 403`, `code 9035`). As an alternative the adapter can read the vehicle data through the official **Pleos Vehicle Data API** (EU Data Act, Europe only, Hyundai / Kia / Genesis).
+
+* In the adapter settings, tab **General**, set *Data source* to *Pleos Vehicle Data API*.
+* Get a key once: register at [Pleos Playground](https://pleos.ai/playground), open *My Vehicle Data API* in the account menu, choose the brand, accept the terms, click *Get API Key* and sign in with your Bluelink / Kia Connect account ([guide](https://document.pleos.ai/en/api-reference/vehicle-data-api/getting-started/for-private-users/request-my-vehicle-api-key)).
+* Enter the Client ID and Client Secret in the **Pleos** tab. The brand in the General tab must match the key.
+* The key expires after 90 days and only covers vehicles that were in your account when it was created. In both cases, get a new key on Pleos Playground and enter the new values.
+
+The Pleos data is written to the same states as in Bluelink mode (SoC, charging, plug, range, odometer, location, doors, lock, trunk, hood, climate, warnings, charge limits in `control.charge_limit_*` as read-only values)). Tire pressure is converted to bar in `vehicleStatus.tirePressure.*` in both modes (raw value: psi as-is, kPa ×5, bar ÷10; 255 = no reading, e.g. while the car sleeps, the last valid value is kept). All raw values are in `<vin>.pleosRaw`.
+
+**The Pleos API is read-only:** no lock/unlock, climate, charging or charge limit commands, no forced live update from the car, no drive history. `control.force_refresh` reads the latest server data.
+
 ------------------------------------------------------------------------------------
 ## Changelog
+### 3.2.0 (2026-10-15)
+* (ipod86) New data source Pleos Vehicle Data API (EU Data Act, read-only) as alternative to the captcha-blocked app login
+* (ipod86) Admin field to override the CCI fingerprint key if the OneApp app secret rotates (no adapter release needed)
+* (ipod86) Clearer login diagnostics: detect nginx/WAF edge blocks (HTTP 403/429), guard against missing credentials, and surface the real CCI error instead of the masked legacy 403
+* (ipod86) Location: only warn when a live location request returns nothing; normal status polls no longer spam the warning
+* (ipod86) Optional "update location on every poll" setting — fetches the last known parked location (GET /location/park, does not wake the car) on normal polls too; off by default, costs one extra request per poll
+
 ### 3.1.35 (2026-10-15)
 * (arteck) Fix EU Hyundai/Kia login
 
@@ -40,6 +60,11 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 ### 3.1.31 (2026-08-11)
 * (arteck) Dependencies have been updated
+
+### 3.1.30 (2026-08-11)
+* (meistermopper) Fix vehicle location data extraction for Kia and Hyundai CCS2 vehicles and prioritize dedicated location API
+* (meistermopper) Add control.force_location button and implement live telematics POST location/status polling directly from vehicle hardware
+* (meistermopper) Fix TypeScript type definitions and unsafe property access in status parsing
 
 [Older changelogs can be found there](CHANGELOG_OLD.md)
 

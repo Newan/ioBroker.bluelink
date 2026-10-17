@@ -1,238 +1,568 @@
 {
-    "type": "panel",
+    "type": "tabs",
     "i18n": true,
     "items": {
-        "header_Start": {
-            "type": "header",
-            "text": "bluelink adapter settings",
-            "size": 2
-        },
-        "Account settings": {
-            "type": "header",
-            "text": "Account settings",
-            "size": 2,
-            "newLine": true
-        },
-        "brand": {
-            "newLine": true,
-            "type": "select",
-            "label": "Brand",
-            "xs": 12,
-            "sm": 12,
-            "md": 4,
-            "lg": 3,
-            "xl": 3,
-            "options": [
-                {
-                    "label": "Kia",
-                    "value": "kia"
+        "tab_general": {
+            "type": "panel",
+            "label": "General",
+            "items": {
+                "header_Start": {
+                    "type": "header",
+                    "text": "bluelink adapter settings",
+                    "size": 2
                 },
-                {
-                    "label": "Hyundai",
-                    "value": "hyundai"
+                "apiMode": {
+                    "type": "select",
+                    "label": "Data source",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 4,
+                    "xl": 4,
+                    "options": [
+                        {
+                            "label": "Bluelink / Kia Connect app (login, remote commands)",
+                            "value": "bluelink"
+                        },
+                        {
+                            "label": "Pleos Vehicle Data API (EU Data Act, read-only)",
+                            "value": "pleos"
+                        }
+                    ]
+                },
+                "_apiModeHelp": {
+                    "type": "staticText",
+                    "newLine": true,
+                    "text": "Bluelink mode uses the app login (captcha-blocked since October 2026). Pleos mode uses the official EU Data Act API: no login problems, but read-only - no lock, climate or charging commands."
+                },
+                "_helpGeneral": {
+                    "type": "panel",
+                    "label": "Help: which data source?",
+                    "collapsable": true,
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 12,
+                    "lg": 12,
+                    "xl": 12,
+                    "items": {
+                        "_helpGeneral0": {
+                            "type": "staticText",
+                            "text": "Bluelink app: full functionality incl. remote commands (lock, climate, charging), live update from the car and drive history. Needs the app login, which Hyundai/Kia currently block with a captcha.",
+                            "newLine": true,
+                            "xs": 12,
+                            "sm": 12,
+                            "md": 12,
+                            "lg": 12,
+                            "xl": 12
+                        },
+                        "_helpGeneral1": {
+                            "type": "staticText",
+                            "text": "Pleos (EU Data Act): official, stable access without app login, but read-only. Get a key once at pleos.ai/playground, after that everything runs automatically. Europe only.",
+                            "newLine": true,
+                            "xs": 12,
+                            "sm": 12,
+                            "md": 12,
+                            "lg": 12,
+                            "xl": 12
+                        },
+                        "_helpGeneral2": {
+                            "type": "staticText",
+                            "text": "Both modes fill the same states, so scripts and visualisations keep working after switching.",
+                            "newLine": true,
+                            "xs": 12,
+                            "sm": 12,
+                            "md": 12,
+                            "lg": 12,
+                            "xl": 12
+                        }
+                    }
+                },
+                "Vehicle settings": {
+                    "type": "header",
+                    "text": "Vehicle",
+                    "size": 2,
+                    "newLine": true
+                },
+                "brand": {
+                    "newLine": true,
+                    "type": "select",
+                    "label": "Brand",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 3,
+                    "xl": 3,
+                    "options": [
+                        {
+                            "label": "Kia",
+                            "value": "kia"
+                        },
+                        {
+                            "label": "Hyundai",
+                            "value": "hyundai"
+                        }
+                    ]
+                },
+                "motor": {
+                    "type": "select",
+                    "label": "Motor",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 3,
+                    "xl": 3,
+                    "options": [
+                        {
+                            "label": "EV",
+                            "value": "EV"
+                        },
+                        {
+                            "label": "PHEV/MHEV",
+                            "value": "HEV"
+                        },
+                        {
+                            "label": "Diesel/Benzin",
+                            "value": "GAS"
+                        }
+                    ]
+                },
+                "batteryRange": {
+                    "type": "number",
+                    "label": "max km Range",
+                    "help": "only for PHEV",
+                    "hidden": "data.motor === 'EV' || data.motor === 'GAS'",
+                    "unit": "km",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 3,
+                    "xl": 3
+                },
+                "Api settings": {
+                    "type": "header",
+                    "text": "Api settings",
+                    "size": 2,
+                    "newLine": true
+                },
+                "request": {
+                    "type": "text",
+                    "label": "Request max 400",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 8,
+                    "lg": 3,
+                    "xl": 3
+                },
+                "errorCounter": {
+                    "type": "text",
+                    "label": "errorCounter",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 8,
+                    "lg": 3,
+                    "xl": 3
+                },
+                "resAddress": {
+                    "type": "checkbox",
+                    "label": "Resolve the address from coordinates using openstreetmap",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 8,
+                    "lg": 4,
+                    "xl": 4
                 }
-            ]
+            }
         },
-        "motor": {
-            "type": "select",
-            "label": "Motor",
-            "xs": 12,
-            "sm": 12,
-            "md": 4,
-            "lg": 3,
-            "xl": 3,
-            "options": [
-                {
-                    "label": "EV",
-                    "value": "EV"
+        "tab_bluelink": {
+            "type": "panel",
+            "label": "Bluelink app",
+            "hidden": "data.apiMode === 'pleos'",
+            "items": {
+                "Account settings": {
+                    "type": "header",
+                    "text": "Account settings",
+                    "size": 2,
+                    "newLine": true
                 },
-                {
-                    "label": "PHEV/MHEV",
-                    "value": "HEV"
+                "_helpBluelink": {
+                    "type": "panel",
+                    "label": "Help: set up the Bluelink app login",
+                    "collapsable": true,
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 12,
+                    "lg": 12,
+                    "xl": 12,
+                    "items": {
+                        "_helpBluelink0": {
+                            "type": "staticText",
+                            "text": "1. Choose brand and engine type in the General tab.",
+                            "newLine": true,
+                            "xs": 12,
+                            "sm": 12,
+                            "md": 12,
+                            "lg": 12,
+                            "xl": 12
+                        },
+                        "_helpBluelink1": {
+                            "type": "staticText",
+                            "text": "2. Enter e-mail and password of your Bluelink / Kia Connect app account and the app PIN. The adapter fetches and renews the login token itself.",
+                            "newLine": true,
+                            "xs": 12,
+                            "sm": 12,
+                            "md": 12,
+                            "lg": 12,
+                            "xl": 12
+                        },
+                        "_helpBluelink2": {
+                            "type": "staticText",
+                            "text": "3. If the login fails, a refresh token can be generated manually (see Fallback below) and entered there.",
+                            "newLine": true,
+                            "xs": 12,
+                            "sm": 12,
+                            "md": 12,
+                            "lg": 12,
+                            "xl": 12
+                        },
+                        "_helpBluelink3": {
+                            "type": "staticText",
+                            "text": "Note: since October 2026 Hyundai/Kia protect the app login with a captcha. Errors like \"Signin returned HTTP 403\" or \"code 9035\" mean the login is blocked - switch the data source to Pleos in the General tab.",
+                            "newLine": true,
+                            "xs": 12,
+                            "sm": 12,
+                            "md": 12,
+                            "lg": 12,
+                            "xl": 12
+                        }
+                    }
                 },
-                {
-                    "label": "Diesel/Benzin",
-                    "value": "GAS"
+                "language": {
+                    "newLine": true,
+                    "type": "select",
+                    "label": "App Lang",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 3,
+                    "xl": 3,
+                    "options": [
+                        {
+                            "label": "DE",
+                            "value": "de"
+                        },
+                        {
+                            "label": "EN",
+                            "value": "en"
+                        },
+                        {
+                            "label": "NL",
+                            "value": "nl"
+                        },
+                        {
+                            "label": "IT",
+                            "value": "it"
+                        },
+                        {
+                            "label": "ES",
+                            "value": "es"
+                        },
+                        {
+                            "label": "PL",
+                            "value": "pl"
+                        }
+                    ]
+                },
+                "username": {
+                    "type": "text",
+                    "label": "Username",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 3,
+                    "xl": 3
+                },
+                "password": {
+                    "type": "password",
+                    "label": "Password",
+                    "repeat": false,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 3,
+                    "xl": 3
+                },
+                "client_secret_pin": {
+                    "type": "password",
+                    "label": "Pin",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 3,
+                    "xl": 3
+                },
+                "lastLoginDisplay": {
+                    "type": "text",
+                    "label": "Last successful login (auto-managed)",
+                    "disabled": "true",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 3,
+                    "xl": 3
+                },
+                "client_secret": {
+                    "type": "text",
+                    "hidden": "true"
+                },
+                "header_Fallback": {
+                    "type": "header",
+                    "text": "Fallback",
+                    "size": 2,
+                    "newLine": true
+                },
+                "_fallbackHelp": {
+                    "type": "staticText",
+                    "text": "Falls der Login mit Benutzername/Passwort nicht klappt: Token manuell eintragen. Zum Generieren siehe Anleitung unten. Für automatische Erneuerung müssen oben trotzdem Benutzername und Passwort gesetzt sein — hilft aber nichts, wenn genau der automatische Login der Grund für den Fallback war. Dann muss bei Ablauf wieder von Hand ein neues Token eingetragen werden.",
+                    "newLine": true
+                },
+                "refreshToken": {
+                    "type": "password",
+                    "label": "Refresh Token",
+                    "repeat": false,
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 8,
+                    "lg": 6,
+                    "xl": 6
+                },
+                "_fallbackDocLink": {
+                    "type": "staticLink",
+                    "label": "Anleitung: bluelink_refresh_token",
+                    "button": true,
+                    "href": "https://github.com/RustyDust/bluelink_refresh_token",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 4,
+                    "xl": 4
+                },
+                "header_CciFingerprint": {
+                    "type": "header",
+                    "text": "CCI Fingerprint (EU OneApp)",
+                    "size": 2,
+                    "newLine": true
+                },
+                "_cciFingerprintHelp": {
+                    "type": "staticText",
+                    "text": "Nur für EU (Hyundai/Kia). Seit ~13.10.2026 verlangen die OneApp-Login-Endpunkte eine signierte Anfrage (X-Fingerprint). Der Adapter bringt den aktuell gültigen Schlüssel bereits mit – dieses Feld LEER lassen. Nur ausfüllen, wenn der Login mit 9035/9036 scheitert (der App-Schlüssel wurde mit einem App-Update gewechselt): hier den neuen, markenpassenden Schlüssel eintragen. Die drei Teile dürfen mit Leerzeichen oder Komma getrennt eingegeben werden.",
+                    "newLine": true
+                },
+                "cciFingerprintKey": {
+                    "type": "text",
+                    "label": "CCI Fingerprint Key (optional, überschreibt den eingebauten Standard)",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 8,
+                    "lg": 6,
+                    "xl": 6
+                },
+                "header_BluelinkOptions": {
+                    "type": "header",
+                    "text": "Options",
+                    "size": 2,
+                    "newLine": true
+                },
+                "evHistory": {
+                    "type": "checkbox",
+                    "label": "Receive Daily drive History (EV cars only, needs 3 request per day)",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 8,
+                    "lg": 4,
+                    "xl": 4
+                },
+                "protectAgainstDeepDischarge": {
+                    "type": "checkbox",
+                    "label": "Stop refresh if 12V battery is under 10.5 V to protect against irreversible damage",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 8,
+                    "lg": 4,
+                    "xl": 4
+                },
+                "locationEveryPoll": {
+                    "type": "checkbox",
+                    "label": "Standort bei jeder Abfrage aktualisieren",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 8,
+                    "lg": 4,
+                    "xl": 4
+                },
+                "_locationEveryPollHelp": {
+                    "type": "staticText",
+                    "text": "Holt bei jeder normalen Abfrage zusätzlich den zuletzt bekannten Parkstandort (GET /location/park). Das ist der Server-/Parkstand, es weckt das Auto NICHT. Früher kamen die GPS-Koordinaten im normalen Status mit; bei CCS2-Fahrzeugen fehlen sie dort und kommen nur noch über diesen Zusatzabruf. Achtung: kostet 1 zusätzlichen Request pro Abfrage (Request-Budget beachten). Standard: aus.",
+                    "newLine": true
                 }
-            ]
+            }
         },
-        "batteryRange": {
-            "type": "number",
-            "label": "max km Range",
-            "help": "only for PHEV",
-            "hidden": "data.motor === 'EV' || data.motor === 'GAS'",
-            "unit": "km",
-            "xs": 12,
-            "sm": 12,
-            "md": 4,
-            "lg": 3,
-            "xl": 3
-        },
-        "language": {
-            "newLine": true,
-            "type": "select",
-            "label": "App Lang",
-            "xs": 12,
-            "sm": 12,
-            "md": 4,
-            "lg": 3,
-            "xl": 3,
-            "options": [
-                {
-                    "label": "DE",
-                    "value": "de"
+        "tab_pleos": {
+            "type": "panel",
+            "label": "Pleos (EU Data Act)",
+            "hidden": "data.apiMode !== 'pleos'",
+            "items": {
+                "header_Pleos": {
+                    "type": "header",
+                    "text": "Pleos Vehicle Data API (EU Data Act)",
+                    "size": 2
                 },
-                {
-                    "label": "EN",
-                    "value": "en"
+                "_pleosHelp": {
+                    "type": "staticText",
+                    "newLine": true,
+                    "text": "One-time setup: get a Client ID and Client Secret at pleos.ai/playground and enter them below. Step-by-step guide: open \"Help\" below."
                 },
-                {
-                    "label": "NL",
-                    "value": "nl"
+                "pleosClientId": {
+                    "type": "text",
+                    "label": "Client ID",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 4,
+                    "xl": 4
                 },
-                {
-                    "label": "IT",
-                    "value": "it"
+                "pleosClientSecret": {
+                    "type": "password",
+                    "label": "Client Secret",
+                    "repeat": false,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 6,
+                    "lg": 4,
+                    "xl": 4
                 },
-                {
-                    "label": "ES",
-                    "value": "es"
+                "_pleosPlaygroundLink": {
+                    "type": "staticLink",
+                    "label": "Pleos Playground",
+                    "button": true,
+                    "href": "https://pleos.ai/playground",
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 3,
+                    "xl": 3
                 },
-                {
-                    "label": "PL",
-                    "value": "pl"
+                "_pleosDocLink": {
+                    "type": "staticLink",
+                    "label": "Guide: request API key",
+                    "button": true,
+                    "href": "https://document.pleos.ai/en/api-reference/vehicle-data-api/getting-started/for-private-users/request-my-vehicle-api-key",
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 4,
+                    "lg": 3,
+                    "xl": 3
+                },
+                "_helpPleos": {
+                    "type": "panel",
+                    "label": "Help: get the Pleos key step by step",
+                    "collapsable": true,
+                    "newLine": true,
+                    "xs": 12,
+                    "sm": 12,
+                    "md": 12,
+                    "lg": 12,
+                    "xl": 12,
+                    "items": {
+                        "_helpPleosTip": {
+                            "type": "staticText",
+                            "text": "Tip: switch off the automatic browser translation for pleos.ai - otherwise the page crashes when ticking the boxes (\"insertBefore\" error).",
+                            "newLine": true,
+                            "xs": 12,
+                            "sm": 12,
+                            "md": 12,
+                            "lg": 12,
+                            "xl": 12
+                        },
+                        "_helpPleos0": {
+                            "type": "staticText",
+                            "text": "1. Open pleos.ai/playground (button above), create a free account (Sign up) and sign in.",
+                            "newLine": true,
+                            "xs": 12,
+                            "sm": 12,
+                            "md": 12,
+                            "lg": 12,
+                            "xl": 12
+                        },
+                        "_helpPleos1": {
+                            "type": "staticText",
+                            "text": "2. Click the account icon in the upper right corner and choose \"My Vehicle Data API\". This menu only appears for users in Europe.",
+                            "newLine": true,
+                            "xs": 12,
+                            "sm": 12,
+                            "md": 12,
+                            "lg": 12,
+                            "xl": 12
+                        },
+                        "_helpPleos2": {
+                            "type": "staticText",
+                            "text": "3. Choose the tab of your brand (Hyundai, Kia or Genesis), tick both boxes (terms and privacy policy) and click \"Get API Key\".",
+                            "newLine": true,
+                            "xs": 12,
+                            "sm": 12,
+                            "md": 12,
+                            "lg": 12,
+                            "xl": 12
+                        },
+                        "_helpPleos3": {
+                            "type": "staticText",
+                            "text": "4. In the popup sign in with your Bluelink / Kia Connect app account (same e-mail and password as in the app) and confirm the data sharing.",
+                            "newLine": true,
+                            "xs": 12,
+                            "sm": 12,
+                            "md": 12,
+                            "lg": 12,
+                            "xl": 12
+                        },
+                        "_helpPleos4": {
+                            "type": "staticText",
+                            "text": "5. Copy the Client ID and Client Secret shown into the fields above, set the brand in the General tab to the same brand, save and close.",
+                            "newLine": true,
+                            "xs": 12,
+                            "sm": 12,
+                            "md": 12,
+                            "lg": 12,
+                            "xl": 12
+                        },
+                        "_helpPleos5": {
+                            "type": "staticText",
+                            "text": "Troubleshooting: token error or \"40404\" - Client ID, Client Secret or brand wrong. No vehicle found or \"4101 Unregistered Vehicle\" - data sharing consent missing, repeat steps 3 and 4. The key only covers vehicles that were in your Hyundai/Kia account when it was created - for a vehicle added later, revoke the key on pleos.ai and get a new one. The key expires after 90 days - then get a new one and enter the new Client ID / Client Secret. Some values stay empty - not provided for your model.",
+                            "newLine": true,
+                            "xs": 12,
+                            "sm": 12,
+                            "md": 12,
+                            "lg": 12,
+                            "xl": 12
+                        }
+                    }
+                },
+                "_pleosLimits": {
+                    "type": "staticText",
+                    "newLine": true,
+                    "text": "Not available in this mode: remote commands (lock/unlock, climate, charging, changing charge limits - they are shown read-only), forced live update from the car, drive history. Data is what the car last sent to the server. All raw values are written to <vin>.pleosRaw."
                 }
-            ]
-        },
-        "username": {
-            "type": "text",
-            "label": "Username",
-            "xs": 12,
-            "sm": 12,
-            "md": 4,
-            "lg": 3,
-            "xl": 3
-        },
-        "password": {
-            "type": "password",
-            "label": "Password",
-            "repeat": false,
-            "xs": 12,
-            "sm": 12,
-            "md": 4,
-            "lg": 3,
-            "xl": 3
-        },
-        "client_secret_pin": {
-            "type": "password",
-            "label": "Pin",
-            "xs": 12,
-            "sm": 12,
-            "md": 4,
-            "lg": 3,
-            "xl": 3
-        },
-        "lastLoginDisplay": {
-            "type": "text",
-            "label": "Last successful login (auto-managed)",
-            "disabled": "true",
-            "xs": 12,
-            "sm": 12,
-            "md": 4,
-            "lg": 3,
-            "xl": 3
-        },
-        "client_secret": {
-            "type": "text",
-            "hidden": "true"
-        },
-        "header_Fallback": {
-            "type": "header",
-            "text": "Fallback",
-            "size": 2,
-            "newLine": true
-        },
-        "_fallbackHelp": {
-            "type": "staticText",
-            "text": "Falls der Login mit Benutzername/Passwort nicht klappt: Token manuell eintragen. Zum Generieren siehe Anleitung unten. Für automatische Erneuerung müssen oben trotzdem Benutzername und Passwort gesetzt sein — hilft aber nichts, wenn genau der automatische Login der Grund für den Fallback war. Dann muss bei Ablauf wieder von Hand ein neues Token eingetragen werden.",
-            "newLine": true
-        },
-        "refreshToken": {
-            "type": "password",
-            "label": "Refresh Token",
-            "repeat": false,
-            "newLine": true,
-            "xs": 12,
-            "sm": 12,
-            "md": 8,
-            "lg": 6,
-            "xl": 6
-        },
-        "_fallbackDocLink": {
-            "type": "staticLink",
-            "label": "Anleitung: bluelink_refresh_token",
-            "button": true,
-            "href": "https://github.com/RustyDust/bluelink_refresh_token",
-            "newLine": true,
-            "xs": 12,
-            "sm": 12,
-            "md": 6,
-            "lg": 4,
-            "xl": 4
-        },
-        "Api settings": {
-            "type": "header",
-            "text": "Api settings",
-            "size": 2,
-            "newLine": true
-        },
-        "evHistory": {
-            "type": "checkbox",
-            "label": "Receive Daily drive History (EV cars only, needs 3 request per day)",
-            "newLine": true,
-            "xs": 12,
-            "sm": 12,
-            "md": 8,
-            "lg": 4,
-            "xl": 4
-        },
-        "protectAgainstDeepDischarge": {
-            "type": "checkbox",
-            "label": "Stop refresh if 12V battery is under 10.5 V to protect against irreversible damage",
-            "xs": 12,
-            "sm": 12,
-            "md": 8,
-            "lg": 4,
-            "xl": 4
-        },
-        "request": {
-            "type": "text",
-            "label": "Request max 400",
-            "newLine": true,
-            "xs": 12,
-            "sm": 12,
-            "md": 8,
-            "lg": 3,
-            "xl": 3
-        },
-        "errorCounter": {
-            "type": "text",
-            "label": "errorCounter",
-            "xs": 12,
-            "sm": 12,
-            "md": 8,
-            "lg": 3,
-            "xl": 3
-        },
-        "resAddress": {
-            "type": "checkbox",
-            "label": "Resolve the address from coordinates using openstreetmap",
-            "newLine": true,
-            "xs": 12,
-            "sm": 12,
-            "md": 8,
-            "lg": 4,
-            "xl": 4
+            }
         }
     }
 }
