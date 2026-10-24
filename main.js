@@ -666,11 +666,13 @@ class Bluelink extends utils.Adapter {
      */
     async prepareCciSession() {
         let cciSet = null;
+        let usedPastedBundle = false;
         try {
             const pasted = this.parseEvccBundle(this.config.refreshToken);
             if (pasted) {
                 this.log.warn('[prepareCciSession] Using evcc token bundle from the Refresh Token field. evcc and this adapter now share one token set - whichever refreshes first may invalidate the other.');
                 cciSet = pasted;
+                usedPastedBundle = true;
             } else if (this.config.cciTokenSet) {
                 // js-controller already decrypts native fields listed in io-package.json's
                 // encryptedNative into this.config.* on adapter start - unlike
@@ -690,6 +692,14 @@ class Bluelink extends utils.Adapter {
                 const refreshed = await tokenManager.refreshCciToken(this.config.brand, cciSet, msg => this.log.debug(msg));
                 this._cciTokenSet = refreshed.cci;
                 this.setState('info.lastTokenRefresh', Date.now(), true);
+                if (usedPastedBundle) {
+                    // Replace the pasted evcc JSON by the adapter's own rotated token set so a restart
+                    // doesn't reuse the stale bundle (this restarts the adapter once).
+                    const expiresAt = new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString();
+                    await this.saveTokenToConfig(refreshed.cci.refreshToken, expiresAt, { cci: refreshed.cci });
+                    this._cciPersistedRefreshToken = refreshed.cci.refreshToken;
+                    this.log.info('[prepareCciSession] evcc bundle converted and saved as own token set');
+                }
                 return refreshed;
             } catch (err) {
                 this.log.warn(`[prepareCciSession] CCI token refresh failed (${err.message || err}) — falling back to full login`);
@@ -735,7 +745,8 @@ class Bluelink extends utils.Adapter {
             this._cciTokenSet = refreshed.cci;
             sess.accessToken = refreshed.accessToken;
             sess.tokenExpiresAt = Math.floor(Date.now() / 1000) + (refreshed.cci.ccsExpiresIn || refreshed.cci.expiresIn || 3599) - 60;
-            this.setState('info.tokenExpiry', (sess.tokenExpiresAt + 60) * 1000, true);            this.setState('info.lastTokenRefresh', Date.now(), true);
+            this.setState('info.tokenExpiry', (sess.tokenExpiresAt + 60) * 1000, true);
+            this.setState('info.lastTokenRefresh', Date.now(), true);
             this.log.info('[refreshAccessToken] CCS token refreshed via CCI (kept in memory, not persisted)');
             return 'Token refreshed';
         };
