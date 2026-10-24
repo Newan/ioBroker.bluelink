@@ -26,6 +26,11 @@ Adapter to control Hyundai or Kia vehicle (until 2023)
 
 ------------------------------------------------------------------------------------
 ## Changelog
+### **WORK IN PROGRESS**
+* (arteck) Dependencies have been updated
+* (arteck) migration bluelinky
+* (arteck) Fix EU Hyundai/Kia login
+
 ### 3.1.35 (2026-10-15)
 * (arteck) Fix EU Hyundai/Kia login
 

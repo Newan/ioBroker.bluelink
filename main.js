@@ -80,6 +80,7 @@ class Bluelink extends utils.Adapter {
     async onReady() {
         //first check account settings
         this.setState('info.connection', false, true);
+        tokenManager.setLanguage(this.config.language);
         let loginGo = true;
 
         if (this.config.motor == 'GAS') {
@@ -459,7 +460,7 @@ class Bluelink extends utils.Adapter {
                 pin: this.config.client_secret_pin,
                 brand: this.config.brand,
                 region: 'EU',
-                language: this.config.language,
+                language: tokenManager.getLanguage(),
                 autoLogin: !isCci,
             };
 
