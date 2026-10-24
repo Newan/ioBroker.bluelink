@@ -129,6 +129,18 @@ class Bluelink extends utils.Adapter {
             },
             native: {},
         });
+        await this.setObjectNotExistsAsync('info.tokenExpiry', {
+            type: 'state',
+            common: {
+                name: 'Expiry of the current access token (CCS)',
+                type: 'number',
+                role: 'value.time',
+                read: true,
+                write: false,
+                def: 0,
+            },
+            native: {},
+        });
         await this.setObjectNotExistsAsync('info.lastTokenRefresh', {
             type: 'state',
             common: {
@@ -475,7 +487,7 @@ class Bluelink extends utils.Adapter {
                 const ctrl = blueLinkyClient['controller'];
                 ctrl.session.accessToken = cciPrimed.accessToken;
                 ctrl.session.tokenExpiresAt = nowSec + (cciPrimed.cci.ccsExpiresIn || cciPrimed.cci.expiresIn || 3599) - 60;
-                ctrl.refreshAccessToken = this.makeCciRefresher();
+                this.setState('info.tokenExpiry', (ctrl.session.tokenExpiresAt + 60) * 1000, true);                ctrl.refreshAccessToken = this.makeCciRefresher();
 
                 // bluelinky's own login() registers a device ID with the vehicle API as its
                 // last step and uses the server-issued one for every later call; skipping
@@ -723,7 +735,7 @@ class Bluelink extends utils.Adapter {
             this._cciTokenSet = refreshed.cci;
             sess.accessToken = refreshed.accessToken;
             sess.tokenExpiresAt = Math.floor(Date.now() / 1000) + (refreshed.cci.ccsExpiresIn || refreshed.cci.expiresIn || 3599) - 60;
-            this.setState('info.lastTokenRefresh', Date.now(), true);
+            this.setState('info.tokenExpiry', (sess.tokenExpiresAt + 60) * 1000, true);            this.setState('info.lastTokenRefresh', Date.now(), true);
             this.log.info('[refreshAccessToken] CCS token refreshed via CCI (kept in memory, not persisted)');
             return 'Token refreshed';
         };
