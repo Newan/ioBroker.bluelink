@@ -1,7 +1,7 @@
 'use strict';
 
 const utils = require('@iobroker/adapter-core');
-const {BlueLinky} = require('bluelinky');
+const {BlueLinky} = require('./lib/bluelinky');
 
 const Json2iob = require('./lib/json2iob');
 const tools = require('./lib/tools');
@@ -439,7 +439,7 @@ class Bluelink extends utils.Adapter {
             // grant_type=refresh_token call expects; CCI ones aren't, and bluelinky rejects
             // them outright ("Could not manage to get token") - see tokenManager.js. Older
             // configs saved before tokenType existed are sniffed by format.
-            const isCci = this.config.tokenType === 'cci' ||
+            const isCci = this.config.tokenType === 'cci' || !!this.parseEvccBundle(activeToken) ||
                 (!this.config.tokenType && !!activeToken && !/^[A-Z0-9]{48}$/.test(activeToken));
             this.log.info(`Login to api – token source: ${this.config.refreshToken ? 'refreshToken' : 'client_secret(legacy)'}, tokenLen=${activeToken.length}${isCci ? ' (CCI/CCS mode)' : ''}`);
             this.setState('info.tokenType', isCci ? 'cci' : 'legacy', true);
@@ -473,7 +473,7 @@ class Bluelink extends utils.Adapter {
                 const nowSec = Math.floor(Date.now() / 1000);
                 const ctrl = blueLinkyClient['controller'];
                 ctrl.session.accessToken = cciPrimed.accessToken;
-                ctrl.session.tokenExpiresAt = nowSec + (cciPrimed.cci.expiresIn || 3599) - 60;
+                ctrl.session.tokenExpiresAt = nowSec + (cciPrimed.cci.ccsExpiresIn || cciPrimed.cci.expiresIn || 3599) - 60;
                 ctrl.refreshAccessToken = this.makeCciRefresher();
 
                 // bluelinky's own login() registers a device ID with the vehicle API as its
@@ -590,6 +590,56 @@ class Bluelink extends utils.Adapter {
     }
 
     /**
+     * Convert an evcc token bundle (JSON from the settings table, key "bluelink-cci.<brand>.<user>")
+     * pasted into the Refresh Token field into the adapter's CCI token set.
+     *
+     * @param {string} value
+     * @returns {object|null}
+     */
+    parseEvccBundle(value) {
+        if (typeof value !== 'string') {
+            return null;
+        }
+        let text = value.trim().replace(/^\uFEFF/, '');
+        // SQLite tools sometimes export the value as a quoted string (JSON-escaped or CSV-style "" doubling)
+        if (text.startsWith('"') && text.endsWith('"')) {
+            try {
+                text = JSON.parse(text);
+            } catch {
+                text = text.slice(1, -1).replace(/""/g, '"');
+            }
+        }
+        if (!text.startsWith('{')) {
+            if (text.length > 100) {
+                this.log.warn(`[parseEvccBundle] Refresh Token field is ${text.length} chars long but does not start with "{" (first chars: ${JSON.stringify(text.slice(0, 4))}) - not treated as evcc bundle`);
+            }
+            return null;
+        }
+        try {
+            const b = JSON.parse(text);
+            if (!b.refresh_token || !b.cci_access_token) {
+                this.log.warn(`[parseEvccBundle] JSON found in Refresh Token field but required keys are missing (keys: ${Object.keys(b).join(', ')})`);
+                return null;
+            }
+            return {
+                accessToken: b.cci_access_token,
+                refreshToken: b.refresh_token,
+                exchangeableToken: b.exchangeable_token || '',
+                exchangeableRefreshToken: b.exchangeable_refresh_token || '',
+                nonCcsToken: b.non_ccs_token || '',
+                nonCcsRefreshToken: b.non_ccs_refresh_token || '',
+                idToken: b.id_token || '',
+                expiresIn: 3599,
+                ccsExpiresIn: 3600,
+                deviceId: b.device_id || '',
+            };
+        } catch (e) {
+            this.log.warn(`[parseEvccBundle] Refresh Token field looks like JSON but is invalid: ${e.message}`);
+            return null;
+        }
+    }
+
+    /**
      * Get a fresh CCS access token for the CCI/OneApp login path (see tokenManager.js),
      * without going through bluelinky's own (incompatible) refresh/login. Tries a cheap
      * CCI token-refresh using the persisted CCI token set first; only falls back to a
@@ -604,7 +654,11 @@ class Bluelink extends utils.Adapter {
     async prepareCciSession() {
         let cciSet = null;
         try {
-            if (this.config.cciTokenSet) {
+            const pasted = this.parseEvccBundle(this.config.refreshToken);
+            if (pasted) {
+                this.log.warn('[prepareCciSession] Using evcc token bundle from the Refresh Token field. evcc and this adapter now share one token set - whichever refreshes first may invalidate the other.');
+                cciSet = pasted;
+            } else if (this.config.cciTokenSet) {
                 // js-controller already decrypts native fields listed in io-package.json's
                 // encryptedNative into this.config.* on adapter start - unlike
                 // saveTokenToConfig()'s direct setForeignObjectAsync write, which bypasses
@@ -636,7 +690,7 @@ class Bluelink extends utils.Adapter {
         }
 
         try {
-            const full = await tokenManager.fetchToken(this.config.brand, this.config.username, this.config.password, msg => this.log.debug(msg));
+            const full = await tokenManager.fetchToken(this.config.brand, this.config.username, this.config.password, msg => this.log.debug(msg), cciSet && cciSet.deviceId);
             await this.saveTokenToConfig(full.refreshToken, full.expiresAt, { cci: full.cci });
             if (!full.cci) {
                 this.log.info('[prepareCciSession] Obtained a legacy-format token instead — adapter restarts into the legacy flow');
@@ -667,7 +721,7 @@ class Bluelink extends utils.Adapter {
             const refreshed = await tokenManager.refreshCciToken(this.config.brand, this._cciTokenSet, msg => this.log.debug(msg));
             this._cciTokenSet = refreshed.cci;
             sess.accessToken = refreshed.accessToken;
-            sess.tokenExpiresAt = Math.floor(Date.now() / 1000) + (refreshed.cci.expiresIn || 3599) - 60;
+            sess.tokenExpiresAt = Math.floor(Date.now() / 1000) + (refreshed.cci.ccsExpiresIn || refreshed.cci.expiresIn || 3599) - 60;
             this.setState('info.lastTokenRefresh', Date.now(), true);
             this.log.info('[refreshAccessToken] CCS token refreshed via CCI (kept in memory, not persisted)');
             return 'Token refreshed';

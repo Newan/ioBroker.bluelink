@@ -14,6 +14,7 @@ export default [
             'test/**/*.js',
             '*.config.mjs',
             'build',
+            'lib/bluelinky/',
             'dist',
             'admin/build', 
             'admin/words.js',
