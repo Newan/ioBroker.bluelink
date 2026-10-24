@@ -234,9 +234,9 @@
       "_id": "info.tokenExpiry",
       "type": "state",
       "common": {
-        "role": "text",
-        "name": "Refresh token expiry date",
-        "type": "string",
+        "type": "number",
+        "role": "value.time",
+        "name": "Refresh token expiry date",   
         "read": true,
         "write": false,
         "def": ""
