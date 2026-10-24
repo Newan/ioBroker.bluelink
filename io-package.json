@@ -236,10 +236,10 @@
       "common": {
         "type": "number",
         "role": "value.time",
-        "name": "Refresh token expiry date",   
+        "name": "Access token expiry date",
         "read": true,
         "write": false,
-        "def": ""
+        "def": 0
       },
       "native": {}
     }
