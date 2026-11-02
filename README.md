@@ -19,7 +19,7 @@
 **ioBroker.bluelink** connects **Hyundai (Bluelink)** and **Kia (Kia Connect / UVO)** vehicles to ioBroker. It supports electric vehicles (EV), plug-in hybrids / hybrids (PHEV/HEV), and combustion engine vehicles (ICE), including modern ccNC generation models (e.g., Kia EV3, EV6, EV9, Hyundai IONIQ 5, IONIQ 6, Kona).
 
 ### Key Features
-- **100% Automated Headless Login (EU OneApp / CCI):** Direct login using your account email and password — **no manual token generation, no browser interaction, no QR code, and no Captcha required**.
+- **100% Automated Headless Login (EU OneApp / CCI):** Direct login using your account email and password — **no manual token generation, no external scripts, no browser interaction, no QR code, and no Captcha required**.
 - **Comprehensive Telemetry:** State of Charge (HV battery & 12V auxiliary battery), State of Health (SoH), charging status, estimated range (DTE), odometer, door/window/trunk/hood status, climate state, tire pressure warnings, and driving history.
 - **Full Remote Control:** Lock/unlock doors, start/stop climate control (including temperature, defrost, and heating), start/stop charging, and set AC/DC charge limits.
 - **Location & Reverse Geocoding:** GPS coordinates (`lat`, `lon`, `speed`), Google Maps link, and optional street address resolution via OpenStreetMap.
@@ -29,15 +29,16 @@
 
 ## Authentication & Initial Setup (EU Hyundai & Kia)
 
-### 1. Standard Setup (Recommended)
-For normal operation, you **do not** need to generate or enter any token manually:
+### 1. Setup in the Adapter Configuration
+You **do not** need to generate or enter any token manually:
 
 1. Select your **Brand** (`Kia` or `Hyundai`), **Motor** type (`EV`, `PHEV/MHEV`, or `Diesel/Benzin`), and **App Language**.
 2. Enter your **Username** (account email address), **Password**, and your 4-digit **PIN** (used for remote vehicle commands).
-3. Leave the **Refresh Token** field under *Fallback* **empty**.
-4. Save and close the instance configuration.
+3. Save and close the instance configuration.
 
-Upon starting, the adapter automatically performs the headless **OneApp / Connected Car Infrastructure (CCI)** authentication, stores the encrypted token set in the instance configuration, and automatically populates the *Refresh Token* field.
+Upon starting, the adapter automatically performs the headless **OneApp / Connected Car Infrastructure (CCI)** authentication and manages the encrypted session tokens internally.
+
+> **Important:** Do **not** run external token generator scripts (such as `bluelink_refresh_token`). Those scripts rely on the deprecated legacy OAuth flow, which is blocked by Hyundai/Kia's firewall (`HTTP 403 Forbidden`) and can temporarily block or rate-limit your home IP address.
 
 ### 2. How the Automated Authentication Works
 Since Hyundai and Kia permanently disabled the legacy European OAuth login endpoint, the adapter uses its own integrated **OneApp / CCI Token Manager** (`lib/tokenManager.js`):
@@ -49,14 +50,9 @@ Since Hyundai and Kia permanently disabled the legacy European OAuth login endpo
 5. **CCS Token Exchange:** Exchanges the CCI token via `/auth/v1/token-exchange?serviceType=CCS` for a CCS Bearer token used by the vehicle telematics and remote control APIs.
 6. **Automatic Renewal:** On subsequent adapter restarts or when the token approaches expiration, the adapter refreshes the session silently via `/auth/v2/token-refresh` and only falls back to a full password login if the refresh token has expired.
 
-### 3. Optional Fallback: Refresh Token / `evcc` Token Bundle
-The **Refresh Token** field in the *Fallback* section serves two purposes:
-- **Auto-Managed Persistence:** After a successful login with username and password, the adapter writes its current refresh token into this field automatically.
-- **Manual `evcc` Bundle Import (Optional):** If you prefer not to store your password in ioBroker or want to import an existing session from [evcc](https://evcc.io/), you can paste the JSON token bundle from evcc's `settings` table (key `bluelink-cci.<brand>.<user>`) directly into the **Refresh Token** field. The adapter detects the JSON format, extracts the CCI tokens, and converts them into its own encrypted token set.
-  > **Note:** Sharing the same token set simultaneously between `evcc` and `ioBroker.bluelink` is not recommended, as token rotation by one service may invalidate the token for the other.
-
-### 4. Troubleshooting Login Issues
+### 3. Troubleshooting Login Issues
 - **Pending Terms of Service / Account Consent:** If the log reports `Account consent or verification is required`, open the official **Kia App** or **Hyundai Bluelink App** on your smartphone, log in once, and accept any updated Terms of Service or privacy notices. Afterward, restart the ioBroker adapter.
+- **Temporary IP Block (`HTTP 403 Forbidden`) or Slow Login:** Repeated failed login attempts (especially from outdated adapter versions or external scripts like `bluelink_refresh_token`) can cause the manufacturer's firewall (WAF) to temporarily throttle or block your internet connection's public IP address. Stop any external scripts, wait 30–60 minutes (or reconnect your router to obtain a new public IP), and let the adapter log in on its own.
 - **Manual Token Re-Fetch:** You can trigger a fresh token retrieval at any time during runtime by setting the state `bluelink.0.info.fetchToken` to `true`.
 
 ---
@@ -72,7 +68,6 @@ The **Refresh Token** field in the *Fallback* section serves two purposes:
 | **Username** | Email address of your Kia Connect or Hyundai Bluelink account. |
 | **Password** | Account password (stored encrypted by ioBroker). |
 | **Pin** | 4-digit security PIN configured in the mobile app (stored encrypted). |
-| **Refresh Token** | Automatically managed by the adapter. Leave empty on initial setup (or optionally paste an `evcc` JSON bundle). |
 | **Receive Daily drive History** | Fetches daily driving and energy consumption history (EV only, requires ~3 API requests per day). |
 | **Stop refresh if 12V battery is under...** | Protects the 12V auxiliary battery against deep discharge. |
 | **Request max 400** | Number of daily status polling requests distributed across 24 hours (e.g. `100` = every ~14.4 minutes). Maximum is `400` to stay within manufacturer rate limits. |
@@ -142,8 +137,9 @@ The **Refresh Token** field in the *Fallback* section serves two purposes:
 ## Changelog
 
 ### **WORK IN PROGRESS**
+* (meistermopper) Remove obsolete manual Refresh Token / Fallback section from Admin UI and documentation since OneApp/CCI authentication is fully automatic
 * (meistermopper) Add comprehensive English and German documentation for automated OneApp/CCI authentication, configuration options, and data points
-* (meistermopper) Modernize Admin UI fallback section and i18n translations to clarify automated token management and optional evcc fallback
+* (meistermopper) Modernize Admin UI and i18n translations across all 11 supported languages
 * (meistermopper) Fix shutdown race condition when saving rotated CCI tokens during adapter startup
 
 ### 3.1.36 (2026-11-01)

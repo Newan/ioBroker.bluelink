@@ -459,7 +459,7 @@ class Bluelink extends utils.Adapter {
             const isCci = this.config.tokenType === 'cci' ||
                 !!this.parseEvccBundle(activeToken) ||
                 (!this.config.tokenType && !!activeToken && !/^[A-Z0-9]{48}$/.test(activeToken)) ||
-                (isEurope && (!activeToken || this.config.tokenType !== 'legacy'));
+                isEurope;
             this.log.info(`Login to api – token source: ${this.config.refreshToken ? 'refreshToken' : 'client_secret(legacy)'}, tokenLen=${activeToken.length}${isCci ? ' (CCI/CCS mode)' : ''}`);
             this.setState('info.tokenType', isCci ? 'cci' : 'legacy', true);
 

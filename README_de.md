@@ -10,7 +10,7 @@
 Der Adapter **ioBroker.bluelink** verbindet Fahrzeuge von **Hyundai (Bluelink)** und **Kia (Kia Connect / UVO)** mit ioBroker. Unterstützt werden Elektrofahrzeuge (EV), Plug-in-Hybride / Vollhybride (PHEV/HEV) sowie Verbrenner (ICE) – einschließlich aktueller Modelle der ccNC-Generation (z. B. Kia EV3, EV6, EV9, Hyundai IONIQ 5, IONIQ 6, Kona).
 
 ### Hauptfunktionen
-- **100 % automatischer Headless-Login (EU OneApp / CCI):** Direkte Anmeldung mit E-Mail-Adresse und Passwort – **keine manuelle Token-Generierung, kein Browser, kein QR-Code und kein Captcha erforderlich**.
+- **100 % automatischer Headless-Login (EU OneApp / CCI):** Direkte Anmeldung mit E-Mail-Adresse und Passwort – **keine manuelle Token-Generierung, keine externen Skripte, kein Browser, kein QR-Code und kein Captcha erforderlich**.
 - **Umfangreiche Fahrzeug-Telemetrie:** Ladestand der Hochvoltbatterie (SoC) und 12V-Hilfsbatterie, Batteriegesundheit (SoH), Ladestatus, Restreichweite (DTE), Kilometerstand, Tür-/Fenster-/Kofferraum-/Motorhauben-Status, Klimastatus, Reifendruck-Warnungen und Fahrthistorie.
 - **Vollständige Fernsteuerung:** Verriegeln/Entriegeln, Klimatisierung starten/stoppen (inkl. Zieltemperatur, Frontscheibenheizung, Lenkrad-/Heckscheibenheizung), Laden starten/stoppen sowie AC-/DC-Ladelimits setzen.
 - **Standort & Adressauflösung:** GPS-Koordinaten (`lat`, `lon`, `speed`), direkter Google-Maps-Link und optionale Straßenadress-Auflösung über OpenStreetMap.
@@ -20,15 +20,16 @@ Der Adapter **ioBroker.bluelink** verbindet Fahrzeuge von **Hyundai (Bluelink)**
 
 ## Authentifizierung & Ersteinrichtung (EU Hyundai & Kia)
 
-### 1. Standard-Einrichtung (Empfohlen)
-Für den regulären Betrieb musst du **keinen Token manuell generieren oder eintragen**:
+### 1. Einrichtung in der Adapter-Konfiguration
+Für die Einrichtung und den Betrieb ist **keine manuelle Token-Generierung erforderlich**:
 
 1. Wähle in den Instanz-Einstellungen deine **Marke** (`Kia` oder `Hyundai`), den **Motor**-Typ (`EV`, `PHEV/MHEV` oder `Diesel/Benzin`) und die **App-Sprache** (`DE`).
 2. Trage deinen **Benutzernamen** (E-Mail-Adresse deines Kia Connect / Bluelink Accounts), dein **Passwort** sowie deine 4-stellige **PIN** (für Steuerbefehle ans Fahrzeug) ein.
-3. Lass das Feld **Refresh Token** im Abschnitt *Fallback* **leer**.
-4. Speichere und schließe die Einstellungen.
+3. Speichere und schließe die Einstellungen.
 
-Beim Start führt der Adapter vollautomatisch im Hintergrund die **OneApp / Connected Car Infrastructure (CCI)**-Authentifizierung durch, speichert das Token-Set verschlüsselt in der Instanz-Konfiguration und trägt den aktuellen Refresh-Token selbstständig in das Feld *Refresh Token* ein.
+Beim Start führt der Adapter vollautomatisch im Hintergrund die **OneApp / Connected Car Infrastructure (CCI)**-Authentifizierung durch und verwaltet die verschlüsselten Session-Tokens komplett intern.
+
+> **Wichtiger Hinweis:** Verwende **keine** externen Token-Skripte (wie z. B. `bluelink_refresh_token`)! Diese Skripte nutzen den veralteten und von Hyundai/Kia abgeschalteten Legacy-OAuth-Flow, werden von der Firewall der Hersteller mit `HTTP 403 Forbidden` blockiert und können dazu führen, dass deine öffentliche Heim-IP-Adresse temporär gesperrt oder gedrosselt wird.
 
 ### 2. Technische Funktionsweise des automatischen Logins
 Da Hyundai und Kia den alten europäischen OAuth-Endpunkt dauerhaft abgeschaltet haben, nutzt der Adapter einen eigenen **OneApp / CCI Token-Manager** (`lib/tokenManager.js`):
@@ -40,14 +41,9 @@ Da Hyundai und Kia den alten europäischen OAuth-Endpunkt dauerhaft abgeschaltet
 5. **CCS-Token-Tausch:** Tauscht das CCI-Token über `/auth/v1/token-exchange?serviceType=CCS` gegen ein CCS-Bearer-Token, mit dem sämtliche Telemetrie- und Steuerbefehle auf der Fahrzeug-API ausgeführt werden.
 6. **Automatische Token-Erneuerung:** Bei späteren Adapter-Neustarts oder vor Ablauf des Tokens erneuert der Adapter die Sitzung ressourcenschonend über `/auth/v2/token-refresh` und führt nur dann einen neuen Passwort-Login durch, wenn auch das Refresh-Token abgelaufen ist.
 
-### 3. Optionaler Fallback: Refresh Token / `evcc` Token-Bundle
-Das Feld **Refresh Token** im Bereich *Fallback* hat zwei Funktionen:
-- **Automatische Speicherung:** Nach dem ersten erfolgreichen Login mit Benutzername und Passwort hinterlegt der Adapter dort automatisch das aktuelle Refresh-Token.
-- **Manueller `evcc`-Bundle-Import (Optional):** Wer sein Passwort nicht in ioBroker speichern möchte oder ein bestehendes Token-Set aus [evcc](https://evcc.io/) übernehmen will, kann das JSON-Bundle aus der `settings`-Tabelle von evcc (Schlüssel `bluelink-cci.<brand>.<user>`) direkt in das Feld **Refresh Token** einfügen. Der Adapter erkennt das JSON-Format automatisch und übernimmt die CCI-Tokens.
-  > **Hinweis:** Die gleichzeitige Nutzung desselben Token-Sets in `evcc` und `ioBroker.bluelink` wird nicht empfohlen, da eine Token-Rotation durch ein System das Token des anderen Systems ungültig machen kann.
-
-### 4. Fehlerbehebung beim Login
+### 3. Fehlerbehebung beim Login
 - **Neue Nutzungsbedingungen (AGB) in der App bestätigen:** Meldet das Log `Account consent or verification is required`, öffne bitte einmalig die offizielle **Kia App** bzw. **Hyundai Bluelink App** auf deinem Smartphone, melde dich an und bestätige eventuelle neue Nutzungsbedingungen oder Datenschutzhinweise. Starte danach die Adapter-Instanz neu.
+- **Temporäre IP-Sperre (`HTTP 403 Forbidden`) oder langsamer Login:** Mehrfache fehlgeschlagene Login-Versuche (insbesondere durch veraltete Adapter-Versionen oder externe Skripte wie `bluelink_refresh_token`) führen dazu, dass die Firewall (WAF) von Kia/Hyundai die öffentliche IP-Adresse deines Internetanschlusses temporär drosselt oder sperrt. Beende externe Skripte, warte 30–60 Minuten (oder verbinde deinen Router neu für eine neue öffentliche IP) und überlasse den Login vollständig dem Adapter.
 - **Manuellen Token-Abruf auslösen:** Über den Datenpunkt `bluelink.0.info.fetchToken` (`true`) kannst du jederzeit im laufenden Betrieb eine sofortige Token-Erneuerung anstoßen.
 
 ---
@@ -63,7 +59,6 @@ Das Feld **Refresh Token** im Bereich *Fallback* hat zwei Funktionen:
 | **Username** | E-Mail-Adresse deines Kia Connect oder Hyundai Bluelink Accounts. |
 | **Password** | Account-Passwort (wird von ioBroker verschlüsselt gespeichert). |
 | **Pin** | 4-stellige Sicherheits-PIN aus der Smartphone-App (verschlüsselt gespeichert). |
-| **Refresh Token** | Wird vom Adapter automatisch verwaltet. Bei Ersteinrichtung leer lassen (oder optional `evcc`-JSON-Bundle einfügen). |
 | **Receive Daily drive History** | Ruft die tägliche Fahrthistorie und Verbrauchsdaten ab (nur EV, benötigt ca. 3 API-Abfragen pro Tag). |
 | **Stop refresh if 12V battery is under...** | Schützt die 12V-Starterbatterie vor Tiefentladung. |
 | **Request max 400** | Anzahl der täglichen Status-Abfragen verteilt auf 24 Stunden (z. B. `100` = ca. alle 14,4 Minuten). Maximal `400`, um das Rate-Limit der Hersteller nicht zu überschreiten. |
@@ -133,8 +128,9 @@ Das Feld **Refresh Token** im Bereich *Fallback* hat zwei Funktionen:
 ## Changelog
 
 ### **WORK IN PROGRESS**
+* (meistermopper) Veralteten Bereich „Fallback / Refresh Token“ aus der Admin-UI (jsonConfig) und Dokumentation entfernt, da die OneApp/CCI-Authentifizierung vollständig automatisch erfolgt.
 * (meistermopper) Ausführliche deutsche und englische Dokumentation zur automatischen OneApp/CCI-Authentifizierung, Konfiguration und Datenpunkten ergänzt.
-* (meistermopper) Admin-UI (jsonConfig & i18n-Übersetzungen) im Bereich Token/Fallback modernisiert (Hinweis auf vollautomatische Token-Verwaltung und optionalen evcc-Fallback).
+* (meistermopper) Admin-UI und i18n-Übersetzungen in allen 11 unterstützten Sprachen modernisiert.
 * (meistermopper) Race-Condition beim Adapter-Neustart nach dem Speichern eines neuen CCI-Tokens behoben (verhindert SIGKILL-Timeouts).
 
 ### 3.1.36 (2026-11-01)

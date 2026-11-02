@@ -142,47 +142,6 @@
             "lg": 3,
             "xl": 3
         },
-        "client_secret": {
-            "type": "text",
-            "hidden": "true"
-        },
-        "header_Fallback": {
-            "type": "header",
-            "text": "Fallback",
-            "size": 2,
-            "newLine": true
-        },
-        "_fallbackHelp": {
-            "type": "staticText",
-            "text": "Automatic login (OneApp/CCI) only requires Username and Password above — leave Refresh Token empty on initial setup; the adapter fetches and renews the token automatically. Optional fallback: paste an evcc JSON token bundle (key bluelink-cci.<brand>.<user>) if you do not want to store your password.",
-            "newLine": true
-        },
-        "refreshToken": {
-            "type": "password",
-            "label": "Refresh Token (auto-managed / optional evcc fallback)",
-            "repeat": false,
-            "newLine": true,
-            "xs": 12,
-            "sm": 12,
-            "md": 8,
-            "lg": 6,
-            "xl": 6
-        },
-        "_fallbackDocLink": {
-            "type": "staticLink",
-            "label": "Token-documentation",
-            "button": true,
-            "variant": "outlined",
-            "color": "primary",
-            "icon": "info",
-            "href": "https://github.com/Newan/ioBroker.bluelink#authentication--initial-setup-eu-hyundai--kia",
-            "newLine": true,
-            "xs": 12,
-            "sm": 12,
-            "md": 6,
-            "lg": 4,
-            "xl": 4
-        },
         "Api settings": {
             "type": "header",
             "text": "Api settings",
