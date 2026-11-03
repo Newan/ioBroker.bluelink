@@ -22,8 +22,5 @@
     "only for PHEV": "仅适用于插电式混合动力车 (PHEV)",
     "Token-documentation": "令牌文档",
     "Password": "密码（账户密码）",
-    "Last successful login (auto-managed)": "上次成功登录（自动管理）",
-    "Fallback": "令牌与备用方案（自动管理）",
-    "Refresh Token (auto-managed / optional evcc fallback)": "刷新令牌（自动管理 / 可选 evcc 备用方案）",
-    "Automatic login (OneApp/CCI) only requires Username and Password above — leave Refresh Token empty on initial setup; the adapter fetches and renews the token automatically. Optional fallback: paste an evcc JSON token bundle (key bluelink-cci.<brand>.<user>) if you do not want to store your password.": "自动登录 (OneApp/CCI) 只需在上方填写用户名和密码 — 初次设置时请将刷新令牌留空，适配器会自动获取并续期令牌。可选备用方案：如果您不想保存密码，可粘贴来自 evcc 的 JSON 令牌包（键名为 bluelink-cci.<brand>.<user>）。"
+    "Last successful login (auto-managed)": "上次成功登录（自动管理）"
 }

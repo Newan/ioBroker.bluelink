@@ -385,9 +385,12 @@ class Bluelink extends utils.Adapter {
      *                                 the legacy flow.
      */
     async saveTokenToConfig(refreshToken, expiresAt, extra = {}) {
+        if (this._isUnloading) {
+            return true;
+        }
         const adapterObj = await this.getForeignObjectAsync(`system.adapter.${this.namespace}`);
-        if (!adapterObj) {
-            return;
+        if (!adapterObj || this._isUnloading) {
+            return true;
         }
         adapterObj.native.refreshToken = this.encrypt(refreshToken);
         adapterObj.native.tokenExpiry = expiresAt;

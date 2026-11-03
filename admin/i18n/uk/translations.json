@@ -21,8 +21,5 @@
     "only for PHEV": "тільки для PHEV",
     "Token-documentation": "Документація токена",
     "Password": "Пароль (пароль облікового запису)",
-    "Last successful login (auto-managed)": "Останній успішний вхід (керується автоматично)",
-    "Fallback": "Токен та резервний варіант (керується автоматично)",
-    "Refresh Token (auto-managed / optional evcc fallback)": "Refresh Token (керується автоматично / опціональний пакет evcc)",
-    "Automatic login (OneApp/CCI) only requires Username and Password above — leave Refresh Token empty on initial setup; the adapter fetches and renews the token automatically. Optional fallback: paste an evcc JSON token bundle (key bluelink-cci.<brand>.<user>) if you do not want to store your password.": "Для автоматичного входу (OneApp/CCI) достатньо вказати ім'я користувача та пароль вище — залиште поле Refresh Token порожнім під час початкового налаштування; адаптер отримує та оновлює токен автоматично. Опціонально: вставте JSON-пакет токенів з evcc (ключ bluelink-cci.<brand>.<user>), якщо ви не хочете зберігати пароль."
+    "Last successful login (auto-managed)": "Останній успішний вхід (керується автоматично)"
 }
