@@ -142,49 +142,34 @@
             "lg": 3,
             "xl": 3
         },
-        "client_secret": {
-            "type": "text",
-            "hidden": "true"
-        },
-        "header_Fallback": {
-            "type": "header",
-            "text": "Fallback",
-            "size": 2,
-            "newLine": true
-        },
-        "_fallbackHelp": {
-            "type": "staticText",
-            "text": "Falls der Login mit Benutzername/Passwort nicht klappt: Token manuell eintragen. Zum Generieren siehe Anleitung unten. Für automatische Erneuerung müssen oben trotzdem Benutzername und Passwort gesetzt sein — hilft aber nichts, wenn genau der automatische Login der Grund für den Fallback war. Dann muss bei Ablauf wieder von Hand ein neues Token eingetragen werden.",
-            "newLine": true
-        },
-        "refreshToken": {
-            "type": "password",
-            "label": "Refresh Token",
-            "repeat": false,
-            "newLine": true,
-            "xs": 12,
-            "sm": 12,
-            "md": 8,
-            "lg": 6,
-            "xl": 6
-        },
-        "_fallbackDocLink": {
-            "type": "staticLink",
-            "label": "Anleitung: bluelink_refresh_token",
-            "button": true,
-            "href": "https://github.com/RustyDust/bluelink_refresh_token",
-            "newLine": true,
-            "xs": 12,
-            "sm": 12,
-            "md": 6,
-            "lg": 4,
-            "xl": 4
-        },
         "Api settings": {
             "type": "header",
             "text": "Api settings",
             "size": 2,
             "newLine": true
+        },
+        "request": {
+            "type": "number",
+            "label": "Request max 400",
+            "min": 1,
+            "max": 400,
+            "newLine": true,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 3,
+            "xl": 3
+        },
+        "errorCounter": {
+            "type": "number",
+            "label": "errorCounter",
+            "min": 1,
+            "max": 50,
+            "xs": 12,
+            "sm": 12,
+            "md": 6,
+            "lg": 3,
+            "xl": 3
         },
         "evHistory": {
             "type": "checkbox",
@@ -192,37 +177,19 @@
             "newLine": true,
             "xs": 12,
             "sm": 12,
-            "md": 8,
-            "lg": 4,
-            "xl": 4
+            "md": 12,
+            "lg": 12,
+            "xl": 12
         },
         "protectAgainstDeepDischarge": {
             "type": "checkbox",
             "label": "Stop refresh if 12V battery is under 10.5 V to protect against irreversible damage",
-            "xs": 12,
-            "sm": 12,
-            "md": 8,
-            "lg": 4,
-            "xl": 4
-        },
-        "request": {
-            "type": "text",
-            "label": "Request max 400",
             "newLine": true,
             "xs": 12,
             "sm": 12,
-            "md": 8,
-            "lg": 3,
-            "xl": 3
-        },
-        "errorCounter": {
-            "type": "text",
-            "label": "errorCounter",
-            "xs": 12,
-            "sm": 12,
-            "md": 8,
-            "lg": 3,
-            "xl": 3
+            "md": 12,
+            "lg": 12,
+            "xl": 12
         },
         "resAddress": {
             "type": "checkbox",
@@ -230,9 +197,9 @@
             "newLine": true,
             "xs": 12,
             "sm": 12,
-            "md": 8,
-            "lg": 4,
-            "xl": 4
+            "md": 12,
+            "lg": 12,
+            "xl": 12
         }
     }
 }

@@ -1,4 +1,7 @@
 # Older changes
+## 3.1.32 (2026-08-20)
+* (ipod86) Fix EU Hyundai/Kia login
+
 ## 3.1.31 (2026-08-11)
 * (arteck) Dependencies have been updated
 

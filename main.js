@@ -76,6 +76,8 @@ class Bluelink extends utils.Adapter {
         this._lastTokenCheck = 0;
         this._cciTokenSet = null; // in-memory only - see prepareCciSession()
         this._cciPersistedRefreshToken = null; // last refreshToken written to disk - see persistRotatedCciTokenIfNeeded()
+        this._cciRefreshPromise = null;
+        this._isUnloading = false;
     }
 
     async onReady() {
@@ -175,9 +177,10 @@ class Bluelink extends utils.Adapter {
     /**
      * Is called when adapter shuts down - callback has to be called under any circumstances!
      *
-     * @param {() => void} callback
+     * @param {() => void} callback Completion callback
      */
     onUnload(callback) {
+        this._isUnloading = true;
         try {
             clearTimeout(adapterIntervals.readAllStates);
             clearTimeout(adapterIntervals.loginRetryTimeout);
@@ -189,7 +192,7 @@ class Bluelink extends utils.Adapter {
             }
             this.log.info('Adapter bluelink cleaned up everything...');
             callback();
-        } catch (e) {
+        } catch {
             callback();
         }
     }
@@ -376,16 +379,19 @@ class Bluelink extends utils.Adapter {
      * Encrypt token and persist it to the adapter's native config.
      * Writing native config makes js-controller restart this instance.
      *
-     * @param {string} refreshToken
-     * @param {string} expiresAt
+     * @param {string} refreshToken Refresh token string
+     * @param {string} expiresAt ISO-8601 expiry timestamp
      * @param {{cci?: object}} [extra] CCI token set (see tokenManager.fetchTokenCci) when the
      *                                 token was obtained via the OneApp/CCI flow; omitted for
      *                                 the legacy flow.
      */
     async saveTokenToConfig(refreshToken, expiresAt, extra = {}) {
+        if (this._isUnloading) {
+            return true;
+        }
         const adapterObj = await this.getForeignObjectAsync(`system.adapter.${this.namespace}`);
-        if (!adapterObj) {
-            return;
+        if (!adapterObj || this._isUnloading) {
+            return true;
         }
         adapterObj.native.refreshToken = this.encrypt(refreshToken);
         adapterObj.native.tokenExpiry = expiresAt;
@@ -401,6 +407,7 @@ class Bluelink extends utils.Adapter {
         }
         await this.setForeignObjectAsync(`system.adapter.${this.namespace}`, adapterObj);
         this.log.info(`[saveTokenToConfig] Token encrypted and saved, valid until ${expiresAt}`);
+        return Boolean(adapterObj.common && adapterObj.common.enabled);
     }
 
     /**
@@ -456,7 +463,7 @@ class Bluelink extends utils.Adapter {
             const isCci = this.config.tokenType === 'cci' ||
                 !!this.parseEvccBundle(activeToken) ||
                 (!this.config.tokenType && !!activeToken && !/^[A-Z0-9]{48}$/.test(activeToken)) ||
-                (isEurope && (!activeToken || this.config.tokenType !== 'legacy'));
+                isEurope;
             this.log.info(`Login to api – token source: ${this.config.refreshToken ? 'refreshToken' : 'client_secret(legacy)'}, tokenLen=${activeToken.length}${isCci ? ' (CCI/CCS mode)' : ''}`);
             this.setState('info.tokenType', isCci ? 'cci' : 'legacy', true);
 
@@ -513,6 +520,9 @@ class Bluelink extends utils.Adapter {
             }
 
             blueLinkyClient.on('ready', async (vehicles) => {
+                if (this._isUnloading) {
+                    return;
+                }
                 this.setState('info.connection', true, true);
                 // wir haben eine Verbindung und haben Autos
                 this.log.info(`${vehicles.length} Vehicles found`);
@@ -540,6 +550,9 @@ class Bluelink extends utils.Adapter {
                         try {
                             await this.driveHistory(vehicle);
 
+                            if (this._isUnloading) {
+                                return;
+                            }
                             adapterIntervals.evHistoryIntervals[vin] = setInterval(async () => {
                                 try {
                                     await this.receiveEVInformation(vehicle, false);
@@ -547,7 +560,7 @@ class Bluelink extends utils.Adapter {
                                     this.log.error(`receiveEVInformation Fehler: ${err}`);
                                 }
                             }, 60 * 60 * 1000); // check einmal die stunde nur intern
-                        } catch (error) {
+                        } catch {
                             this.log.error('Error in receiveEVInformation');
                         }
                     }
@@ -560,6 +573,9 @@ class Bluelink extends utils.Adapter {
             });
 
             blueLinkyClient.on('error', async (err) => {
+                if (this._isUnloading) {
+                    return;
+                }
                 this.log.error(err);
                 this.log.error('Server is not available or login credentials are wrong');
 
@@ -688,7 +704,7 @@ class Bluelink extends utils.Adapter {
                 // that pipeline and has to call this.encrypt() itself.
                 cciSet = JSON.parse(this.config.cciTokenSet);
             }
-        } catch (_e) {
+        } catch {
             this.log.warn('[prepareCciSession] Stored CCI token set unreadable — forcing full login');
         }
         // Reflects what's currently on disk, so persistRotatedCciTokenIfNeeded() doesn't
@@ -704,7 +720,10 @@ class Bluelink extends utils.Adapter {
                     // Replace the pasted evcc JSON by the adapter's own rotated token set so a restart
                     // doesn't reuse the stale bundle (this restarts the adapter once).
                     const expiresAt = new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString();
-                    await this.saveTokenToConfig(refreshed.cci.refreshToken, expiresAt, { cci: refreshed.cci });
+                    const willRestart = await this.saveTokenToConfig(refreshed.cci.refreshToken, expiresAt, { cci: refreshed.cci });
+                    if (willRestart || this._isUnloading) {
+                        return null;
+                    }
                     this._cciPersistedRefreshToken = refreshed.cci.refreshToken;
                     this.log.info('[prepareCciSession] evcc bundle converted and saved as own token set');
                 }
@@ -723,7 +742,10 @@ class Bluelink extends utils.Adapter {
 
         try {
             const full = await tokenManager.fetchToken(this.config.brand, this.config.username, this.config.password, msg => this.log.debug(msg), cciSet && cciSet.deviceId);
-            await this.saveTokenToConfig(full.refreshToken, full.expiresAt, { cci: full.cci });
+            const willRestart = await this.saveTokenToConfig(full.refreshToken, full.expiresAt, { cci: full.cci });
+            if (willRestart || this._isUnloading) {
+                return null;
+            }
             if (!full.cci) {
                 this.log.info('[prepareCciSession] Obtained a legacy-format token instead — adapter restarts into the legacy flow');
                 return null;
@@ -751,14 +773,45 @@ class Bluelink extends utils.Adapter {
             if (nowSec < sess.tokenExpiresAt - 10) {
                 return 'Token not expired, no need to refresh';
             }
-            const refreshed = await tokenManager.refreshCciToken(this.config.brand, this._cciTokenSet, msg => this.log.debug(msg));
-            this._cciTokenSet = refreshed.cci;
-            sess.accessToken = refreshed.accessToken;
-            sess.tokenExpiresAt = Math.floor(Date.now() / 1000) + (refreshed.cci.ccsExpiresIn || refreshed.cci.expiresIn || 3599) - 60;
-            this.setState('info.tokenExpiry', new Date((sess.tokenExpiresAt + 60) * 1000).toISOString(), true);
-            this.setState('info.lastTokenRefresh', Date.now(), true);
-            this.log.info('[refreshAccessToken] CCS token refreshed via CCI (kept in memory, not persisted)');
-            return 'Token refreshed';
+            if (this._cciRefreshPromise) {
+                return await this._cciRefreshPromise;
+            }
+            this._cciRefreshPromise = (async () => {
+                let refreshed;
+                try {
+                    refreshed = await tokenManager.refreshCciToken(this.config.brand, this._cciTokenSet, msg => this.log.debug(msg));
+                    this.log.info('[refreshAccessToken] CCS token refreshed via CCI (kept in memory, not persisted)');
+                } catch (err) {
+                    const msg = err instanceof Error ? err.message : String(err);
+                    if (!this.config.username || !this.config.password) {
+                        throw err;
+                    }
+                    this.log.warn(`[refreshAccessToken] CCI token refresh failed (${msg}) — falling back to full login in memory`);
+                    const full = await tokenManager.fetchToken(
+                        this.config.brand,
+                        this.config.username,
+                        this.config.password,
+                        m => this.log.debug(m),
+                        this._cciTokenSet && this._cciTokenSet.deviceId,
+                    );
+                    if (!full.cci) {
+                        throw new Error('Full login fallback did not return a CCI token set');
+                    }
+                    refreshed = { accessToken: full.accessToken, cci: full.cci };
+                    this.log.info('[refreshAccessToken] CCS token renewed via full CCI login (kept in memory, not persisted)');
+                }
+                this._cciTokenSet = refreshed.cci;
+                sess.accessToken = refreshed.accessToken;
+                sess.tokenExpiresAt = Math.floor(Date.now() / 1000) + (refreshed.cci.ccsExpiresIn || refreshed.cci.expiresIn || 3599) - 60;
+                this.setState('info.tokenExpiry', new Date((sess.tokenExpiresAt + 60) * 1000).toISOString(), true);
+                this.setState('info.lastTokenRefresh', Date.now(), true);
+                return 'Token refreshed';
+            })();
+            try {
+                return await this._cciRefreshPromise;
+            } finally {
+                this._cciRefreshPromise = null;
+            }
         };
     }
 
@@ -833,7 +886,9 @@ class Bluelink extends utils.Adapter {
         if (force) {
             clearTimeout(adapterIntervals.readAllStates);
         }
-        adapterIntervals.readAllStates = setTimeout(this.readStatus.bind(this), ((24 * 60) / request_count) * 60000);
+        if (!this._isUnloading) {
+            adapterIntervals.readAllStates = setTimeout(this.readStatus.bind(this), ((24 * 60) / request_count) * 60000);
+        }
     }
 
     // force_update = true Daten vom Auto
@@ -1304,7 +1359,7 @@ class Bluelink extends utils.Adapter {
     //full status
     async setNewFullStatus(newStatus, vin) {
 
-        let lastUpdate = '0'; // als String, da ccs2-Vergleich lastUpdate_ccs2 ebenfalls ein String ist
+
 
         try {
             this.setState(`${vin}.vehicleStatus.airCtrlOn`, {
@@ -1321,7 +1376,7 @@ class Bluelink extends utils.Adapter {
 
             if (newStatus.hasOwnProperty('vehicleLocation')) {
                 if (newStatus.vehicleLocation != undefined) {
-                    lastUpdate = String(newStatus.vehicleLocation.time);
+
                     await tools.setLocation(this, vin, newStatus.vehicleLocation.coord.lat, newStatus.vehicleLocation.coord.lon, newStatus.vehicleLocation.speed.value);
                 }
             }
